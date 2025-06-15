@@ -1,0 +1,76 @@
+﻿In an ASP.NET Core Web API using JWT for authentication, the jti claim (JWT ID) is used to identify and prevent replay attacks. It acts as a unique identifier for each token, ensuring that the same token cannot be used multiple times. 
+
+How to Use the jti Claim:
+Generate a Unique jti: When creating a JWT token, generate a unique identifier for the jti claim. This can be a UUID or a randomly generated string.
+Store the jti: Store the generated jti in a database or cache.
+Validate the jti: When a request is made, retrieve the jti from the JWT token. Check if this jti exists in your storage and if it's already been used. If it's already been used or doesn't exist, reject the request. 
+
+-----------------------------------
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Concurrent;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+[ApiController]
+[Route("[controller]")]
+public class AuthController : ControllerBase
+{
+    private static readonly ConcurrentDictionary<string, bool> UsedJti = new ConcurrentDictionary<string, bool>();
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    {
+        // ... (Authentication Logic, e.g., checking username and password) ...
+
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, "user"),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("UserId", "123"), // Example claim
+            new Claim("Role", "Admin") // Example claim
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKey"));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            "yourIssuer",
+            "yourAudience",
+            claims,
+            expires: DateTime.UtcNow.AddMinutes(10), // Set expiration
+            signingCredentials: creds
+        );
+
+        var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+        // Store Jti
+        UsedJti.TryAdd(token.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value, true);
+
+        return Ok(new { Token = jwtToken });
+    }
+
+    [HttpGet("protected")]
+    [Authorize] // Apply this to any protected endpoint
+    public async Task<IActionResult> Protected()
+    {
+        var jti = User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+        if (!UsedJti.TryGetValue(jti, out _)) {
+            return Unauthorized("Token has already been used or is invalid.");
+        }
+        
+        // ... (Your Protected Logic) ...
+
+        return Ok("Protected Data");
+    }
+
+    public class LoginRequest {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+}
