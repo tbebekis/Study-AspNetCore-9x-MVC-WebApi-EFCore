@@ -26,14 +26,13 @@
             builder.Services.AddDbContext<DataContext>();
             RBAC.Initialize(() => new DataContext());
 
-            // ● custom services 
-            builder.Services.AddScoped<ApiClientContext>();
+            // ● custom services         
             builder.Services.AddScoped<ApiClientService>();
+            builder.Services.AddScoped<ApiClientContext>();     // current Identity context
             builder.Services.AddScoped(typeof(AppDataService<>));
             builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();  
 
-            PermissionAuthorizationHandler.GetUserPermissionsFunc = RBAC.GetUserPermissionListForWebApi;
-            
+            PermissionAuthorizationHandler.GetUserPermissionsFunc = RBAC.GetUserPermissionListForWebApi;            
 
             // ● global exception handler
             builder.Services.AddExceptionHandler<WebApiExceptionHandler>();

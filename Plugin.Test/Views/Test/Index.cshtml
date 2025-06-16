@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Plugin.Test.Index1 - No Layout";
+}
+ 
+<script src='@TestLib.GetStaticFileUrl("js/test.js")'></script>
+<script src="~/tp/js/tp.js"></script>
+
+<div>
+    <h2>Plugin.Test: No Layout</h2>
+
+    <div>
+        <strong>DYNAMICALLY</strong> loaded Class Library
+    </div>
+
+    <div>
+        <button onclick="Test_ShowMessage();">Click Me!</button>
+    </div>
+    <div>
+        <button onclick="tp.ShowMessage('Hi from tp Javascript');">Click Me!</button>
+    </div>
+
+    <ul>
+        <li><a href='@Url.RouteUrl("Plugin.Test.OwnLayout")'>Own Layout</a></li>
+        <li><a href='/plugin-test-host-layout'>Host Layout</a></li>
+    </ul>
+</div>

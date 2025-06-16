@@ -13,6 +13,18 @@
             RBAC.GetDataContextFunc = GetDataContextFunc;
         }
 
+        static public AppUser GetAppUserById(string Id)
+        {
+            AppUser Result = null;
+
+            using (var DataContext = GetDataContextFunc())
+            {
+                DbSet<AppUser> Users = DataContext.Set<AppUser>();
+                Result = Users.FirstOrDefault(x => x.Id == Id);
+            }
+
+            return Result;
+        }
         static public List<AppRole> GetUserRoles(string Id)
         {
             List<AppRole> Result = new List<AppRole>();
@@ -91,8 +103,24 @@
         {
             List<string> Result = new();
             JwtSecurityToken JwtToken = TokenHelper.ReadTokenFromRequestHeader(HttpContext);
-
+ 
             string Id = ClaimHelper.GetClaimValue(JwtToken.Claims, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+
+            if (!string.IsNullOrWhiteSpace(Id))
+            {
+                List<AppPermission> Permissions = RBAC.GetUserPermissions(Id);
+
+                foreach (var Permission in Permissions)
+                    Result.Add(Permission.Name);
+            }
+
+            return Result;
+        }
+        static public List<string> GetUserPermissionListForMvc(HttpContext HttpContext)
+        {
+            List<string> Result = new();
+
+            string Id = ClaimHelper.GetClaimValue(HttpContext.User.Claims, System.Security.Claims.ClaimTypes.NameIdentifier);
 
             if (!string.IsNullOrWhiteSpace(Id))
             {

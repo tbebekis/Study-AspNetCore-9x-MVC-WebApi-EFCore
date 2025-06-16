@@ -71,6 +71,15 @@
 
         // ● miscs 
         /// <summary>
+        /// Reads and returns an HTTP header from <see cref="HttpRequest.Headers"/>
+        /// </summary>
+        static public string GetHttpHeader(this HttpRequest Request, string Key)
+        {
+            Key = Key.ToLowerInvariant();
+            return Request == null ? string.Empty : Request.Headers.FirstOrDefault(x => x.Key.ToLowerInvariant() == Key).Value.FirstOrDefault();
+        }
+
+        /// <summary>
         /// Creates and returns a new Guid.
         /// <para>If UseBrackets is true, the new guid is surrounded by {}</para>
         /// </summary>

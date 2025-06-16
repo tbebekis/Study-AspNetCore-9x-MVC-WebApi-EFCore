@@ -1,0 +1,7 @@
+{
+    "Id": "Plugin.Test.dll",
+    "Group": "Test Plugins",
+    "Description": "Test Plugin",
+    "Author": "Test",
+    "LoadOrder": 1
+}

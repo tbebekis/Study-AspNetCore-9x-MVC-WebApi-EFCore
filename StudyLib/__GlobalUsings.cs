@@ -7,6 +7,8 @@ global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Reflection;
 global using System.Diagnostics;
 global using System.Globalization;
+global using System.Resources;
+global using System.Xml;
 global using System.IO;
 global using System.Buffers;
 global using System.Net;

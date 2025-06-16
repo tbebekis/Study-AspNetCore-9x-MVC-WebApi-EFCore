@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <BaseOutputPath>$(SolutionDir)\BinMvc</BaseOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MvcApp.Library\MvcApp.Library.csproj" />
+      <ProjectReference Include="..\StudyLib\StudyLib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Themes\" />
+      <Folder Include="Plugins\" />
+    </ItemGroup>
+
+    <!--  Disable the default behavior of compiling views on publish. 
+    SEE: https://yangzhongke8.medium.com/how-to-prevent-asp-net-core-mvc-from-compile-cshtml-view-when-deploying-fad4d7592b7e
+    SEE: https://www.reddit.com/r/aspnetcore/comments/snjs02/how_to_prevent_aspnet_core_mvc_from_compile/ -->
+    <PropertyGroup>
+        <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+        <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation is needed if we are to have Views not embedded into assembly -->
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.3.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.4" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <!-- For the CopyToOutputDirectory to work just right click on the project | Build Dependencies | Project Dependencies 
+             and add all Plugin projects as dependencies.
+             Plugin projects have as their output directory the Plugins folder.
+             So Plugins must be built first.
+             -->
+        <None Include="Plugins\**" CopyToOutputDirectory="PreserveNewest" />
+        <None Include="Plugins\**" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="Themes\**" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Properties\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Properties\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>    
+
+</Project>

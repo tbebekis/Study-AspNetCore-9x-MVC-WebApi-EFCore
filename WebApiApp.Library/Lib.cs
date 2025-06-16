@@ -104,12 +104,32 @@
 
         // ● miscs
         /// <summary>
-        /// Reads and returns an HTTP header from <see cref="HttpRequest.Headers"/>
+        /// Returns the list of supported cultures.
+        /// <para>This setting may come from application settings, a database or elsewhere.</para>
         /// </summary>
-        static public string GetHttpHeader(this HttpRequest Request, string Key)
+        static public List<string> GetSupportedCultureCodes()
         {
-            Key = Key.ToLowerInvariant();
-            return Request == null ? string.Empty : Request.Headers.FirstOrDefault(x => x.Key.ToLowerInvariant() == Key).Value.FirstOrDefault();
+            List<string> Result = new List<string>();
+            if (Settings.Defaults.SupportedCultures != null && Settings.Defaults.SupportedCultures.Count > 0)
+                Result.AddRange(Settings.Defaults.SupportedCultures);
+            else
+                Result.Add(Settings.Defaults.CultureCode);
+
+            return Result;
+        }
+        /// <summary>
+        /// Returns the list of supported cultures.
+        /// <para>This setting may come from application settings, a database or elsewhere.</para>
+        /// </summary>
+        static public List<CultureInfo> GetSupportedCultures()
+        {
+            List<string> List = GetSupportedCultureCodes();
+            List<CultureInfo> Result = new List<CultureInfo>();
+
+            foreach (string CultureCode in List)
+                Result.Add(CultureInfo.GetCultureInfo(CultureCode));
+
+            return Result;
         }
 
         // ● properties
@@ -186,6 +206,19 @@
         /// </summary>
         static public IObjectMapper ObjectMapper { get; } = new ObjectMapper();
 
- 
+        /// <summary>
+        /// Returns the Id of the current HTTP request
+        /// </summary>
+        static public string RequestId
+        {
+            get
+            {
+                string Result = Activity.Current?.Id ?? GetHttpContext().TraceIdentifier;
+                if (!string.IsNullOrWhiteSpace(Result) && Result.StartsWith('|'))
+                    Result = Result.Remove(0, 1);
+                return Result;
+
+            }
+        }
     }
 }

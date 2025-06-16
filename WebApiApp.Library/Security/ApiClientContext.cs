@@ -32,11 +32,6 @@
         public IQueryCollection Query => Request.Query;
 
         /// <summary>
-        /// The api client of the current request
-        /// </summary>
-        public IAppClient Client { get; set; }
-
-        /// <summary>
         /// The culture (language) of the current request specified as a culture code (en-US, el-GR)
         /// </summary>
         public string CultureCode

@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "_Layout.Page";
+    ViewData["Title"] = "Plugin.Test.Index3 - Layout from Host Application";
+}
+
+<script src='@TestLib.GetStaticFileUrl("js/test.js")'></script>
+
+<div>
+    <h2>Plugin.Test: Layout from Host Application </h2>
+
+    <div>
+        <strong>DYNAMICALLY</strong> loaded Class Library
+    </div>
+
+    <div>
+        <button onclick="Test_ShowMessage();">Click Me!</button>
+    </div>
+
+    <ul>
+        <li><a href='@Url.RouteUrl("Plugin.Test.NoLayout")'>No Layout</a></li>
+        <li><a href='@Url.RouteUrl("Plugin.Test.OwnLayout")'>Own Layout</a></li>
+    </ul>
+</div>

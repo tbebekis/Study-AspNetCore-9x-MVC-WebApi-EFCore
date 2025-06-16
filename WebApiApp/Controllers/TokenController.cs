@@ -41,7 +41,7 @@
 
                     if (DataResult.Succeeded && Client != null)
                     {
-                        Result = Tokens.CreateAccessToken(Client.Id, CultureCode);
+                        Result = ClientTokens.CreateAccessToken(Client.Id, CultureCode);
                     }
                     else
                     {
@@ -66,7 +66,7 @@
             else
             {
                 // validate refresh token
-                PrincipalToken PT = Tokens.GetPrincipalFromExpiredToken(Model.Token);
+                PrincipalToken PT = ClientTokens.GetPrincipalFromExpiredToken(Model.Token);
                 ClaimsPrincipal Principal = PT.Principal;
                 JwtSecurityToken JwtToken = PT.JwtToken;
 
@@ -99,7 +99,7 @@
                             CultureCode = Lib.Settings.Defaults.CultureCode;
 
                         // if refresh token is ok, issue a new access and refresh token
-                        Result = Tokens.CreateAccessToken(Id, CultureCode);
+                        Result = ClientTokens.CreateAccessToken(Id, CultureCode);
                     }
                 }
             }

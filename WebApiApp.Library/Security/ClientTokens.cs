@@ -4,7 +4,7 @@
     /// <summary>
     /// Helper for handling tokens
     /// </summary>
-    static public class Tokens
+    static public class ClientTokens
     {
         /// <summary>
         /// Generates an Access Token based on a database table Id which identifies the client application and a requested locale.
