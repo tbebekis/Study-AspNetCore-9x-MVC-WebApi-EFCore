@@ -1,0 +1,15 @@
+﻿@model ProductListModel
+ 
+<div class="page">
+    <h2>Product List</h2>
+
+    @if (Model.Products.Count == 0)
+    {
+        <h5>No Products yet.</h5>
+    }
+    else
+    {
+        @await Html.PartialAsync("_ProductList", Model)
+    }
+
+</div>

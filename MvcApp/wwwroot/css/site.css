@@ -1,31 +1,359 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+:root {
+    --MenuItemVerticalPadding: 14px;
+    --MenuItemHorizontalPadding: 16px;
+    --MenuBackColor: #005871;  /* #2E5283;   DodgerBlue*/ 
 }
 
 html {
   position: relative;
   min-height: 100%;
+  font-size: 14px;
 }
 
+ 
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+ 
+html {
+    /* To make use of full height of page*/
+    min-height: 100%;
+    margin: 0;
+}
 body {
-  margin-bottom: 60px;
+    min-height: 100%;
+    margin: 0;
+}
+ 
+button {
+    font-size: 13px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select
+   https://developer.chrome.com/blog/a-customizable-select
+*/
+select,
+::picker(select) {
+  appearance:  base-select;
+  border-radius: 0;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/*---------------------------------------------------------------------------------------
+  header
+---------------------------------------------------------------------------------------*/
+
+header {
+    background-color: var(--Color1);
+    min-height: 40px;
+}
+
+.header-zone {
+    display: flex;
+    align-items: center;
+    padding: var(--Page-Padding);    
+    color: var(--White);
+    font-weight: var(--SemiBold);
+} 
+
+.header-zone-border {
+    border-top: 1px solid var(--Gray);
+}
+
+.slim-zone {
+    height: 35px;
+}
+
+.zone-items > * {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 12px;
+}
+
+.zone-items > :not(.tp-FlexFill):not(.search-component):hover {
+    background-color: var(--HoverColor);
+    color: black;
+} 
+
+
+.search-component input {
+    position: relative;
+    background-color: inherit;
+    border: 0 !important;
+    color: inherit !important;
+    font-weight: normal;
+    outline: none;    
+}
+
+.search-component .search-icon {
+    cursor: pointer;
+}
+
+/*---------------------------------------------------------------------------------------
+                                      menu
+---------------------------------------------------------------------------------------*/
+
+.menu {   
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+} 
+
+.menu > *:not(.list-container) {
+    display: flex;
+    align-items: center; 
+    padding: var(--MenuItemVerticalPadding) var(--MenuItemHorizontalPadding);
+    text-decoration: none;
+}
+
+.menu .list-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction:column;
+    overflow: hidden;
+    padding: var(--MenuItemVerticalPadding) var(--MenuItemHorizontalPadding);
+}
+
+.menu .list-container > .list {
+    display: none;
+    background-color: var(--Color1);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.menu .list-container:hover > .list {
+    display: flex;
+    flex-direction :column;
+    position: absolute;
+    margin-top: calc(var(--MenuItemVerticalPadding) * 2);       /* double the padding of the list-container */
+    margin-left: calc(var(--MenuItemHorizontalPadding) * -1);   /* margin-left: calc(var(--MenuItemHorizontalPadding) * -1);  minus the padding of the list-container */
+    color: white;
+}
+
+.menu .list-container:hover > .list > *:not(.separator) {
+    display: flex;
+    align-items: center; 
+    padding: var(--MenuItemVerticalPadding) var(--MenuItemHorizontalPadding);
+    text-decoration: none;
+}
+
+.menu > :hover,
+.menu .list > *:hover {
+    background-color: var(--HoverColor);
+    color: black;
+} 
+
+.menu .separator {
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #a7a3a3;
+    font-size: 1px;
+}
+
+/*---------------------------------------------------------------------------------------
+  footer
+---------------------------------------------------------------------------------------*/
+footer {
+    background-color: var(--Color1);
+    min-height: 40px;
+}
+
+/*---------------------------------------------------------------------------------------
+  page
+---------------------------------------------------------------------------------------*/
+
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: var(--Page-Padding);
+    min-height: 800px;
+    flex-grow: 1;
+}
+
+.page-content {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.page .page-caption {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.page .page-caption .page-title {
+    position: relative;
+    display: flex;
+    font-size: 28px;
+    font-weight: var(--HeavyBold);
+    flex-grow: 1;
+}
+
+.field-group {
+    position: relative;
+    margin: 0 0 30px 0;
+    width: 100%;
+}
+
+.field-group > .caption {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.field-group > .caption > .title {
+    font-size: 22px;
+    font-weight: var(--HeavyBold);
+    margin: 0 0 25px 0;
+}
+
+.form-buttons {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 0 30px 0;
+    gap: 0.5em;
+}
+
+.form-buttons .btn-submit {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--Yellow);
+    height: 4em;
+    padding: 0 2.8em;
+}
+
+.form-buttons .btn-submit:hover {
+    background-color: var(--Black);
+    color: var(--White);
+}
+
+a.button { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--Yellow);
+    height: 5em;
+    padding: 0 2.8em;
+}
+
+a.button:hover {
+    background-color: var(--Black);
+    color: var(--White);
+}
+
+/*---------------------------------------------------------------------------------------
+ 
+---------------------------------------------------------------------------------------*/
+
+.language-selector {
+    background-color: inherit;
+    border-color: transparent;
+}
+
+/*---------------------------------------------------------------------------------------
+ 
+---------------------------------------------------------------------------------------*/
+
+table.data-list  { 
+    border-collapse: collapse;
+}
+
+table.data-list th {
+  text-align: left;
+  background-color: var(--Color2) ; /* #04AA6D */
+  color: white;
+}
+
+table.data-list th,
+table.data-list td {
+  border: 1px solid #dddddd;
+  padding: 8px;
+} 
+
+table.data-list tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+
+table.data-list tr:hover {
+    background-color: #dddddd;
+}
+
+table.data-list .actions {
+    gap: 8px;
+} 
+
+table.data-list .actions > * {
+    padding: 0 4px;
+    
+}
+
+table.data-list .actions > *:hover {
+     background-color: var(--Yellow);
+}
+
+
+/*---------------------------------------------------------------------------------------
+                                      paging
+---------------------------------------------------------------------------------------*/
+.pager-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    padding: 0 30px
+}
+
+.pager {
+    position: relative;
+    display: flex;
+    gap: 3px;
+}
+
+.pager > * {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;    
+}
+
+.pager .fa {
+    font-size: 28px;
+}
+
+.pager .btn-page-number {
+    font-size: 15px;
+    font-weight: bold;
+    padding: 0 0 2px 0;
+}
+
+.pager .current-page {
+    border: 1px solid var(--Yellow);
+/*
+    text-decoration: underline var(--Yellow) solid; 
+    text-decoration-thickness: 4px;
+    text-decoration-skip-ink: none;
+    text-underline-offset: 8px;
+*/
+}
+
+.pager .tp-Disabled {
+    color: var(--GrayDark);
 }

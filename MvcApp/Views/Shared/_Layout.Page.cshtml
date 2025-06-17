@@ -1,0 +1,22 @@
+﻿@* 
+    This is a Layout View.
+    It is the value of the _ViewStart.cshtml. 
+    This view is the Layout view for all page views (main views), called Content views.
+
+    This view renders the content view. 
+    It may contain columns, i.e. a left sidebar and a content at its right side.
+*@
+@{
+    Layout = "_Layout";
+}
+
+@await Html.PartialAsync("_Layout.Header")
+@RenderBody()
+@await Html.PartialAsync("_Layout.Footer")
+
+<section id="CommonHtmlContainer" style="display: none;">
+    @await Html.PartialAsync("_Layout.Common")
+</section>
+
+@await Html.PartialAsync("_MessageList")
+ 

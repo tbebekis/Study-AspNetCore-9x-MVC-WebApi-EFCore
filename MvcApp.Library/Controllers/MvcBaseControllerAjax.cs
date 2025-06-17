@@ -4,7 +4,7 @@
     /// <summary>
     /// Base Ajax controller.
     /// </summary>
-    public class ControllerMvcAjax : ControllerMvc, IViewToStringConverter
+    public class MvcBaseControllerAjax : MvcBaseController, IViewToStringConverter
     { 
         /// <summary>
         /// Renders a partial view to a string.

@@ -1,0 +1,16 @@
+﻿@model ProductListModel
+ 
+<div class="page">
+    <h2>Product List with Paging, after Filtering</h2>
+
+    @if (Model.Products.Count == 0)
+    {
+        <h5>No Products found.</h5>
+    }
+    else
+    {
+        @await Html.PartialAsync("_ProductList", Model)
+
+        @await Component.InvokeAsync("Pager", Model.PagingInfo)
+    }
+</div>

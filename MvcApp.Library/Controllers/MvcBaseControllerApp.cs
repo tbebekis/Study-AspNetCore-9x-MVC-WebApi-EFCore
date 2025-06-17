@@ -1,7 +1,12 @@
 ﻿namespace MvcApp.Library
 {
-    public class ControllerMvc: ControllerMvcBase
+
+    /// <summary>
+    /// <para>NOTE: Does NOT require authentication</para>
+    /// </summary>
+    public class MvcBaseControllerApp: MvcBaseController
     {
+
         // ● overridables
         /// <summary>
         /// Handles the ReturnUrl parameter
@@ -27,11 +32,24 @@
             return Redirect(ReturnUrl);
         }
 
+        protected virtual RedirectToActionResult RedirectToErrorPage(string ErrorMessage)
+        {
+            ErrorViewModel Model = new ErrorViewModel();
+            Model.ErrorMessage = ErrorMessage;
+            Model.RequestId = Lib.RequestId;
+
+            string JsonText = Serialize(Model);
+
+            TempData["ErrorModel"] = JsonText;
+
+            return RedirectToAction("Error", "Home", new { });
+        }
+
         // ● construction
         /// <summary>
         /// Constructor
         /// </summary>
-        public ControllerMvc()
+        public MvcBaseControllerApp()
         {
 
         }

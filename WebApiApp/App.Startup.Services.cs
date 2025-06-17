@@ -3,6 +3,19 @@
 
     static public partial class App
     {
+
+        static void GlobalErrorHandlerWebApi(ActionExceptionFilterContext Context)
+        {
+            DataResult Result = new();
+            Result.ExceptionResult(Context.ExceptionContext.Exception);
+
+            // NO, we do NOT want an invalid HTTP StatusCode. It is a valid HTTP Response.
+            // We just have an action result with errors, so any error should be recorded by our HttpActionResult and delivered to the client.
+            // context.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError; 
+            Context.ExceptionContext.HttpContext.Response.ContentType = "application/json";
+            Context.ExceptionContext.Result = new JsonResult(Result);
+        }
+
         static void SetupJsonSerializerOptions(JsonSerializerOptions JsonOptions)
         {
             Json.SetupJsonOptions(
@@ -107,9 +120,10 @@
             builder.Services.ConfigureHttpJsonOptions(options => SetupJsonSerializerOptions(options.SerializerOptions));
 
             // ● Controllers
-            IMvcBuilder MvcBuilder = builder.Services.AddControllers(options => {
-                options.Filters.Add<ActionExceptionFilter>();
+            IMvcBuilder MvcBuilder = builder.Services.AddControllers(options => {                
                 options.ModelBinderProviders.Insert(0, new ModelBinderProvider());
+                options.Filters.Add<ActionExceptionFilter>();
+                ActionExceptionFilter.WebApiHandlerFunc = GlobalErrorHandlerWebApi;
             })
             .ConfigureApiBehaviorOptions(options =>
             {

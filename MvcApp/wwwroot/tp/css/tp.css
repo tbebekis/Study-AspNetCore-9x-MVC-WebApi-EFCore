@@ -1,0 +1,800 @@
+﻿/*=======================================================================================
+                               12-column grid system
+  ---------------------------------------------------------------------------------------
+  Name                    Prefix          From             To
+  ---------------------------------------------------------------------------------------
+  Extra Small             xs                 0             576
+  Small                   sm               577             768             
+  Medium                  md               769             992
+  Large                   lg               993            1200
+  Extra Large             xl              1201            1400
+  Double Extra Large      xxl             1401            ~
+=======================================================================================*/
+
+:root {
+    --c1: 8.33333%;
+    --c2: 16.66666%;
+    --c3: 24.99999%;
+    --c4: 33.33333%;
+    --c5: 41.66666%;
+    --c6: 49.99999%;
+    --c7: 58.33333%;
+    --c8: 66.66666%;
+    --c9: 74.99999%;
+    --c10: 83.33333%;
+    --c11: 91.66666%;
+    --c12: 99.99999%;
+}
+
+/*---------------------------------------------------------------------------------------
+  Column Widths - 12 column system
+---------------------------------------------------------------------------------------*/
+.c1  { width: var(--c1 ); }
+.c2  { width: var(--c2 ); }
+.c3  { width: var(--c3 ); }
+.c4  { width: var(--c4 ); }
+.c5  { width: var(--c5 ); }
+.c6  { width: var(--c6 ); }
+.c7  { width: var(--c7 ); }
+.c8  { width: var(--c8 ); }
+.c9  { width: var(--c9 ); }
+.c10 { width: var(--c10); }
+.c11 { width: var(--c11); }
+.c12 { width: var(--c12); }
+
+/*---------------------------------------------------------------------------------------
+ 12-column grid system media queries 
+ ---------------------------------------------------------------------------------------- 
+min-width 	Rules applied for any browser width greater than the value defined in the query.
+max-width 	Rules applied for any browser width less than the value defined in the query. 
+---------------------------------------------------------------------------------------*/
+
+/* Extra Small */ 
+@media (max-width: 576px) {
+    .xs1  { width: var(--c1 ); }
+    .xs2  { width: var(--c2 ); }
+    .xs3  { width: var(--c3 ); }
+    .xs4  { width: var(--c4 ); }
+    .xs5  { width: var(--c5 ); }
+    .xs6  { width: var(--c6 ); }
+    .xs7  { width: var(--c7 ); }
+    .xs8  { width: var(--c8 ); }
+    .xs9  { width: var(--c9 ); }
+    .xs10 { width: var(--c10); }
+    .xs11 { width: var(--c11); }
+    .xs12 { width: var(--c12); }
+}
+
+/* Small */ 
+@media (min-width: 577px) and (max-width: 768px)  {
+    .sm1  { width: var(--c1 ); }
+    .sm2  { width: var(--c2 ); }
+    .sm3  { width: var(--c3 ); }
+    .sm4  { width: var(--c4 ); }
+    .sm5  { width: var(--c5 ); }
+    .sm6  { width: var(--c6 ); }
+    .sm7  { width: var(--c7 ); }
+    .sm8  { width: var(--c8 ); }
+    .sm9  { width: var(--c9 ); }
+    .sm10 { width: var(--c10); }
+    .sm11 { width: var(--c11); }
+    .sm12 { width: var(--c12); }
+}
+
+/* Medium */ 
+@media (min-width: 769px) and (max-width: 992px)  {
+    .md1  { width: var(--c1 ); }
+    .md2  { width: var(--c2 ); }
+    .md3  { width: var(--c3 ); }
+    .md4  { width: var(--c4 ); }
+    .md5  { width: var(--c5 ); }
+    .md6  { width: var(--c6 ); }
+    .md7  { width: var(--c7 ); }
+    .md8  { width: var(--c8 ); }
+    .md9  { width: var(--c9 ); }
+    .md10 { width: var(--c10); }
+    .md11 { width: var(--c11); }
+    .md12 { width: var(--c12); }
+}
+
+/* Large */ 
+@media (min-width: 993px) and (max-width: 1200px)  {
+    .lg1  { width: var(--c1 ); }
+    .lg2  { width: var(--c2 ); }
+    .lg3  { width: var(--c3 ); }
+    .lg4  { width: var(--c4 ); }
+    .lg5  { width: var(--c5 ); }
+    .lg6  { width: var(--c6 ); }
+    .lg7  { width: var(--c7 ); }
+    .lg8  { width: var(--c8 ); }
+    .lg9  { width: var(--c9 ); }
+    .lg10 { width: var(--c10); }
+    .lg11 { width: var(--c11); }
+    .lg12 { width: var(--c12); }
+}
+
+/* Extra Large */ 
+@media (min-width: 1201px) and (max-width: 1400px)  {
+    .xl1  { width: var(--c1 ); }
+    .xl2  { width: var(--c2 ); }
+    .xl3  { width: var(--c3 ); }
+    .xl4  { width: var(--c4 ); }
+    .xl5  { width: var(--c5 ); }
+    .xl6  { width: var(--c6 ); }
+    .xl7  { width: var(--c7 ); }
+    .xl8  { width: var(--c8 ); }
+    .xl9  { width: var(--c9 ); }
+    .xl10 { width: var(--c10); }
+    .xl11 { width: var(--c11); }
+    .xl12 { width: var(--c12); }
+}
+
+/* Double Extra Large */
+@media (min-width: 1401px) {
+    .xxl1  { width: var(--c1 ); }
+    .xxl2  { width: var(--c2 ); }
+    .xxl3  { width: var(--c3 ); }
+    .xxl4  { width: var(--c4 ); }
+    .xxl5  { width: var(--c5 ); }
+    .xxl6  { width: var(--c6 ); }
+    .xxl7  { width: var(--c7 ); }
+    .xxl8  { width: var(--c8 ); }
+    .xxl9  { width: var(--c9 ); }
+    .xxl10 { width: var(--c10); }
+    .xxl11 { width: var(--c11); }
+    .xxl12 { width: var(--c12); }
+}
+
+
+/*=======================================================================================
+                               Percentage Column Widths
+  ---------------------------------------------------------------------------------------
+  Instead of using the 12-column grid system we may use percentages, 
+  with a logic similar to that of the 12-column grid system, i.e. with media queries.
+
+  The following section defines column percentages from 0 to 100, increased by 5.
+
+  There are also some special cases: 1, 2, 3, 4 and 33 and 66
+
+  Prefixes follow the same logic as with the 12-column grid system 
+  with an added - (dash) after the prefix
+  ---------------------------------------------------------------------------------------
+  Name                    Prefix          From             To
+  ---------------------------------------------------------------------------------------
+  Extra Small             xs-                0             576
+  Small                   sm-              577             768             
+  Medium                  md-              769             992
+  Large                   lg-              993            1200
+  Extra Large             xl-             1201            1400
+  Double Extra Large      xxl-            1401            ~
+=======================================================================================*/
+
+
+
+:root {
+--p-1: 0.99999%;
+--p-2: 1.99999%;
+--p-3: 2.99999%;
+--p-4: 3.99999%;
+
+--p-5: 4.99999%;
+--p-10: 9.99999%;
+--p-15: 14.99999%;
+--p-20: 19.99999%;
+--p-25: 24.99999%;
+--p-30: 29.99999%;
+--p-35: 34.99999%;
+--p-40: 39.99999%;
+--p-45: 44.99999%;
+--p-50: 49.99999%;
+--p-55: 54.99999%;
+--p-60: 59.99999%;
+--p-65: 64.99999%;
+--p-70: 69.99999%;
+--p-75: 74.99999%;
+--p-80: 79.99999%;
+--p-85: 84.99999%;
+--p-90: 89.99999%;
+--p-95: 94.99999%;
+--p-100: 99.99999%;
+
+--p-33: 33.33333%;
+--p-66: 66.66666%;
+}
+
+/*---------------------------------------------------------------------------------------
+Percentage Column Widths
+---------------------------------------------------------------------------------------*/
+
+.p-1   { width:  var(--p-1  ); }
+.p-2   { width:  var(--p-2  ); }
+.p-3   { width:  var(--p-3  ); }
+.p-4   { width:  var(--p-4  ); }
+
+.p-5   { width:  var(--p-5  ); }
+.p-10  { width:  var(--p-10 ); } 
+.p-15  { width:  var(--p-15 ); }
+.p-20  { width:  var(--p-20 ); }
+.p-25  { width:  var(--p-25 ); }
+.p-30  { width:  var(--p-30 ); }
+.p-35  { width:  var(--p-35 ); }
+.p-40  { width:  var(--p-40 ); }
+.p-45  { width:  var(--p-45 ); }
+.p-50  { width:  var(--p-50 ); }
+.p-55  { width:  var(--p-55 ); }
+.p-60  { width:  var(--p-60 ); }
+.p-65  { width:  var(--p-65 ); }
+.p-70  { width:  var(--p-70 ); }
+.p-75  { width:  var(--p-75 ); }
+.p-80  { width:  var(--p-80 ); }
+.p-85  { width:  var(--p-85 ); }
+.p-90  { width:  var(--p-90 ); }
+.p-95  { width:  var(--p-95 ); }
+.p-100 { width:  var(--p-100); }
+ 
+.p-33  { width:  var(--p-33 ); }
+.p-66  { width:  var(--p-66 ); } 
+
+/*---------------------------------------------------------------------------------------
+ Percentage Column Widths system media queries 
+ ---------------------------------------------------------------------------------------- 
+min-width 	Rules applied for any browser width greater than the value defined in the query.
+max-width 	Rules applied for any browser width less than the value defined in the query. 
+---------------------------------------------------------------------------------------*/
+
+
+/* Extra Small */ 
+@media (max-width: 576px) {
+    .xs-1   { width: var(--p-1  ); }
+    .xs-2   { width: var(--p-2  ); }
+    .xs-3   { width: var(--p-3  ); }
+    .xs-4   { width: var(--p-4  ); }
+    .xs-5   { width: var(--p-5  ); }
+    .xs-10  { width: var(--p-10 ); } 
+    .xs-15  { width: var(--p-15 ); }
+    .xs-20  { width: var(--p-20 ); }
+    .xs-25  { width: var(--p-25 ); }
+    .xs-30  { width: var(--p-30 ); }
+    .xs-35  { width: var(--p-35 ); }
+    .xs-40  { width: var(--p-40 ); }
+    .xs-45  { width: var(--p-45 ); }
+    .xs-50  { width: var(--p-50 ); }
+    .xs-55  { width: var(--p-55 ); }
+    .xs-60  { width: var(--p-60 ); }
+    .xs-65  { width: var(--p-65 ); }
+    .xs-70  { width: var(--p-70 ); }
+    .xs-75  { width: var(--p-75 ); }
+    .xs-80  { width: var(--p-80 ); }
+    .xs-85  { width: var(--p-85 ); }
+    .xs-90  { width: var(--p-90 ); }
+    .xs-95  { width: var(--p-95 ); }
+    .xs-100 { width: var(--p-100); }
+    .xs-33  { width: var(--p-33 ); }
+    .xs-66  { width: var(--p-66 ); }
+}
+
+/* Small */ 
+@media (min-width: 577px) and (max-width: 768px)  {
+    .sm-1   { width: var(--p-1  ); }
+    .sm-2   { width: var(--p-2  ); }
+    .sm-3   { width: var(--p-3  ); }
+    .sm-4   { width: var(--p-4  ); }
+
+    .sm-5   { width: var(--p-5  ); }
+    .sm-10  { width: var(--p-10 ); } 
+    .sm-15  { width: var(--p-15 ); }
+    .sm-20  { width: var(--p-20 ); }
+    .sm-25  { width: var(--p-25 ); }
+    .sm-30  { width: var(--p-30 ); }
+    .sm-35  { width: var(--p-35 ); }
+    .sm-40  { width: var(--p-40 ); }
+    .sm-45  { width: var(--p-45 ); }
+    .sm-50  { width: var(--p-50 ); }
+    .sm-55  { width: var(--p-55 ); }
+    .sm-60  { width: var(--p-60 ); }
+    .sm-65  { width: var(--p-65 ); }
+    .sm-70  { width: var(--p-70 ); }
+    .sm-75  { width: var(--p-75 ); }
+    .sm-80  { width: var(--p-80 ); }
+    .sm-85  { width: var(--p-85 ); }
+    .sm-90  { width: var(--p-90 ); }
+    .sm-95  { width: var(--p-95 ); }
+    .sm-100 { width: var(--p-100); }
+
+    .sm-33  { width: var(--p-33 ); }
+    .sm-66  { width: var(--p-66 ); }
+}
+
+/* Medium */ 
+@media (min-width: 769px) and (max-width: 992px)  {
+    .md-1   { width: var(--p-1  ); }
+    .md-2   { width: var(--p-2  ); }
+    .md-3   { width: var(--p-3  ); }
+    .md-4   { width: var(--p-4  ); }
+
+    .md-5   { width: var(--p-5  ); }
+    .md-10  { width: var(--p-10 ); } 
+    .md-15  { width: var(--p-15 ); }
+    .md-20  { width: var(--p-20 ); }
+    .md-25  { width: var(--p-25 ); }
+    .md-30  { width: var(--p-30 ); }
+    .md-35  { width: var(--p-35 ); }
+    .md-40  { width: var(--p-40 ); }
+    .md-45  { width: var(--p-45 ); }
+    .md-50  { width: var(--p-50 ); }
+    .md-55  { width: var(--p-55 ); }
+    .md-60  { width: var(--p-60 ); }
+    .md-65  { width: var(--p-65 ); }
+    .md-70  { width: var(--p-70 ); }
+    .md-75  { width: var(--p-75 ); }
+    .md-80  { width: var(--p-80 ); }
+    .md-85  { width: var(--p-85 ); }
+    .md-90  { width: var(--p-90 ); }
+    .md-95  { width: var(--p-95 ); }
+    .md-100 { width: var(--p-100); }
+
+    .md-33  { width: var(--p-33 ); }
+    .md-66  { width: var(--p-66 ); }
+}
+
+/* Large */ 
+@media (min-width: 993px) and (max-width: 1200px)  {
+    .lg-1   { width: var(--p-1  ); }
+    .lg-2   { width: var(--p-2  ); }
+    .lg-3   { width: var(--p-3  ); }
+    .lg-4   { width: var(--p-4  ); }
+
+    .lg-5   { width: var(--p-5  ); }
+    .lg-10  { width: var(--p-10 ); } 
+    .lg-15  { width: var(--p-15 ); }
+    .lg-20  { width: var(--p-20 ); }
+    .lg-25  { width: var(--p-25 ); }
+    .lg-30  { width: var(--p-30 ); }
+    .lg-35  { width: var(--p-35 ); }
+    .lg-40  { width: var(--p-40 ); }
+    .lg-45  { width: var(--p-45 ); }
+    .lg-50  { width: var(--p-50 ); }
+    .lg-55  { width: var(--p-55 ); }
+    .lg-60  { width: var(--p-60 ); }
+    .lg-65  { width: var(--p-65 ); }
+    .lg-70  { width: var(--p-70 ); }
+    .lg-75  { width: var(--p-75 ); }
+    .lg-80  { width: var(--p-80 ); }
+    .lg-85  { width: var(--p-85 ); }
+    .lg-90  { width: var(--p-90 ); }
+    .lg-95  { width: var(--p-95 ); }
+    .lg-100 { width: var(--p-100); }
+
+    .lg-33  { width: var(--p-33 ); }
+    .lg-66  { width: var(--p-66 ); }
+}
+
+/* Extra Large */ 
+@media (min-width: 1201px) and (max-width: 1400px)  {
+    .xl-1   { width: var(--p-1  ); }
+    .xl-2   { width: var(--p-2  ); }
+    .xl-3   { width: var(--p-3  ); }
+    .xl-4   { width: var(--p-4  ); }
+
+    .xl-5   { width: var(--p-5  ); }
+    .xl-10  { width: var(--p-10 ); } 
+    .xl-15  { width: var(--p-15 ); }
+    .xl-20  { width: var(--p-20 ); }
+    .xl-25  { width: var(--p-25 ); }
+    .xl-30  { width: var(--p-30 ); }
+    .xl-35  { width: var(--p-35 ); }
+    .xl-40  { width: var(--p-40 ); }
+    .xl-45  { width: var(--p-45 ); }
+    .xl-50  { width: var(--p-50 ); }
+    .xl-55  { width: var(--p-55 ); }
+    .xl-60  { width: var(--p-60 ); }
+    .xl-65  { width: var(--p-65 ); }
+    .xl-70  { width: var(--p-70 ); }
+    .xl-75  { width: var(--p-75 ); }
+    .xl-80  { width: var(--p-80 ); }
+    .xl-85  { width: var(--p-85 ); }
+    .xl-90  { width: var(--p-90 ); }
+    .xl-95  { width: var(--p-95 ); }
+    .xl-100 { width: var(--p-100); }
+
+    .xl-33  { width: var(--p-33 ); }
+    .xl-66  { width: var(--p-66 ); }
+}
+
+/* Double Extra Large */
+@media (min-width: 1401px) {
+    .xxl-1   { width: var(--p-1  ); }
+    .xxl-2   { width: var(--p-2  ); }
+    .xxl-3   { width: var(--p-3  ); }
+    .xxl-4   { width: var(--p-4  ); }
+
+    .xxl-5   { width: var(--p-5  ); }
+    .xxl-10  { width: var(--p-10 ); } 
+    .xxl-15  { width: var(--p-15 ); }
+    .xxl-20  { width: var(--p-20 ); }
+    .xxl-25  { width: var(--p-25 ); }
+    .xxl-30  { width: var(--p-30 ); }
+    .xxl-35  { width: var(--p-35 ); }
+    .xxl-40  { width: var(--p-40 ); }
+    .xxl-45  { width: var(--p-45 ); }
+    .xxl-50  { width: var(--p-50 ); }
+    .xxl-55  { width: var(--p-55 ); }
+    .xxl-60  { width: var(--p-60 ); }
+    .xxl-65  { width: var(--p-65 ); }
+    .xxl-70  { width: var(--p-70 ); }
+    .xxl-75  { width: var(--p-75 ); }
+    .xxl-80  { width: var(--p-80 ); }
+    .xxl-85  { width: var(--p-85 ); }
+    .xxl-90  { width: var(--p-90 ); }
+    .xxl-95  { width: var(--p-95 ); }
+
+    .xxl-100 { width: var(--p-100); }
+    .xxl-33  { width: var(--p-33 ); }
+    .xxl-66  { width: var(--p-66 ); }
+}
+
+
+
+
+
+/*=======================================================================================
+                              Width in Pixels 
+ =======================================================================================*/
+
+.px50  { width:  50px; }
+.px100 { width: 100px; }
+.px150 { width: 150px; }
+.px200 { width: 200px; }
+
+/*=======================================================================================
+                                   tp-Hide   
+ =======================================================================================*/
+
+.tp-Hide {
+    display: none !important;
+}
+
+@media (max-width: 576px) {
+    .xs0, .tp-Hide-xs {
+        display: none !important;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    .sm0, .tp-Hide-sm {
+        display: none !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .md0, .tp-Hide-md {
+        display: none !important;
+    }
+}
+
+@media (min-width: 993px) and (max-width: 1200px) {
+    .lg0, .tp-Hide-lg {
+        display: none !important;
+    }
+}
+
+@media (min-width: 1201px) and (max-width: 1400px) {
+    .xl0, .tp-Hide-xl {
+        display: none !important;
+    }
+}
+
+@media (min-width: 1401px) {
+    .xxl0, .tp-Hide-xxl {
+        display: none !important;
+    }
+}
+ 
+/*=======================================================================================
+                                   tp-Limiter   
+ =======================================================================================*/
+ 
+.tp-Limiter {
+    position: relative;
+    margin: 0 auto !important;
+    padding: 0 8px; 
+} 
+
+@media (max-width: 576px) {
+    .tp-Limiter { width: 100%; } 
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    .tp-Limiter { width: 100%; } 
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .tp-Limiter { width: 970px } 
+}
+ 
+@media (min-width: 993px) and (max-width: 1200px) {
+    .tp-Limiter { width: 1170px; } 
+}
+
+@media (min-width: 1201px) and (max-width: 1400px) {
+    .tp-Limiter { width: 1270px; } 
+}
+
+@media (min-width: 1401px) {
+    .tp-Limiter { width: 1470px; } 
+}
+
+
+
+
+
+
+
+ 
+/*=======================================================================================
+                                 Responsive Variables   
+ =======================================================================================*/
+ 
+
+@media (max-width: 576px) {
+    :root {
+        --Page-Padding: 0 2%;
+        --DialogBox-Width: 90vw;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    :root {
+        --Page-Padding: 0 3%;
+        --DialogBox-Width: 60vw;
+    } 
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    :root {
+        --Page-Padding: 0 3.5%;
+        --DialogBox-Width: 45vw;
+    } 
+}
+
+@media (min-width: 993px) and (max-width: 1200px) {
+    :root {
+        --Page-Padding: 0 5%;
+        --DialogBox-Width: 35vw;
+    } 
+}
+
+@media (min-width: 1201px) and (max-width: 1400px) {
+    :root {
+        --Page-Padding: 0 6.5%;
+        --DialogBox-Width: 35vw;
+    } 
+}
+
+@media (min-width: 1401px) {
+    :root {
+        --Page-Padding: 0 8%;
+        --DialogBox-Width: 35vw;
+    } 
+}
+ 
+
+/*=======================================================================================
+                                        Flex
+ =======================================================================================*/
+
+ .tp-FlexText {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;  
+    text-overflow: ellipsis;  
+    white-space: nowrap;
+}
+
+.tp-FlexFill {
+    position: relative;
+    flex-grow: 1; 
+} 
+
+/* may be used with a div when it is the single child of the body */
+.tp-BodyInterior {
+    position: relative; 
+    display: flex; 
+    flex-direction: column; 
+    min-height: 100%;
+}
+
+/*=======================================================================================
+                                   tp-Row and tp-Col
+ =======================================================================================*/
+ 
+/* a row that wraps its children */
+.tp-Row {
+    position: relative;
+    display: flex;    
+    flex-wrap: wrap;
+    row-gap: 4px;
+}
+
+/* children vertical alignment */  
+.tp-RowCenter {                 
+    align-items: center;
+}
+
+/* children vertical alignment */ 
+.tp-RowTop {                    
+    align-items: flex-start; 
+}
+
+/* a row that does NOT wrap its children */ 
+.tp-RowNoWrap {                 
+    position: relative;
+    display: flex;
+    margin: 0 -8px;  
+    flex-wrap: nowrap; 
+    align-items: center;   
+}
+ 
+.tp-Col {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    row-gap: 4px;
+}
+
+/*=======================================================================================
+                                tp-CtrlRow and tp-CheckBoxRow
+ =======================================================================================*/
+
+
+/*---------------------------------------------------------------------------------------
+// tp-CtrlRow - label text and control
+// --------------------------------------------------------------------------------------
+
+<div class="tp-Row tp-CtrlRow" id="control_row_Name">
+	<div class="tp-CText">
+		<label for="Name">TITLE GOES HERE</label>
+		<span class="tp-RequiredMark">*</span>
+	</div>
+	<div class="tp-Ctrl">
+		<input class="tp-TextBox" id="Name" name="Name" type="text" value="" data-setup="{ DataField:'UserName', .... } >
+	</div>
+</div>
+// --------------------------------------------------------------------------------------
+// tp-CheckBoxRow
+// --------------------------------------------------------------------------------------
+<div class="tp-Row tp-CheckBoxRow">
+	<label class="tp-CheckBox">
+		<span style="display: none;">*</span>
+		<span class="tp-Text">TEXT GOES HERE</span>
+		<input name="SAME_NAME" type="checkbox" value="1">
+		<span class="checkmark"></span> 
+	</label>
+    <input name="SAME_NAME" type="hidden" value="0">
+</div>
+---------------------------------------------------------------------------------------*/
+ 
+.tp-RequiredMark {
+    color: red;
+    font-weight: bolder;
+    padding: 0 3px;
+}
+
+.tp-CtrlRow input[type=text], 
+.tp-CtrlRow input[type=email], 
+.tp-CtrlRow input[type=password], 
+.tp-CtrlRow input[type=number], 
+.tp-CtrlRow input[type=date], 
+.tp-CtrlRow input[type=tel], 
+.tp-CtrlRow select {
+     height: 2.2em;
+}
+
+.tp-CtrlRow,
+.tp-CheckBoxRow {
+    position: relative;
+    display: flex; 
+    padding: 0 4px 0 0;
+}
+
+.tp-CtrlRow {
+    flex-wrap: wrap;
+    align-items: flex-start;    
+    gap: 2px;    
+    row-gap: 2px;
+} 
+
+/* the text container */ 
+.tp-CtrlRow > .tp-CText {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-grow: 1;      
+}
+
+/* the control container */ 
+.tp-CtrlRow > .tp-Ctrl {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* the actual control */ 
+.tp-CtrlRow > .tp-Ctrl > *:first-child {
+    width: 100%;
+} 
+
+/* grid control row */
+.tp-GridCtrlRow {
+    position: relative;
+    display: flex;
+    margin-top: 8px;
+    padding: 0 10px 0 15px
+}
+
+ 
+
+@media (min-width: 993px) {
+    .tp-CtrlRow {
+        flex-wrap: nowrap;
+    }
+    .tp-CtrlRow > .tp-CText {
+        justify-content: end;
+        width: 35%;
+    }
+
+    .tp-CtrlRow > .tp-Ctrl { 
+        width: 65%;
+    }
+}
+ 
+/*=======================================================================================
+                                        Miscs
+ =======================================================================================*/
+
+.tp-NoBrowserAppearance {
+    appearance: none;  
+}
+
+.tp-Bold {
+    font-weight: bold;
+}
+
+.tp-TextCenter {
+    text-align: center;
+}
+
+.tp-TextRight {
+    text-align: right;
+}
+
+input[type=number] {
+    text-align: right;
+}
+
+.tp-UnSelectable {
+    user-select: none;
+}
+
+.tp-Selectable {
+    user-select: text;
+} 
+
+.tp-Disabled {
+    pointer-events: none;
+} 
+
+.tp-CancelTransition {
+    transition: none !important;
+}
+
+.tp-Shadow {
+    box-shadow: 5px 5px 16px 0 rgba(0,0,0,0.25);
+}
+
+.tp-HasErrors {
+    border-color: var(--ErrorColor);
+}

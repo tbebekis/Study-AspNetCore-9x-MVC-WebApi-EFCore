@@ -1,50 +1,46 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@* Layout: This is the master layout, renders the _Layout.Page. Partials: _Layout.Head *@
+<!DOCTYPE html>
+<html lang="@Lib.Culture.Name">
 <head>
+    @PageBuilder.RenderPageTitle()
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MvcApp</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MvcApp.styles.css" asp-append-version="true" />
+    <meta name="author" content="Theo Bebekis, Greece">
+    @PageBuilder.RenderMetaKeywords()
+    @PageBuilder.RenderMetaDescription()
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    @* The following partials maybe used when Inmobi scripts or Google Tag Manager scripts are used. 
+    @await Html.PartialAsync("_Layout.Inmobi")
+    @await Html.PartialAsync("_Layout.Google")
+    *@
+    @* function used by PageBuilderService when a CSS or JS item defines a fall-back url, i.e. a local url when a cdn url fails *@
+    <script>
+        function CssOrScriptFallBack(el) {
+            if (el instanceof HTMLScriptElement || el instanceof HTMLLinkElement) {
+                let Url = el.getAttribute('data-fallback');
+                if (Url) {
+                    let attr = el instanceof HTMLScriptElement ? 'src' : 'href';
+                    el.setAttribute(attr, Url);
+                }
+            }
+        }
+    </script>
+
+    @* The _Layout.Head partial may be used by a theme to inject html markup into the <head> element, mainly css and js files *@
+    @await Html.PartialAsync("_Layout.Head")
+
+    @PageBuilder.RenderHeadCssFiles()
+    @PageBuilder.RenderHeadScriptFiles()
+    @PageBuilder.RenderHeadInlineScripts()
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MvcApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    @RenderBody()
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - MvcApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @PageBuilder.RenderFooterCssFiles()
+    @PageBuilder.RenderFooterScriptFiles()
+    @PageBuilder.RenderFooterInlineScripts()
+    @PageBuilder.RenderReadyScriptBlock()
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

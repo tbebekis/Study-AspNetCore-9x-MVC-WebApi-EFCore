@@ -94,8 +94,8 @@
             */
 
             R = R ?? GetHttpRequest();
-            return string.Equals(R.Query[HeaderNames.XRequestedWith], "XMLHttpRequest", StringComparison.Ordinal)
-                || string.Equals(R.Headers.XRequestedWith, "XMLHttpRequest", StringComparison.Ordinal);
+            return string.Equals(R.Query[HeaderNames.XRequestedWith], "XMLHttpRequest", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(R.Headers.XRequestedWith, "XMLHttpRequest", StringComparison.InvariantCultureIgnoreCase);
         }
         
         // ● Url

@@ -4,9 +4,60 @@
     /// <summary>
     /// Base MVC controller
     /// </summary>  
-    public class ControllerMvcBase : Controller
+    public class MvcBaseController : Controller
     {
         MvcUserContext fUserContext;
+
+        // ● serialize
+        /// <summary>
+        /// Serializes a specified instance.
+        /// </summary>
+        static public string Serialize(object Instance)
+        {
+            return StudyLib.Json.Serialize(Instance);
+        }
+        /// <summary>
+        /// Serializes a specified instance.
+        /// </summary>
+        static public string Serialize(object Instance, JsonSerializerOptions JsonOptions)
+        {
+            return StudyLib.Json.Serialize(Instance, JsonOptions);
+        }
+
+        /// <summary>
+        /// Serializes a specified instance.
+        /// </summary>
+        static public string Serialize(object Instance, string[] ExcludeProperties)
+        {
+            return StudyLib.Json.Serialize(Instance, ExcludeProperties);
+        }
+
+        // ● deserialize
+        /// <summary>
+        /// Deserializes (creates) an object of a specified type by deserializing a specified json text.
+        /// <para>If no options specified then it uses the <see cref="SerializerOptions"/> options</para> 
+        /// </summary>
+        static public T Deserialize<T>(string JsonText, JsonSerializerOptions JsonOptions = null)
+        {
+            return StudyLib.Json.Deserialize<T>(JsonText, JsonOptions);
+        }
+        /// <summary>
+        /// Deserializes (creates) an object of a specified type by deserializing a specified json text.
+        /// <para>If no options specified then it uses the <see cref="SerializerOptions"/> options</para> 
+        /// </summary>
+        static public object Deserialize(string JsonText, Type ReturnType, JsonSerializerOptions JsonOptions = null)
+        {
+            return StudyLib.Json.Deserialize(JsonText, ReturnType, JsonOptions);
+        }
+
+        /// <summary>
+        /// Loads an object's properties from a specified json text.
+        /// <para>If no options specified then it uses the <see cref="SerializerOptions"/> options</para> 
+        /// </summary>
+        static public void PopulateObject(object Instance, string JsonText, JsonSerializerOptions JsonOptions = null)
+        {
+            StudyLib.Json.PopulateObject(Instance, JsonText, JsonOptions);
+        }
 
         // ●  overridables
         /// <summary>
@@ -64,7 +115,7 @@
         /// <summary>
         /// Constructor
         /// </summary>
-        public ControllerMvcBase()
+        public MvcBaseController()
         {
         }
 

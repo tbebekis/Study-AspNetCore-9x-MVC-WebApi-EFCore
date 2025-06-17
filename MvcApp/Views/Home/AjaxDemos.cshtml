@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Ajax Demos";
+}
+
+<style>
+    ul {
+        list-style-type: none;  
+    }
+    li {
+        padding-bottom: 2px;
+    }
+    ul li button {
+        width: 280px;
+        min-width: 280px;
+    }
+
+    .demos {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .results {
+        position: relative;
+        display: flex;
+        height: 100%;
+    }
+
+    .results > * {
+        width: 100%;
+    }
+</style>
+
+<script src="~/js/ajax-tests.js"></script>
+
+<div class="page demos">
+    <h2>Ajax Demos</h2>
+    <div><a href="/">Back to Home</a></div>
+    <ul>
+        <li><button onclick="PlainAjaxCall()">Plain Ajax Call with a Model</button></li>
+        <li><button onclick="Ajax_PostModelAsync()">tp.Ajax.PostModelAsync()</button></li>
+        <li><button onclick="AjaxRequest_OperationName()">tp.AjaxRequest.Execute() with just OperationName</button></li>
+        <li><button onclick="AjaxRequest_Model()">tp.AjaxRequest.Execute() with a Model</button></li>
+        <li><button onclick="AjaxRequest_View()">tp.AjaxRequest.Execute() requesting a View</button></li>
+    </ul>
+
+    <div id="ajax-results" class="results">
+    </div>
+</div>
+
+
+
+ 

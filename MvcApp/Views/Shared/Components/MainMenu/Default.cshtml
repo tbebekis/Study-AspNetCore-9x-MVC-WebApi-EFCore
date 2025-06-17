@@ -1,0 +1,75 @@
+﻿@model MenuModel
+ 
+@{
+    // NOTE: this is a 2-level menu, i.e. a menu-bar and drop-downs
+    void RenderMenuItem(MenuModel MenuItem)
+    {
+        string Url;
+        string Title;
+        string IconClass;
+
+        Url = !string.IsNullOrWhiteSpace(MenuItem.Url) ? MenuItem.Url : "#";
+        Title = MenuItem.Text;
+        IconClass = MenuItem.IconClass;
+
+        if (MenuItem.IsRoot)
+        {
+            <div class="menu">
+            @{
+                foreach (var Item in MenuItem)
+                {
+                    RenderMenuItem(Item as MenuModel);
+                }
+            }
+            </div>            
+        }
+        else if (MenuItem.Count == 0)
+        {
+            if (MenuItem.IsSeparator)
+            {
+                <a class="separator" href="#"></a>
+            }
+            else if (!string.IsNullOrWhiteSpace(IconClass))
+            {
+                <a href="@Url"><i class="@IconClass"></i>&nbsp;&nbsp;@Title</a>
+            }
+            else
+            {
+                <a href="@Url">@Title</a>
+            }
+        }
+        else 
+        {
+            <div class="list-container">
+                <a href="#" class="button-down">@Title&nbsp;&nbsp;<i class="fa fa-caret-down"></i></a>
+                <div class="list">
+                @foreach (var Item in MenuItem)
+                {
+                    RenderMenuItem(Item as MenuModel);
+                }
+                </div>
+            </div>
+        }
+    }
+
+ 
+    RenderMenuItem(Model); 
+}
+
+@*
+<div class="menu">
+    <a href="#home">Home</a>
+    <a href="#demos">Demos</a>
+    <div class="list-container">
+        <button class="button-down">Products&nbsp;&nbsp;<i class="fa fa-caret-down"></i></button>
+        <div class="list">
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a class="separator" href="#"></a>
+            <a href="#">Link 4</a>
+        </div>
+    </div>
+</div> 
+*@
+
+ 

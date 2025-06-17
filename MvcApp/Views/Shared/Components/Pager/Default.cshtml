@@ -1,0 +1,54 @@
+﻿@model PagingInfo
+@{
+    string PlusClass;
+
+    // Example call
+    // @await Component.InvokeAsync("Pager", new { Info = MyPagingInfo })
+}
+
+<div class="pager-container">
+    <div class="tp-FlexFill tp-Hide-xs"></div>
+    <div class="pager">
+
+        @* <- *@
+        @if (Model.HasPreviousPage)
+        {
+            <button class="btn-prev" onclick="site.MergeToQuery('pagenumber', @Model.PagePrevText);"><i class="fa fa-long-arrow-left"></i></button>
+        }
+        else
+        {
+            <button class="btn-prev tp-Disabled"><i class="fa fa-long-arrow-left"></i></button>
+        }
+
+        @foreach (var Button in Model.Buttons)
+        {
+            if (Button.Mode == PagerButtonMode.Page)
+            {
+                PlusClass = Button.IsCurrentPage ? "current-page" : "";
+
+                <button class="btn-page-number @PlusClass" onclick="site.MergeToQuery('pagenumber', @Button.PageNumber);">@Button.DisplayText</button>
+            }
+            else if (Button.Mode == PagerButtonMode.Empty)
+            {
+                <button class="btn-page-number">&nbsp;&nbsp;</button>
+            }
+            else if (Button.Mode == PagerButtonMode.More)
+            {
+                <button class="btn-page-number">...</button>
+            }
+        }
+
+
+        @* -> *@
+        @if (Model.HasNextPage)
+        {
+            <button class="btn-next" onclick="site.MergeToQuery('pagenumber', @Model.PageNextText);"><i class="fa fa-long-arrow-right"></i></button>
+        }
+        else
+        {
+            <button class="btn-next tp-Disabled"><i class="fa fa-long-arrow-right"></i></button>
+        }
+
+    </div>
+
+</div>

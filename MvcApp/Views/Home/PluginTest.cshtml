@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Plugin Test";
+}
+
+
+<div class="page">
+    <h2>Plugin Test Views</h2>
+    <div><a href="/">Back to Home</a></div>
+    <ul>
+        <li><a href='@Url.RouteUrl("Plugin.Test.NoLayout")'>No Layout</a></li>
+        <li><a href='@Url.RouteUrl("Plugin.Test.OwnLayout")'>Own Layout</a></li>
+        <li><a href='/plugin-test-host-layout'>Host Layout</a></li>
+    </ul>
+</div>

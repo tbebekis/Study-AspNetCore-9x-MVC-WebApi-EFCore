@@ -80,6 +80,9 @@ global using AutoMapper;
 global using StudyLib;
 global using StudyLib.Entities;
 
+global using MvcApp.Library;
+global using MvcApp.Models;
+
 
 
 

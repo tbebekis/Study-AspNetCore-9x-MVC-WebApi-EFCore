@@ -1,8 +1,6 @@
-﻿
-
-namespace Plugin.Test.Controllers
+﻿namespace Plugin.Test.Controllers
 {
-    public class TestController: ControllerMvcBase
+    public class TestController: MvcBaseController
     {
         [HttpGet("/plugin-test-no-layout", Name = "Plugin.Test.NoLayout"), AllowAnonymous]
         public IActionResult Index()

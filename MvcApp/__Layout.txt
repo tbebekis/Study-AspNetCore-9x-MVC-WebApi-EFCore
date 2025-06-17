@@ -1,0 +1,8 @@
+﻿_Layout
+    _Layout.Head        (partial)
+    _Layout.Page
+        _Layout.Header  (partial)
+        Content View    
+        _Layout.Footer  (partial)
+        _Layout.Common  (partial)
+        _MessageList    (partial)

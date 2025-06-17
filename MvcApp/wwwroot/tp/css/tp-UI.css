@@ -1,0 +1,103 @@
+﻿/*---------------------------------------------------------------------------------------
+text box
+---------------------------------------------------------------------------------------*/
+.tp-TextBox {
+    position: relative;
+}
+
+/*---------------------------------------------------------------------------------------
+ textarea - tp-Memo
+---------------------------------------------------------------------------------------*/
+
+.tp-Memo {
+    position: relative;
+}
+
+
+/*---------------------------------------------------------------------------------------
+  check-box - a label element sourrounding a input[type=checkbox] element
+ ----------------------------------------------------------------------------------------
+<div class="tp-Row tp-CheckBoxRow">
+	<label class="tp-CheckBox">
+		<span style="display: none;">*</span>
+		<span class="tp-Text">TEXT GOES HERE</span>
+		<input name="SAME_NAME" type="checkbox" value="1">
+		<span class="checkmark"></span> 
+	</label>
+    <input name="SAME_NAME" type="hidden" value="0">
+</div>
+---------------------------------------------------------------------------------------*/
+ 
+/* check-box - it is a label */
+.tp-CheckBox {
+	display: block;	
+    cursor: pointer;
+    /* min-height: 32px;  to fit the check-box */
+}
+ 
+ /*   checkbox */
+ .tp-CheckBox [type=checkbox] {
+   position: relative;    
+ } 
+
+.tp-CheckBox > .tp-Text {
+	padding: 0 4px;
+    user-select: text; 
+ }
+
+ /* custom checkbox */
+ .tp-CheckBox .checkmark {
+   position: absolute;
+   top: 0;
+   left: 0;
+   height: 25px;
+   width: 25px;
+   border-radius: 50%; /*  rounded */
+   border: 1px solid gray;
+   margin: 1px 0 0 0;
+ } 
+ 
+ /* checkmark:after */
+ .tp-CheckBox .checkmark:after {
+   content: "";
+   position: absolute;
+   display: none;
+   left: 9px;
+   top: 5px;
+   width: 5px;
+   height: 10px;
+   border-style: solid;
+   border-color: darkslategrey;
+   border-width: 0 3px 3px 0;
+   transform: rotate(45deg);  
+ }
+ 
+ /* display checkmark when checked  */
+ .tp-CheckBox input:checked ~ .checkmark:after {
+   display: block;
+ }
+ 
+/* background color on hover */
+.tp-CheckBox:hover input ~ .checkmark {
+    background-color: var(--GrayLight);
+}
+  
+/* background color on checked */
+.tp-CheckBox input:checked ~ .checkmark {
+    background-color: var(--Yellow);
+    border: 2px solid var(--Yellow);
+}
+
+ /* checkmark:after */
+ .tp-CheckBox .checkmark:after { 
+   border-color: var(--White); 
+   transform: rotate(50deg);  
+ }
+
+.tp-TextTop .tp-CtrlRow,
+.tp-TextTop .tp-CheckBoxRow {
+    padding-left: 0;
+    padding-right: 0;
+} 
+
+

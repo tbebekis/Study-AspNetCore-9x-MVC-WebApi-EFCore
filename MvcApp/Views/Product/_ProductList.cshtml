@@ -1,0 +1,26 @@
+﻿@model ProductListModel
+
+@{
+    var Products = Model.Products;
+}
+
+<table class="data-list">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => Products[0].Name)</th>
+            <th>@Html.DisplayNameFor(model => Products[0].Price)</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Item in Products)
+        {
+            <tr>
+                <td>@Item.Name</td>
+                <td>@Item.Price</td>
+                <td class="actions">@Html.ActionLink("View", "Details", new { Id = Item.Id }) @Html.ActionLink("Edit", "Edit", new { Id = Item.Id }) @Html.ActionLink("Delete", "Delete", new { Id = Item.Id }) </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

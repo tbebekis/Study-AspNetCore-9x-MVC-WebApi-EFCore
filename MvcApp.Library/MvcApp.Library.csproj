@@ -19,8 +19,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
       <Folder Include="Attributes\" />
+      <Folder Include="Models\" />
+      <Folder Include="Paging\" />
       <Folder Include="TagHelpers\" />
     </ItemGroup>
 

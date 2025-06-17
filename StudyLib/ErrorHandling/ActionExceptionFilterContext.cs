@@ -15,6 +15,28 @@ namespace StudyLib
 
         string fRequestId;
 
+        // ● Ajax
+        /// <summary>
+        /// Returns true when the request is an Ajax request
+        /// </summary>
+        static public bool IsAjaxRequest(HttpRequest R)
+        {
+            /*
+            X-Requested-With -> XMLHttpRequest is invalid in cross-domain call
+           
+            Only the following headers are allowed across origins:
+                Accept
+                Accept-Language
+                Content-Language
+                Last-Event-ID
+                Content-Type
+            */
+
+
+            return string.Equals(R.Query[HeaderNames.XRequestedWith], "XMLHttpRequest", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(R.Headers.XRequestedWith, "XMLHttpRequest", StringComparison.InvariantCultureIgnoreCase);
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -22,19 +44,43 @@ namespace StudyLib
         {
             this.ExceptionContext = ExceptionContext;
             this.ModelMetadataProvider = ModelMetadataProvider;
-            this.IsDevelopment = IsDevelopment;
+            this.InDevMode = IsDevelopment;
+            this.Exception = ExceptionContext.Exception;
+
+            IsWebApi = ControllerTypeInfo.IsSubclassOf(BaseControllerType) && !ControllerTypeInfo.IsSubclassOf(ControllerType);
+            if (!IsWebApi)
+            {
+                IsMvc = ControllerTypeInfo.IsSubclassOf(BaseControllerType) && ControllerTypeInfo.IsSubclassOf(ControllerType);
+                if (IsMvc)
+                {
+                    IsAjax = IsAjaxRequest(ExceptionContext.HttpContext.Request);
+                    if (IsAjax)
+                        IsMvc = false;
+                }
+            } 
         }
 
         /* properties */
         /// <summary>
-        /// True means the exception thrown in an action of a Web Api controller, else in an Mvc controller.
+        /// True means the exception thrown in an action of a Web Api controller.
         /// </summary>
-        public bool IsWebApi => ControllerTypeInfo.IsSubclassOf(BaseControllerType) && !ControllerTypeInfo.IsSubclassOf(ControllerType);
-        public bool IsMvc => ControllerTypeInfo.IsSubclassOf(BaseControllerType) && ControllerTypeInfo.IsSubclassOf(ControllerType);
+        public bool IsWebApi { get; }
+        /// <summary>
+        /// True means the exception thrown in an action of a MVC controller.
+        /// </summary>
+        public bool IsMvc { get; }
+        /// <summary>
+        /// True means the exception thrown in an action of a MVC controller controller with "XMLHttpRequest" in request headers.
+        /// </summary>
+        public bool IsAjax { get; }
         /// <summary>
         /// The exception context
         /// </summary>
         public ExceptionContext ExceptionContext { get; }
+        /// <summary>
+        /// The exception
+        /// </summary>
+        public Exception Exception { get; }
         /// <summary>
         /// The action descriptor
         /// </summary>
@@ -67,6 +113,6 @@ namespace StudyLib
         /// <summary>
         /// True when in development environment
         /// </summary>
-        public bool IsDevelopment { get; }
+        public bool InDevMode { get; }
     }
 }

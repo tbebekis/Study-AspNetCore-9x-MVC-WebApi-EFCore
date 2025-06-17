@@ -1,0 +1,49 @@
+﻿@{
+    List<string> ErrorList = Session.PopErrorList();
+    List<string> SuccessList = Session.PopSuccessList();
+}
+<script>
+    tp.PageErrorList = [];
+    tp.PageSuccessList = [];
+
+    @{
+        if (ErrorList != null)
+        {
+            foreach (string S in ErrorList)
+            {
+                <text>tp.PageErrorList.push('@S');
+                </text>
+            }
+        }
+
+        if (SuccessList != null)
+        {
+            foreach (string S in SuccessList)
+            {
+                <text>tp.PageSuccessList.push('@S');
+                </text>
+            }
+        }
+    }
+
+    tp.Ready(() => {
+        let i, ln;
+        if (tp.PageErrorList.length > 0) {
+            for (i = 0, ln = tp.PageErrorList.length; i < ln; i++)  {
+                // TODO: display the error message
+            }                
+        }
+
+        if (tp.PageSuccessList.length > 0) {
+            for (i = 0, ln = tp.PageSuccessList.length; i < ln; i++) {
+                // TODO: display the success message
+            }                
+        }
+    });
+
+
+</script>
+
+
+
+

@@ -12,6 +12,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiApp.Library", "WebApiApp.Library\WebApiApp.Library.csproj", "{1173B2A0-4FE3-4850-9EC9-A85B0AC2E5A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcApp", "MvcApp\MvcApp.csproj", "{5E92A658-B105-4757-81E3-4320473A8063}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D2A6A49E-E4AC-6384-1269-7BB61B3B6346} = {D2A6A49E-E4AC-6384-1269-7BB61B3B6346}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcApp.Library", "MvcApp.Library\MvcApp.Library.csproj", "{D5C3F88B-0459-4CDB-A538-3262F86DDAAC}"
 EndProject

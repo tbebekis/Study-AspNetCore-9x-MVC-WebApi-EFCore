@@ -17,17 +17,16 @@
 
             if (ClientResult.Item == null || !ClientResult.Succeeded)
             {
-                Result.CopyErrors(ClientResult);
-                return Result;
+                Result.CopyErrors(ClientResult);                
             }
-
-            if (!Hasher.Validate(PlainTextSecret, ClientResult.Item.Password, ClientResult.Item.PasswordSalt))
+            else if (!Hasher.Validate(PlainTextSecret, ClientResult.Item.Password, ClientResult.Item.PasswordSalt))
             {
-                Result.ErrorResult(ApiStatusCodes.InvalidCredentials);
-                return Result;
+                Result.ErrorResult(ApiStatusCodes.InvalidCredentials);                
             }
-
-            Result.Item = ClientResult.Item;
+            else
+            {
+                Result.Item = ClientResult.Item;
+            }
 
             return Result;
         }

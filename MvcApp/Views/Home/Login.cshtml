@@ -1,0 +1,45 @@
+﻿@model CredentialsModel
+
+@{
+    //Layout = "Layout";
+
+    var Settings = Lib.Settings;  
+
+    string ReturnUrl = Lib.GetQueryValue("ReturnUrl", "");
+    if (string.IsNullOrWhiteSpace(ReturnUrl))
+        ReturnUrl = ViewData.ContainsKey("ReturnUrl") ? ViewData["ReturnUrl"].ToString() : "";
+}
+
+<link href="~/css/login.css" rel="stylesheet" />
+
+<div class="page login-page">
+
+    <div class="page-caption">
+        <div class="page-title">@L("Login")</div>
+    </div>
+
+    <div class="login-form-container">
+        <form class="login-form " asp-controller="Home" asp-action="Login" asp-route-ReturnUrl="@ReturnUrl" method="post">
+            <div class="tp-Row">
+                <div class="tp-Col field-group">
+                    <tp-input asp-for="UserName" />
+                    <tp-input asp-for="Password" />
+                    <tp-input asp-for="RememberMe" />
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button class="btn-submit btn-login" type="submit">@L("Login")</button>
+            </div>
+        </form>
+    </div>
+
+ 
+
+
+</div>
+
+<script>
+     tp.Ready(() => {
+        tp.ShowMessage('Use tp.Ready() to execute Javascript code after the document is ready.');
+    });
+</script>

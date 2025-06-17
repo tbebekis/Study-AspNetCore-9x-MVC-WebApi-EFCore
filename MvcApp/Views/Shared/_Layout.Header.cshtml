@@ -1,0 +1,31 @@
+﻿<header>
+    <div class="header-zone zone-items slim-zone">
+        @await Component.InvokeAsync("SearchBox")
+ 
+        <div class="tp-FlexFill"></div> @* fill *@
+
+        @if (Lib.Settings.UseAuthentication)
+        {            
+            if (!Lib.IsAuthenticated)
+            {
+                <a class="login" href="/login">
+                    <span class="tp-Hide-sm tp-Hide-xs">@L("Login")</span>
+                </a>
+            }
+            else
+            {
+                <a class="logout" href="/logout">
+                    <span class="tp-Hide-sm tp-Hide-xs">@L("Logout")</span>
+                </a>
+            }            
+        }
+            
+        @await Component.InvokeAsync("LanguageSelector")
+    </div>
+    <div class="header-zone header-zone-border">
+        @await Component.InvokeAsync("MainMenu")
+    </div> 
+
+</header>
+
+

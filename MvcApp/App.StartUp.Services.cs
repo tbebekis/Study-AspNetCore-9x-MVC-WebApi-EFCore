@@ -2,6 +2,33 @@
 {
     static public partial class App
     {
+        static void GlobalErrorHandlerMvc(ActionExceptionFilterContext Context)
+        {
+            ErrorViewModel Model = new ErrorViewModel();
+            Model.ErrorMessage = Context.InDevMode?  Context.Exception.GetText(): Context.Exception.Message;
+            Model.RequestId = Context.RequestId;
+
+            /* SEE: https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#exception-filters */
+            var Result = new ViewResult();
+            Result.ViewName = "Error";
+            Result.ViewData = new ViewDataDictionary(Context.ModelMetadataProvider, Context.ExceptionContext.ModelState);
+            Result.ViewData.Model = Model;
+            Result.ViewData.Add("Exception", Context.ExceptionContext.Exception);
+            Result.ViewData.Add("RequestId", Context.RequestId);
+            Context.ExceptionContext.Result = Result;
+        }
+        static void GlobalErrorHandlerAjax(ActionExceptionFilterContext Context)
+        {
+            DataResult Result = new();
+            Result.ExceptionResult(Context.ExceptionContext.Exception);
+
+            // NO, we do NOT want an invalid HTTP StatusCode. It is a valid HTTP Response.
+            // We just have an action result with errors, so any error should be recorded by our HttpActionResult and delivered to the client.
+            // context.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError; 
+            Context.ExceptionContext.HttpContext.Response.ContentType = "application/json";
+            Context.ExceptionContext.Result = new JsonResult(Result);
+        }
+
         static void SetupJsonSerializerOptions(JsonSerializerOptions JsonOptions)
         {
             Json.SetupJsonOptions(
@@ -51,6 +78,8 @@
             // ● Authentication (Cookie) 
             if (Lib.Settings.UseAuthentication)
             {
+                builder.Services.AddScoped<UserCookieAuthEvents>();
+
                 AuthenticationBuilder AuthBuilder = builder.Services.AddAuthentication(options => {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultAuthenticateScheme = options.DefaultScheme;
@@ -75,10 +104,7 @@
                     options.Cookie.SameSite = Lib.Settings.UserCookie.SameSite;
                     options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
                 });
-
-                // TODO: check if this is needed
-                //builder.Services.AddScoped<UserCookieAuthEvents>();
-
+ 
                 //● authorization
                 builder.Services.AddAuthorization(options =>
                 {
@@ -124,10 +150,11 @@
             }
 
             // ● MVC
-            IMvcBuilder MvcBuilder = builder.Services.AddControllersWithViews(options => {
-                options.Filters.Add<ActionExceptionFilter>();
+            IMvcBuilder MvcBuilder = builder.Services.AddControllersWithViews(options => {                
                 options.ModelBinderProviders.Insert(0, new ModelBinderProvider());
-                
+                options.Filters.Add<ActionExceptionFilter>();
+                ActionExceptionFilter.MvcHandlerFunc = GlobalErrorHandlerMvc;
+                ActionExceptionFilter.AjaxHandlerFunc = GlobalErrorHandlerAjax;
             });
             MvcBuilder.AddJsonOptions(options => SetupJsonSerializerOptions(options.JsonSerializerOptions));
             builder.Services.ConfigureHttpJsonOptions(options => SetupJsonSerializerOptions(options.SerializerOptions));

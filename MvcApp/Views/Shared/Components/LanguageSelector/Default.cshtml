@@ -1,0 +1,21 @@
+﻿@* LanguageSelector component *@
+@model LanguageSelectorModel
+
+ 
+
+@{
+    string ReturnUrl = Lib.GetRelativeRawUrlEncoded(this.Context.Request);
+
+    List<SelectListItem> Languages = new List<SelectListItem>();
+    SelectListItem Item;
+    foreach (var Culture in Model.Languages)
+    {
+        Item = new SelectListItem();
+        Item.Text = Culture.TwoLetterISOLanguageName.ToUpper();
+        Item.Value = Url.RouteUrl("SetLanguage", new { CultureCode = Culture.Name, ReturnUrl = ReturnUrl });
+        Item.Selected = Culture.TwoLetterISOLanguageName.ToUpper() == Model.SelectedLanguage;
+        Languages.Add(Item);
+    }
+}
+
+<select class="language-selector" asp-items="@Languages" onchange="window.location.href = this.value;"></select>

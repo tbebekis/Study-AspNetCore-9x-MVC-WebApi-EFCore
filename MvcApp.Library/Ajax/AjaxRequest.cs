@@ -8,7 +8,7 @@
     /// <para>A requester may optionally set the <see cref="CommandId"/> and/or <see cref="CommandName"/> properties. </para>
     /// <para></para>
     /// <para>This class serves a registry for <see cref="IAjaxRequestHandler"/> objects.</para>
-    /// <para>A developer may choose instead of using <see cref="AjaxRequest"/> handler methods in the <see cref="ControllerMvcAjax"/> ajax controller, 
+    /// <para>A developer may choose instead of using <see cref="AjaxRequest"/> handler methods in the <see cref="MvcBaseControllerAjax"/> ajax controller, 
     /// to implement his own <see cref="IAjaxRequestHandler"/> objects as request handlers
     /// and have the </para>
     /// <para></para>
@@ -127,7 +127,7 @@
 
         /// <summary>
         /// The <see cref="IViewToStringConverter"/> to use when processing a Ui request by converting a razor view to HTML.
-        /// <para>The <see cref="ControllerMvcAjax"/> class provides a default implementation, and assigns itself to this property.</para>
+        /// <para>The <see cref="MvcBaseControllerAjax"/> class provides a default implementation, and assigns itself to this property.</para>
         /// </summary>
         [JsonIgnore]
         public IViewToStringConverter ViewToStringConverter { get; set; }

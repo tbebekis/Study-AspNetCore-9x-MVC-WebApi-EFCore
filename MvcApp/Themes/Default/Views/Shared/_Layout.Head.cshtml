@@ -1,0 +1,39 @@
+﻿@*
+    This file should be in Views/Shared folder as a fall-back for themes that do not provide a _Layout.Head.cshtml partial
+    NOTE: The _Layout.Head partial may be used by a theme to inject html markup into the <head> element
+*@
+@{
+    /*
+    <link href="~/tp/css/tp-Globals.css" rel="stylesheet" />
+    <link href="~/tp/css/tp.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+
+    <script src="~/tp/js/tp.js"></script>
+    <script src="~/tp/js/tp-Ajax.js"></script>
+
+    <link href="~/fa/css/all.css" rel="stylesheet" />
+    */
+    //PageBuilder.AddCssFileToHead("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+    //PageBuilder.AddCssFileToHead("~/fa/css/fontawesome.min.css");
+    //PageBuilder.AddCssFileToHead("~/fa/css/brands.min.css");
+    PageBuilder.AddCssFileToHead("~/fa/css/all.css");
+    PageBuilder.AddCssFileToHead("~/tp/css/tp-Globals.css");
+    PageBuilder.AddCssFileToHead("~/tp/css/tp.css");
+    PageBuilder.AddCssFileToHead("~/css/site.css");
+
+    PageBuilder.AddScriptFileToHead("~/tp/js/tp.js");
+    PageBuilder.AddScriptFileToHead("~/tp/js/tp-Ajax.js");
+
+    PageBuilder.AddScriptFileToHead("~/js/site.js");
+}
+@{
+    string ThemesFolder = ViewLocationExpander.ThemesFolder;
+    string Theme = ViewLocationExpander.Theme;
+
+    // NOTE: The Page.Head partial may be used by a theme to inject html markup into the <head> element
+    PageBuilder.AddCssFileToHead($"~/{ThemesFolder}/{Theme}/Content/css/theme.css");
+
+    PageBuilder.AddScriptFileToHead($"~/{ThemesFolder}/{Theme}/Content/js/theme.js");
+    PageBuilder.AddScriptFileToHead($"~/{ThemesFolder}/{Theme}/Content/js/theme-ui.js");
+}
+ 

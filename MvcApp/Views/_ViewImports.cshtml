@@ -1,3 +1,13 @@
-﻿@using MvcApp
+﻿@inherits MvcApp.Library.ViewBase<TModel>
+
+@using StudyLib
+@using StudyLib.Entities
+
+@using MvcApp
 @using MvcApp.Models
+@using MvcApp.Library
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, MvcApp.Library
+
+ 
