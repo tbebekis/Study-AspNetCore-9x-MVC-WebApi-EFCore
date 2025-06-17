@@ -52,7 +52,7 @@
         /// </summary>
         public void Set<T>(string Key, T Value)
         {
-            Set(Key, Value, DefaultEvictionTimeoutMinutes);
+            Set(Key, Value, Caches.DefaultEvictionTimeoutMinutes);
         }
         /// <summary>
         /// Sets an entry under a specified key. Creates the entry if not already exists.
@@ -96,12 +96,25 @@
             if (ContainsKey(Key))
                 Cache.Remove(Key);
         }
- 
-        // ● properties 
+
         /// <summary>
-        /// The default eviction timeout of an entry from the cache, in minutes. 
-        /// <para>Defaults to 0 which means "use the timeouts of the internal implementation".</para>
+        /// Returns a value found under a specified key.
+        /// <para>If the key does not exist, it calls the specified loader call-back function </para>
+        /// <para>The loader function should be defined as <c>Task&lt;CacheLoaderResult&lt;T&gt;&gt; LoaderFunc&lt;T&gt;().</c></para>
+        /// <para>The loader function returns a <see cref="CacheLoaderResult&lt;T&gt;"/> with two properties: the eviction timeout and the result object.</para>
+        /// <para>NOTE: Key is case sensitive.</para>
         /// </summary>
-        public int DefaultEvictionTimeoutMinutes { get; set; }  
+        public async Task<T> Get<T>(string Key, Func<Task<CacheLoaderResult<T>>> LoaderFunc)
+        {
+            T Value;
+            if (TryGetValue(Key, out Value))
+                return Value;
+
+            CacheLoaderResult<T> Result = await LoaderFunc();
+            Set(Key, Result.Value, Result.TimeoutMinutes);
+            return Result.Value;
+        }
+
+
     }
 }

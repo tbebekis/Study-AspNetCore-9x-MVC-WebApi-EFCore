@@ -31,7 +31,7 @@
 
             CredentialsModel Model = new CredentialsModel();
  
-            throw new Exception("Test error message"); // for testing error page
+            // throw new Exception("Test error message"); // for testing error page
 
             return View("Login", Model);
         }

@@ -1,31 +1,34 @@
 ﻿namespace MvcApp.Controllers
 {
-    /*
+ 
+    //*
+
     [Route("product")]
     public class ProductController : MvcAppController
     {
+        ProductService Service = new();
 
         [Permission("Product.View")]
         [HttpGet("search", Name = "Product.Search")]
-        public ActionResult Search(string Term = "", string CategoryId = "", bool IncludeSubCategories = false)
+        public async Task<ActionResult> Search(string Term = "", string CategoryId = "", bool IncludeSubCategories = false)
         {
             ProductListFilter Filter = new ();
             Filter.FullProductInfo = true;
             Filter.Term = Term;
-            Filter.CategoryId = CategoryId;                         // "376"; // CategoryId;
-            Filter.IncludeSubCategories = IncludeSubCategories;     // true;  // IncludeSubCategories;
+            Filter.CategoryId = CategoryId;                          
+            Filter.IncludeSubCategories = IncludeSubCategories;     // false - NOT USED here
 
             // get the data
-            ListDataResult<Product> ListResult = DataStore.GetProducts(Filter);
+            ListResultPaged<Product> ListResult = await Service.GetProductsPagedAsync(Filter);
 
             if (ListResult.Succeeded)
             {
                 // map entities to models
-                List<ProductModel> ModelList = WLib.ObjectMapper.Map<List<ProductModel>>(ListResult.List);
+                List<ProductModel> ModelList = Lib.ObjectMapper.Map<List<ProductModel>>(ListResult.List);
 
                 // create the model
                 ProductListModel ListModel = new();
-                ListModel.PagingInfo = new PagingInfo(ListResult.TotalItems);
+                ListModel.PagingInfo = new PagingInfo(ListResult.Paging.TotalItems);
                 ListModel.Products = ModelList;
 
                 return View(ListModel);
@@ -37,15 +40,15 @@
  
         [Permission("Product.View")]
         [HttpGet("list", Name = "Product.List")]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             // get the data
-            ListDataResult<Product> ListResult = DataStore.GetAllProducts();
+            ListResult<Product> ListResult = await Service.GetAllProducts();
 
             if (ListResult.Succeeded)
             {
                 // map entities to models
-                List<ProductModel> ModelList = WLib.ObjectMapper.Map<List<ProductModel>>(ListResult.List);
+                List<ProductModel> ModelList = Lib.ObjectMapper.Map<List<ProductModel>>(ListResult.List);
 
                 // create the model
                 ProductListModel ListModel = new();
@@ -60,22 +63,22 @@
 
         [Permission("Product.View")]
         [HttpGet("paging")]
-        public ActionResult Paging()
+        public async Task<ActionResult> Paging()
         {
             int PageIndex = PagingInfo.GetQueryStringPageIndex();
             int PageSize = PagingInfo.GetQueryStringPageSize();
 
             // get the data
-            ListDataResult<Product> ListResult = DataStore.GetAllProductsWithPaging(PageIndex, PageSize);
+            ListResultPaged<Product> ListResult = await Service.GetAllProductsWithPaging(PageIndex, PageSize);
 
             if (ListResult.Succeeded)
             {
                 // map entities to models
-                List<ProductModel> ModelList = WLib.ObjectMapper.Map<List<ProductModel>>(ListResult.List);
+                List<ProductModel> ModelList = Lib.ObjectMapper.Map<List<ProductModel>>(ListResult.List);
 
                 // create the model
                 ProductListModel ListModel = new();
-                ListModel.PagingInfo = new PagingInfo(ListResult.TotalItems);
+                ListModel.PagingInfo = new PagingInfo(ListResult.Paging.TotalItems);
                 ListModel.Products = ModelList;
 
                 return View(ListModel);
@@ -160,6 +163,10 @@
                 return View();
             }
         }
+    
+        
     }
-    */
+
+
+    // */
 }

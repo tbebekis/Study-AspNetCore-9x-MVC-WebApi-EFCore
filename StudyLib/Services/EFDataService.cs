@@ -1,4 +1,6 @@
-﻿namespace StudyLib
+﻿using System.Collections.Generic;
+
+namespace StudyLib
 {
 
     /// <summary>
@@ -321,13 +323,17 @@
 
                 using (var DataContext = GetDataContext())
                 {
-                    Result.List = await GetListPagedAsync(DataContext, Paging, OrderByFunc, IncludeFuncs);
-                    if (Result.List == null || Result.List.Count == 0)
+                    List<T> List = await GetListPagedAsync(DataContext, Paging, OrderByFunc, IncludeFuncs);
+                    if (List == null || List.Count == 0)
+                    {
                         Result.NoDataResult();
+                    }
+                    else
+                    {
+                        Result.SetFrom(Paging, List);
+                    }
 
-                    Result.TotalItems = Paging.TotalItems;
-                    Result.PageIndex = Paging.PageIndex;
-                    Result.PageSize = Paging.PageSize;
+ 
                 }
             }
             catch (Exception ex)
@@ -353,13 +359,15 @@
 
                 using (var DataContext = GetDataContext())
                 {
-                    Result.List = await GetListWithFilterPagedAsync(DataContext, Paging, FilterFunc, OrderByFunc, IncludeFuncs);
-                    if (Result.List == null || Result.List.Count == 0)
+                    List<T> List = await GetListWithFilterPagedAsync(DataContext, Paging, FilterFunc, OrderByFunc, IncludeFuncs);
+                    if (List == null || List.Count == 0)
+                    {
                         Result.NoDataResult();
-
-                    Result.TotalItems = Paging.TotalItems;
-                    Result.PageIndex = Paging.PageIndex;
-                    Result.PageSize = Paging.PageSize;
+                    }
+                    else
+                    {
+                        Result.SetFrom(Paging, List);
+                    }
                 }
             }
             catch (Exception ex)
@@ -385,13 +393,15 @@
 
                 using (var DataContext = GetDataContext())
                 {
-                    Result.List = await GetListWithSqlFilterPagedAsync(DataContext, Paging, SqlWhereText, OrderByFunc, IncludeFuncs);
-                    if (Result.List == null || Result.List.Count == 0)
+                    List<T> List = await GetListWithSqlFilterPagedAsync(DataContext, Paging, SqlWhereText, OrderByFunc, IncludeFuncs);
+                    if (List == null || List.Count == 0)
+                    {
                         Result.NoDataResult();
-
-                    Result.TotalItems = Paging.TotalItems;
-                    Result.PageIndex = Paging.PageIndex;
-                    Result.PageSize = Paging.PageSize;
+                    }
+                    else
+                    {
+                        Result.SetFrom(Paging, List);
+                    }
                 }
             }
             catch (Exception ex)

@@ -4,6 +4,10 @@
     [Description("A list of requested objects with pagination.")]
     public class ListResultPaged<T>: ListResult<T>, IPaging
     {
+        int IPaging.TotalItems { get => Paging.TotalItems; set => Paging.TotalItems = value; }
+        int IPaging.PageSize { get => Paging.PageSize; set => Paging.PageSize = value; }
+        int IPaging.PageIndex { get => Paging.TotalItems; set => Paging.PageIndex = value; }
+
         // ● construction
         /// <summary>
         /// Constructor
@@ -25,14 +29,21 @@
         /// </summary>
         public void SetFrom(IPaging SourcePaging, List<T> SourceList = null)
         {
-            TotalItems = SourcePaging.TotalItems;
-            PageIndex = SourcePaging.PageIndex;
-            PageSize = SourcePaging.PageSize;
+            Paging.TotalItems = SourcePaging.TotalItems;
+            Paging.PageIndex = SourcePaging.PageIndex;
+            Paging.PageSize = SourcePaging.PageSize;
 
             List = SourceList;
         }
 
+        [Description("Paging information.")]
+        [JsonPropertyOrder(-899)]
+        public Paging Paging { get; set; } = new();
+
+
+
         // ● properties
+        /*
         /// <summary>
         /// The number of total items when this is a paged response. 
         /// <para><strong>NOTE:</strong> This property is assigned by the code that executes the query. <strong>Not</strong> by the caller code.</para>
@@ -64,5 +75,6 @@
         [Description("The number of the page. 1-based")]
         [JsonPropertyOrder(-885)]
         public int PageNumber => PageIndex + 1;
+        */
     }
 }

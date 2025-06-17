@@ -24,7 +24,9 @@
                 Lib.HttpContextAccessor = HttpContextAccessor;
                 Lib.Configuration = Configuration;
                 Lib.WebHostEnvironment = WebHostEnvironment;
-             }
+
+                Caches.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
+            }
         }
 
         // ● public
@@ -177,7 +179,6 @@
                     if (MemCache != null)
                     {
                         fCache = new AppMemCache(MemCache);
-                        fCache.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
                     } 
                 }
 
@@ -187,7 +188,6 @@
                     if (DistCache != null)
                     {
                         fCache = new AppDistCache(DistCache);
-                        fCache.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
                     }
                 }
 

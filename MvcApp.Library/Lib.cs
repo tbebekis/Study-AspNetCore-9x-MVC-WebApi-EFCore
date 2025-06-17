@@ -28,6 +28,7 @@ namespace MvcApp.Library
                 Lib.WebHostEnvironment = WebHostEnvironment;
 
                 Session.Initialize(HttpContextAccessor);
+                Caches.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
             }
         }
 
@@ -184,8 +185,7 @@ namespace MvcApp.Library
                     var MemCache = Lib.GetService<IMemoryCache>();
                     if (MemCache != null)
                     {
-                        fCache = new AppMemCache(MemCache);
-                        fCache.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
+                        fCache = new AppMemCache(MemCache);                       
                     }
                 }
 
@@ -195,7 +195,6 @@ namespace MvcApp.Library
                     if (DistCache != null)
                     {
                         fCache = new AppDistCache(DistCache);
-                        fCache.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
                     }
                 }
 
