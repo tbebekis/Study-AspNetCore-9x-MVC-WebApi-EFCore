@@ -5,8 +5,13 @@
     /// </summary>
     [Table(nameof(Warehouse))]
     [Index(nameof(Name), IsUnique = true)]
-    public class Warehouse : BaseEntity
+    public class Warehouse : BaseEntity, ILookUpEntity
     {
+        string ILookUpEntity.GetDisplayText()
+        {
+            return Name;
+        }
+
         public Warehouse() { }
         public Warehouse(string Name)
         {

@@ -222,6 +222,11 @@ footer {
     justify-content: flex-end;
     margin: 0 0 30px 0;
     gap: 0.5em;
+    width: 100%;
+}
+
+.form-buttons.flex-start {
+    justify-content: flex-start;
 }
 
 .form-buttons .btn-submit {

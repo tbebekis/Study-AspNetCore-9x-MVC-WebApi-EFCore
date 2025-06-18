@@ -2,8 +2,13 @@
 {
     [Index(nameof(Name), IsUnique = true)]
     [Table(nameof(Category))]
-    public class Category : BaseEntity
+    public class Category : BaseEntity, ILookUpEntity
     {
+        string ILookUpEntity.GetDisplayText()
+        {
+            return Name;
+        }
+
         public Category() { }
         public Category(string Name)
         {

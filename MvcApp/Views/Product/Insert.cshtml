@@ -1,0 +1,13 @@
+﻿@model ProductModel
+ 
+<div class="page">
+
+    <div class="page-caption">
+        <div class="page-title">@L("Product.Insert")</div>
+    </div>
+
+    <form asp-controller="Product" asp-action="Insert" method="post">
+        @await Html.PartialAsync("_InsertOrEdit", Model)
+    </form>
+
+</div>

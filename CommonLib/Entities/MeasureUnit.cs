@@ -2,8 +2,13 @@
 {
     [Index(nameof(Name), IsUnique = true)]
     [Table(nameof(MeasureUnit))]
-    public class MeasureUnit: BaseEntity
+    public class MeasureUnit: BaseEntity, ILookUpEntity
     {
+        string ILookUpEntity.GetDisplayText()
+        {
+            return Name;
+        }
+
         public MeasureUnit() { }
         public MeasureUnit(string Name)
         {

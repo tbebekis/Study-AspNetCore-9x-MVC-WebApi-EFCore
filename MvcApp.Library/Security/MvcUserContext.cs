@@ -86,7 +86,7 @@
                 bool Result = HttpContext.User.Identity.IsAuthenticated;
                 if (Result)
                 {
-                    Result = HttpContext.User.Identity.AuthenticationType == JwtBearerDefaults.AuthenticationScheme;
+                    Result = HttpContext.User.Identity.AuthenticationType == CookieAuthenticationDefaults.AuthenticationScheme;
                 }
 
                 return Result;

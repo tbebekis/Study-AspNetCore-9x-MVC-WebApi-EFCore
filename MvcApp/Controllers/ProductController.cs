@@ -1,8 +1,7 @@
 ﻿namespace MvcApp.Controllers
 {
  
-    //*
-
+ 
     [Route("product")]
     public class ProductController : MvcAppController
     {
@@ -33,7 +32,6 @@
 
                 return View(ListModel);
             }
-
 
             return RedirectToErrorPage(ListResult.ErrorText);
         }
@@ -87,15 +85,22 @@
             return RedirectToErrorPage(ListResult.ErrorText);
         }
 
-        public ActionResult Create()
+
+        [Permission("Product.Insert")]
+        [HttpGet("insert")]
+        public async Task<ActionResult> Insert()
         {
-            return View();
+            ProductModel Model = new();
+            Model.AvailableMeasureUnits = await new AppDataService<MeasureUnit>().GetSelectList(AddDefaultItem:true);
+            Model.AvailableCategories = await new AppDataService<Category>().GetSelectList(AddDefaultItem: true);
+
+            return View(Model);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Insert(IFormCollection collection)
         {
             try
             {
@@ -167,6 +172,5 @@
         
     }
 
-
-    // */
+ 
 }

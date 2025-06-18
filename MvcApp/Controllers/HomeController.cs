@@ -52,7 +52,7 @@
                 {       
                     bool IsImpersonation = Service.GetIsUserImpersonation(Model.Password);
 
-                    await UserContext.SignInAsync(User, true, IsImpersonation);
+                    await UserContext.SignInAsync(User, Model.RememberMe, IsImpersonation);
 
                     if (!string.IsNullOrWhiteSpace(ReturnUrl))
                         return HandleReturnUrl(ReturnUrl);

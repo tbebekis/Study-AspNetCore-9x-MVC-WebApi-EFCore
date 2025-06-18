@@ -24,7 +24,7 @@
             {
                 ResultList = await GetListWithFilterPagedAsync(
                     new Paging(Filter.PageIndex, Filter.PageSize),
-                    p => p.Name.Contains(Filter.Term, StringComparison.OrdinalIgnoreCase) || p.Id == Filter.Term,   // filter
+                    p => p.Name.Contains(Filter.Term) || p.Id == Filter.Term,                                       // filter
                     q => q.OrderBy(p => p.Name),                                                                    // order
                     p => p.Category                                                                                 // includes
                     );

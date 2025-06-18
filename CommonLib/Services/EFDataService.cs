@@ -203,6 +203,28 @@
             }
         }
 
+
+        public virtual async Task<List<SelectListItem>> GetSelectList(string SelectedId = "", bool AddDefaultItem = false)
+        {
+            if (!typeof(T).ImplementsInterface(typeof(ILookUpEntity)))
+                throw new Exception($"The {typeof(T).Name} type does not implement the {typeof(ILookUpEntity).Name} interface.");
+
+            List<SelectListItem> Result = new();
+
+            SelectListItem Item;
+            var ListResult = await GetListAsync();
+            foreach (var Entity in ListResult.List)
+            {
+                Item = new SelectListItem((Entity as ILookUpEntity).GetDisplayText(), Entity.Id, Entity.Id == SelectedId);
+                Result.Add(Item);
+            }
+
+            if (AddDefaultItem)
+                Result.Insert(0, new SelectListItem("", ""));
+
+            return Result;
+        }
+
         // ● get entity lists
         /// <summary>
         /// Returns a <see cref="ListResult&lt;T&gt;"/> result list of entities after applying the specified <c>OrderByFunc()</c> and <c>Include()</c> callback functions.

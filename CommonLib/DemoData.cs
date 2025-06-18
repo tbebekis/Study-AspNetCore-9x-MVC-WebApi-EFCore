@@ -53,10 +53,10 @@
             List<AppPermission> List = new List<AppPermission>
             {
                 new AppPermission(AppPermission.RbacAdmin),
-                new AppPermission("Product.Create"),
-                new AppPermission("Product.View"  ),
+                new AppPermission("Product.Insert"),
                 new AppPermission("Product.Edit"  ),
                 new AppPermission("Product.Delete"),
+                new AppPermission("Product.View"  ),
             }; 
 
             return List;
@@ -96,11 +96,7 @@
                     ),
                 new AppRolePermission(
                     RoleList.FirstOrDefault(r => r.Name == "Admin").Id,
-                    PermissionList.FirstOrDefault(r => r.Name == "Product.Create").Id
-                    ),
-                new AppRolePermission(
-                    RoleList.FirstOrDefault(r => r.Name == "Admin").Id,
-                    PermissionList.FirstOrDefault(r => r.Name == "Product.View").Id
+                    PermissionList.FirstOrDefault(r => r.Name == "Product.Insert").Id
                     ),
                 new AppRolePermission(
                     RoleList.FirstOrDefault(r => r.Name == "Admin").Id,
@@ -109,6 +105,10 @@
                 new AppRolePermission(
                     RoleList.FirstOrDefault(r => r.Name == "Admin").Id,
                     PermissionList.FirstOrDefault(r => r.Name == "Product.Delete").Id
+                    ),
+                new AppRolePermission(
+                    RoleList.FirstOrDefault(r => r.Name == "Admin").Id,
+                    PermissionList.FirstOrDefault(r => r.Name == "Product.View").Id
                     ),
 
                 // ● Manager
