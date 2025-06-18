@@ -35,8 +35,8 @@ global using Microsoft.IdentityModel.Tokens;
 
 global using Scalar.AspNetCore;
 
-global using StudyLib;
-global using StudyLib.Entities;
+global using CommonLib;
+global using CommonLib.Entities;
 global using WebApiApp.Library;
 global using WebApiApp.Models;
 

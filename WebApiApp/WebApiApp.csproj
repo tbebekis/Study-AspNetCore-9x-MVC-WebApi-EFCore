@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\StudyLib\StudyLib.csproj" />
+      <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
       <ProjectReference Include="..\WebApiApp.Library\WebApiApp.Library.csproj" />
     </ItemGroup>
 

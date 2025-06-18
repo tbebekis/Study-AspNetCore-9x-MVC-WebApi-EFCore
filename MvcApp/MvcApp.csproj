@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MvcApp.Library\MvcApp.Library.csproj" />
-      <ProjectReference Include="..\StudyLib\StudyLib.csproj" />
+      <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
     </ItemGroup>
 
     <ItemGroup>

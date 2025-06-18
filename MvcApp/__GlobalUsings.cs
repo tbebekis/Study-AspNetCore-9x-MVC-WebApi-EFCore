@@ -40,8 +40,8 @@ global using Microsoft.Extensions.FileProviders;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.Extensions.Caching.Memory;
 
-global using StudyLib;
-global using StudyLib.Entities;
+global using CommonLib;
+global using CommonLib.Entities;
 
 global using MvcApp.Library;
 global using MvcApp.Models;

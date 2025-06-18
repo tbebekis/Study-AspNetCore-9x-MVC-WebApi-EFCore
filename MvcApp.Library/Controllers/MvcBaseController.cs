@@ -14,14 +14,14 @@
         /// </summary>
         static public string Serialize(object Instance)
         {
-            return StudyLib.Json.Serialize(Instance);
+            return CommonLib.Json.Serialize(Instance);
         }
         /// <summary>
         /// Serializes a specified instance.
         /// </summary>
         static public string Serialize(object Instance, JsonSerializerOptions JsonOptions)
         {
-            return StudyLib.Json.Serialize(Instance, JsonOptions);
+            return CommonLib.Json.Serialize(Instance, JsonOptions);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@
         /// </summary>
         static public string Serialize(object Instance, string[] ExcludeProperties)
         {
-            return StudyLib.Json.Serialize(Instance, ExcludeProperties);
+            return CommonLib.Json.Serialize(Instance, ExcludeProperties);
         }
 
         // ● deserialize
@@ -39,7 +39,7 @@
         /// </summary>
         static public T Deserialize<T>(string JsonText, JsonSerializerOptions JsonOptions = null)
         {
-            return StudyLib.Json.Deserialize<T>(JsonText, JsonOptions);
+            return CommonLib.Json.Deserialize<T>(JsonText, JsonOptions);
         }
         /// <summary>
         /// Deserializes (creates) an object of a specified type by deserializing a specified json text.
@@ -47,7 +47,7 @@
         /// </summary>
         static public object Deserialize(string JsonText, Type ReturnType, JsonSerializerOptions JsonOptions = null)
         {
-            return StudyLib.Json.Deserialize(JsonText, ReturnType, JsonOptions);
+            return CommonLib.Json.Deserialize(JsonText, ReturnType, JsonOptions);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@
         /// </summary>
         static public void PopulateObject(object Instance, string JsonText, JsonSerializerOptions JsonOptions = null)
         {
-            StudyLib.Json.PopulateObject(Instance, JsonText, JsonOptions);
+            CommonLib.Json.PopulateObject(Instance, JsonText, JsonOptions);
         }
 
         // ●  overridables

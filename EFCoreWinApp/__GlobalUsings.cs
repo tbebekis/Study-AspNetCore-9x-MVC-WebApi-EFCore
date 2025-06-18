@@ -35,8 +35,8 @@ global using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 global using Microsoft.AspNetCore.Http;
 
-global using StudyLib;
-global using StudyLib.Entities;
+global using CommonLib;
+global using CommonLib.Entities;
 
 
 
