@@ -11,6 +11,7 @@
 }
 
 @await Html.PartialAsync("_Layout.Header")
+@await Html.PartialAsync("_MessageList")
 @RenderBody()
 @await Html.PartialAsync("_Layout.Footer")
 
@@ -18,5 +19,5 @@
     @await Html.PartialAsync("_Layout.Common")
 </section>
 
-@await Html.PartialAsync("_MessageList")
+
  

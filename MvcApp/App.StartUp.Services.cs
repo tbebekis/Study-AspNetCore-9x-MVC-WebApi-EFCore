@@ -5,7 +5,7 @@
         static void GlobalErrorHandlerMvc(ActionExceptionFilterContext Context)
         {
             ErrorViewModel Model = new ErrorViewModel();
-            Model.ErrorMessage = Context.InDevMode?  Context.Exception.GetText(): Context.Exception.Message;
+            Model.ErrorMessage = Context.InDevMode?  Context.Exception.GetFullText(): Context.Exception.Message;
             Model.RequestId = Context.RequestId;
 
             /* SEE: https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#exception-filters */
@@ -63,6 +63,10 @@
             builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             PermissionAuthorizationHandler.GetUserPermissionsFunc = RBAC.GetUserPermissionListForMvc;
+
+            // ● global exception handler
+            builder.Services.AddExceptionHandler<MvcExceptionHandler>();
+            builder.Services.AddProblemDetails();
 
             // ● HttpContext - NOTE: is singleton
             builder.Services.AddHttpContextAccessor();

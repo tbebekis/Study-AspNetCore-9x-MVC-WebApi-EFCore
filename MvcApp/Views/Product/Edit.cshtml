@@ -1,16 +1,13 @@
-﻿@model ProductListModel
- 
+﻿@model ProductModel
+
 <div class="page">
-    <h2>Product List with Paging, after Filtering</h2>
 
-    @if (Model.Products.Count == 0)
-    {
-        <h5>No Products found.</h5>
-    }
-    else
-    {
-        @await Html.PartialAsync("_ProductList", Model)
+    <div class="page-caption">
+        <div class="page-title">@L("Product.Edit")</div>
+    </div>
 
-        @await Component.InvokeAsync("Pager", Model.PagingInfo)
-    }
+    <form asp-route="Product.Edit" method="post">
+        @await Html.PartialAsync("_InsertOrEdit", Model)
+    </form>
+
 </div>

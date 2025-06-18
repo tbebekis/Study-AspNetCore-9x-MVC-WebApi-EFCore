@@ -10,7 +10,8 @@
         /// </summary>
         public override string FormatErrorMessage(string name)
         {
-            string Format = Lib.Localize("RequiredField");
+            string Default = "Field {0} is required";
+            string Format = Lib.Localize("RequiredField", Default);
             return string.Format(Format, name);
         }
     }

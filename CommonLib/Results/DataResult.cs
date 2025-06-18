@@ -106,8 +106,15 @@
         /// </summary>
         public virtual void ExceptionResult(Exception Ex)
         {
-            string ErrorMessage = Ex == null? "Unspecified Exception": $"{Ex.GetType().Name}: {Ex.Message}";
+            string ErrorMessage = Ex == null? "Unspecified Exception": $"Exception: {Ex.GetType().Name}";
             ErrorResult(ApiStatusCodes.Exception, ErrorMessage);
+
+            if (Ex != null)
+            {
+                List<string> ExceptionErrorList = Ex.GetErrors();
+                Errors.AddRange(ExceptionErrorList);
+            }
+ 
         }
         /// <summary>
         /// Error result

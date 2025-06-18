@@ -90,6 +90,19 @@
 
             return true;
         }
+        /// <summary>
+        /// Makes the whole model invalid.
+        /// </summary>
+        protected virtual void SetModelStateToInvalid(string ErrorText)
+        {
+            foreach (var Entry in ModelState)
+            {
+                var ModelStateEntry = Entry.Value;
+                ModelStateEntry.Errors.Add("Error");
+                ModelStateEntry.ValidationState = ModelValidationState.Invalid;
+            }
+        }
+
 
         // ●  actions 
         /// <summary>

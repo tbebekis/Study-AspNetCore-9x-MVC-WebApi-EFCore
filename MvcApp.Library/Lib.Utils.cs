@@ -99,9 +99,12 @@
         /// <summary>
         /// Returns a localized string based on a specified resource key, e.g. Customer, and the culture code of the current request, e.g. el-GR
         /// </summary>
-        static public string Localize(string Key)
+        static public string Localize(string Key, string Default = "")
         {
-            return Res.GetString(Key, Key, Lib.Culture);
+            if (string.IsNullOrWhiteSpace(Default))
+                Default = Key;
+
+            return Res.GetString(Key, Default, Lib.Culture);
         }
 
 

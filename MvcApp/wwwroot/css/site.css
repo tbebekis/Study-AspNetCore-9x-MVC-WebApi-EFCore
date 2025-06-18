@@ -142,7 +142,7 @@ header {
 
 .menu > :hover,
 .menu .list > *:hover {
-    background-color: var(--HoverColor);
+    background-color:  var(--HoverColor);
     color: black;
 } 
 
@@ -198,6 +198,10 @@ footer {
     flex-grow: 1;
 }
 
+/*---------------------------------------------------------------------------------------
+  field-group
+---------------------------------------------------------------------------------------*/
+
 .field-group {
     position: relative;
     margin: 0 0 30px 0;
@@ -216,34 +220,42 @@ footer {
     margin: 0 0 25px 0;
 }
 
-.form-buttons {
+/*---------------------------------------------------------------------------------------
+  button-zone
+---------------------------------------------------------------------------------------*/
+
+.button-zone {
     position: relative;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     margin: 0 0 30px 0;
     gap: 0.5em;
     width: 100%;
 }
 
-.form-buttons.flex-start {
-    justify-content: flex-start;
+.button-zone.reverse {
+    justify-content: flex-end;
 }
-
-.form-buttons .btn-submit {
+ 
+.button-zone > * {
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(--Yellow);
     height: 4em;
-    padding: 0 2.8em;
+    padding: var(--ButtonPadding);
+    border: var(--ControlBorder);
+    font-size: 13px;
 }
-
-.form-buttons .btn-submit:hover {
+ 
+.button-zone > *:hover {
     background-color: var(--Black);
     color: var(--White);
 }
 
+ 
+/*
 a.button { 
     display: flex;
     justify-content: center;
@@ -257,6 +269,7 @@ a.button:hover {
     background-color: var(--Black);
     color: var(--White);
 }
+*/
 
 /*---------------------------------------------------------------------------------------
  

@@ -1,4 +1,6 @@
-﻿namespace MvcApp.Controllers
+﻿using Microsoft.AspNetCore.Diagnostics;
+
+namespace MvcApp.Controllers
 {
     /// <summary>
     /// Home Controller
@@ -126,17 +128,19 @@
         {
             ErrorViewModel Model = null;
             string JsonText = TempData["ErrorModel"] as string;
+
             if (!string.IsNullOrWhiteSpace(JsonText))
             {
                 Model = Deserialize<ErrorViewModel>(JsonText);
             } 
+
             if (Model == null)
-            {
+            { 
                 Model = new ErrorViewModel();
                 Model.ErrorMessage = "Unknown Error";
                 Model.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-            }
- 
+            } 
+
             return View(Model);
         }
 

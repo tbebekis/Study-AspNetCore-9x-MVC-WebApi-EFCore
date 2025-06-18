@@ -1,6 +1,5 @@
-﻿@model ProductModel
- 
-<div asp-validation-summary="All"></div>
+﻿@model ProductModel 
+
 <input asp-for="Id" type="hidden" />
 
 <div class="tp-Row xs-100 sm-100 md-50 lg-50 xl-33 xxl-33">
@@ -10,7 +9,8 @@
         <tp-input asp-for="MeasureUnitId" asp-items="Model.AvailableMeasureUnits" />
         <tp-input asp-for="CategoryId" asp-items="Model.AvailableCategories" />
     </div>
-    <div class="form-buttons">
+    <div class="button-zone">
         <button class="btn-submit" type="submit">@L("OK")</button>
+        <a asp-route="Product.List">@L("Cancel")</a>
     </div>
 </div>

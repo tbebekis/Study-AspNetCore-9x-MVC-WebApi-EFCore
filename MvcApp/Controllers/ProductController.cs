@@ -1,12 +1,12 @@
 ﻿namespace MvcApp.Controllers
-{
- 
+{ 
  
     [Route("product")]
     public class ProductController : MvcAppController
     {
         ProductService Service = new();
 
+        // ● Search (with paging)
         [Permission("Product.View")]
         [HttpGet("search", Name = "Product.Search")]
         public async Task<ActionResult> Search(string Term = "", string CategoryId = "", bool IncludeSubCategories = false)
@@ -35,7 +35,8 @@
 
             return RedirectToErrorPage(ListResult.ErrorText);
         }
- 
+
+        // ● List
         [Permission("Product.View")]
         [HttpGet("list", Name = "Product.List")]
         public async Task<ActionResult> Index()
@@ -59,8 +60,9 @@
             return RedirectToErrorPage(ListResult.ErrorText); 
         }
 
+        // ● Paging
         [Permission("Product.View")]
-        [HttpGet("paging")]
+        [HttpGet("paging", Name = "Product.Paging")]
         public async Task<ActionResult> Paging()
         {
             int PageIndex = PagingInfo.GetQueryStringPageIndex();
@@ -85,91 +87,99 @@
             return RedirectToErrorPage(ListResult.ErrorText);
         }
 
-
+        // ● Insert
         [Permission("Product.Insert")]
         [HttpGet("insert")]
         public async Task<ActionResult> Insert()
         {
             ProductModel Model = new();
-            Model.AvailableMeasureUnits = await new AppDataService<MeasureUnit>().GetSelectList(AddDefaultItem:true);
-            Model.AvailableCategories = await new AppDataService<Category>().GetSelectList(AddDefaultItem: true);
+            Model.AvailableMeasureUnits = await new MeasureUnitService().GetSelectList(AddDefaultItem:true);
+            Model.AvailableCategories = await new CategoryService().GetSelectList(AddDefaultItem: true);
 
             return View(Model);
         }
-
-
-        [HttpPost]
+ 
         [ValidateAntiForgeryToken]
-        public ActionResult Insert(IFormCollection collection)
+        [Permission("Product.Insert")]
+        [HttpPost("insert", Name = "Product.Insert")]
+        public async Task<ActionResult> Insert(ProductModel Model)
         {
-            try
+            if (ValidateModel(Model))
             {
-                return RedirectToAction(nameof(Index));
+                Product Entity = Lib.ObjectMapper.Map<Product>(Model);
+                Entity.SetId();
+
+                ItemResult<Product> ItemResult = await Service.InsertAsync(Entity);
+                if (!ItemResult.Succeeded)
+                {
+                    this.SetModelStateToInvalid(ItemResult.ErrorText);
+                    Session.AddToErrorList(ItemResult.ErrorText);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }                    
             }
-            catch
-            {
-                return View();
-            }
+
+            Model.AvailableMeasureUnits = await new MeasureUnitService().GetSelectList(AddDefaultItem: true);
+            Model.AvailableCategories = await new CategoryService().GetSelectList(AddDefaultItem: true);
+            return View(Model);
         }
 
-
-        [Permission("Product.View")]
-        [HttpGet("view/{Id}")]
-        public ActionResult Details(string Id)
-        {
-            return View();
-        }
-
-
-
-        // [HttpGet("/blog/update/{blogpostid}", Name = "UpdateBlogPost")]
-
-        // GET: ProductController/Edit/5
-
+        // ● Edit
         [Permission("Product.Edit")]
         [HttpGet("edit/{Id}")]
-        public ActionResult Edit(string Id)
+        public async Task<ActionResult> Edit(string Id)
         {
-            return View();
+            ItemResult<Product> ItemResult = await Service.GetByIdAsync(Id);
+            if (!ItemResult.Succeeded)
+                throw new Exception(ItemResult.ErrorText);
+
+            Product Entity = ItemResult.Item;
+            ProductModel Model = Lib.ObjectMapper.Map<ProductModel>(Entity);            
+            Model.AvailableMeasureUnits = await new MeasureUnitService().GetSelectList(AddDefaultItem: true);
+            Model.AvailableCategories = await new CategoryService().GetSelectList(AddDefaultItem: true);
+            return View(Model);
         }
-
-
-        [HttpPost]
+ 
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string Id, IFormCollection collection)
+        [Permission("Product.Edit")]
+        [HttpPost("edit", Name = "Product.Edit")]
+        public async Task<ActionResult> Edit(ProductModel Model)
         {
-            try
+            if (ValidateModel(Model))
             {
-                return RedirectToAction(nameof(Index));
+                Product Entity = Lib.ObjectMapper.Map<Product>(Model);
+ 
+                ItemResult<Product> ItemResult = await Service.UpdateAsync(Entity);
+                if (!ItemResult.Succeeded)
+                {
+                    this.SetModelStateToInvalid(ItemResult.ErrorText);
+                    Session.AddToErrorList(ItemResult.ErrorText);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            Model.AvailableMeasureUnits = await new MeasureUnitService().GetSelectList(AddDefaultItem: true);
+            Model.AvailableCategories = await new CategoryService().GetSelectList(AddDefaultItem: true);
+            return View(Model);
         }
 
+        // ● Delete
         [Permission("Product.Delete")]
-        [HttpGet("delete/{Id}")]
-        public ActionResult Delete(string Id)
+        [HttpGet("delete/{Id}", Name = "Product.Delete")]
+        public async Task<ActionResult> Delete(string Id)
         {
-            return View();
-        }
+            ItemResult<Product> ItemResult = await Service.DeleteAsync(Id);
+            if (!ItemResult.Succeeded)
+                throw new Exception(ItemResult.ErrorText);
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(string Id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
-    
-        
+  
     }
 
  

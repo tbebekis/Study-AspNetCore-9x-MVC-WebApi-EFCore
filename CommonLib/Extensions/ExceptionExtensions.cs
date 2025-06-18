@@ -24,7 +24,7 @@
         /// Returns a string containing all exception information,
         /// including the Data dictionary and the inner exceptions
         /// </summary>
-        static public string GetText(this Exception Ex)
+        static public string GetFullText(this Exception Ex)
         {
             StringBuilder SB = new StringBuilder();
 
@@ -53,6 +53,26 @@
 
             return SB.ToString();
 
+        }
+
+        static public List<string> GetErrors(this Exception Ex)
+        {
+            List<string> Result = new();
+
+            Exception E = Ex; 
+
+            while (E != null)
+            {
+                Result.Add($"{E.GetType().Name}: {E.Message}");
+                E = E.InnerException;
+            }
+
+            return Result;
+        }
+        static public string GetErrorText(this Exception Ex)
+        {
+            List<string> ErrorList = GetErrors(Ex);
+            return string.Join(Environment.NewLine, ErrorList);
         }
     }
 }

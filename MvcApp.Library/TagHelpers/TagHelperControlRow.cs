@@ -9,8 +9,7 @@
     [HtmlTargetElement(SInput, Attributes = SRowId)]
     [HtmlTargetElement(SInput, Attributes = SFor, TagStructure = TagStructure.WithoutEndTag)]
     public class TagHelperControlRow : TagHelperAspForBase
-    {
-        // TODO: TouchSpin see https://www.youtube.com/watch?v=ZjVmNKVgDsE
+    { 
 
         /// <summary>
         /// The type of the editor (HTML control)

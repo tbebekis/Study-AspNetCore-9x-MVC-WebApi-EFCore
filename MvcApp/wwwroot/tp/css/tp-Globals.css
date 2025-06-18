@@ -40,7 +40,7 @@
     --SuccessColor: var(--Green);
     --ErrorColor: var(--Red);
     --InfoColor: var(--Yellow);
-    --HoverColor: yellow;
+    --HoverColor: var(--Yellow);
     --DisabledColor: var(--LightGray);
     --SelectedColor: lightgoldenrodyellow; 
     --SelectedListItemColor: lightblue;
@@ -53,7 +53,7 @@
     /* Miscs */
     --GridDropTargetOutline: var(--SelectedColor) double thick;
     --ControlBorder: 1px solid #ccc;
-    --ButtonPadding: 0 5px;
+    --ButtonPadding: 0 2em;
     --TextPadding: 2px 4px;
  
     --ControlLineHeight: 1.5em; 

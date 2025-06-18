@@ -46,18 +46,7 @@
 
         public async Task<ListResult<Product>> GetAllProducts()
         {
-            string CultureCode = Lib.Culture.Name;
-            string CacheKey = $"{nameof(GetAllProducts)}-{CultureCode}";
-
-            // get products from cache
-            // NOTE: in a real-world application most probably information such as products is NOT cached. 
-            // This code is here just for demonstration purposes
-            ListResult<Product> ResultList = await Lib.Cache.Get(CacheKey, async () => {
-                ListResult<Product> InnerResultList = await GetListAsync(q => q.OrderBy(p => p.Name));
-                CacheLoaderResult<ListResult<Product>> CacheResult = new(InnerResultList, Lib.Settings.Defaults.CacheTimeoutMinutes);
-                return CacheResult;
-            });
-
+            ListResult<Product> ResultList = await GetListAsync(q => q.OrderBy(p => p.Name));
             return ResultList;
         }
     }
