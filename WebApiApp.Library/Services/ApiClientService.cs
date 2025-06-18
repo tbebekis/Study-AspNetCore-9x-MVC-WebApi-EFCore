@@ -10,10 +10,10 @@
         /// <summary>
         /// Validates the specified user credentials and returns a <see cref="IRequestor"/> on success, else null.
         /// </summary>
-        public async Task<ItemResult<IAppClient>> ValidateApiClientCredentials(string ClientId, string PlainTextSecret)
+        public async Task<ItemResult<IApiClient>> ValidateApiClientCredentials(string ClientId, string PlainTextSecret)
         {
-            ItemResult<IAppClient> Result = new();
-            ItemResult<AppUser> ClientResult = await GetByProcAsync(c => c.UserName == ClientId);
+            ItemResult<IApiClient> Result = new();
+            ItemResult<AppUser> ClientResult = await GetByProcAsync(c => c.UserName == ClientId && (c.UserType == AppUserType.Client || c.UserType == AppUserType.Admin));
 
             if (ClientResult.Item == null || !ClientResult.Succeeded)
             {

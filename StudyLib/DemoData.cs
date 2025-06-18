@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace StudyLib.Entities
+﻿namespace StudyLib.Entities
 {
     static public class DemoData
     {
@@ -28,13 +26,13 @@ namespace StudyLib.Entities
         {
             List<AppUser> List = new List<AppUser>
             {
-                new AppUser("user0", "secret", "User-0"),       // in Admin role
-                new AppUser("user1", "secret", "User-0"),
+                new AppUser(AppUserType.User, "user0", "secret", "User-0"),         // in Manager role
+                new AppUser(AppUserType.User, "user1", "secret", "User-1"),
 
-                new AppUser("client0", "secret", "Client-0"),   // in Admin role
-                new AppUser("client1", "secret", "Client-1"),
+                new AppUser(AppUserType.Client, "client0", "secret", "Client-0"),   // in Manager role
+                new AppUser(AppUserType.Client, "client1", "secret", "Client-1"),
 
-                new AppUser("Admin", "secret", "Admin-0")
+                new AppUser(AppUserType.Admin, "Admin", "secret", "Admin-0")
             };
 
             return List;

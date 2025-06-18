@@ -1,7 +1,7 @@
 ﻿namespace StudyLib.Entities
 {
     [Description("A client in a WebApi application.")]
-    public interface IAppClient
+    public interface IApiClient
     {
         /// <summary>
         /// Required. 

@@ -7,7 +7,7 @@
     /// </summary>
     [Index(nameof(UserName), IsUnique = true)]
     [Table(nameof(AppUser))]
-    public class AppUser: BaseEntity, IAppUser, IAppClient
+    public class AppUser: BaseEntity, IAppUser, IApiClient
     {
         List<AppRole> fRoles;
         List<AppPermission> fPermissions;
@@ -16,10 +16,11 @@
             : base() 
         {
         }
-        public AppUser(string UserName, string PlainTextPassword, string Name = "")
+        public AppUser(AppUserType UserType, string UserName, string PlainTextPassword, string Name = "")
             : this()
         {
             this.SetId();
+            this.UserType = UserType;
             this.UserName = UserName;
             this.PasswordSalt = Hasher.GenerateSalt(96);
             this.Password = Hasher.Hash(PlainTextPassword, this.PasswordSalt);
@@ -50,9 +51,11 @@
         [Column("Salt"), MaxLength(96), JsonIgnore]
         public string PasswordSalt { get; set; }
         /// <summary>
-        /// Optional. The requestor name
+        /// Optional. The user/client name
         /// </summary> 
+        [MaxLength(96)]
         public string Name { get; set; }
+        public AppUserType UserType { get; set; }
         /// <summary>
         /// True when requestor is blocked by admins
         /// </summary>
@@ -83,7 +86,7 @@
         /// The ClientId, admin generated
         /// </summary>
         [NotMapped]
-        string IAppClient.ClientId 
+        string IApiClient.ClientId 
         {
             get => UserName;
             set => UserName = value;

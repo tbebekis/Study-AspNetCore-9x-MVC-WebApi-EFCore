@@ -38,6 +38,7 @@ global using Scalar.AspNetCore;
 global using StudyLib;
 global using StudyLib.Entities;
 global using WebApiApp.Library;
+global using WebApiApp.Models;
 
 
 

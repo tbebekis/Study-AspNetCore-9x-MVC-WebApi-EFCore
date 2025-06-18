@@ -7,17 +7,21 @@
     {
         // ● actions
         [EndpointDescription("Returns the list of registered clients.")]
-        [HttpGet("client/list", Name = "Client.List"), Produces<ListResult<IAppClient>>]
-        public async Task<ListResult<IAppClient>> List()
+        [HttpGet("client/list", Name = "Client.List"), Produces<ListResult<IApiClient>>]
+        public async Task<ListResult<IApiClient>> List()
         {
-            ListResult<IAppClient> Result = new();
+            ListResult<IApiClient> Result = new();
 
-            AppDataService<AppUser> Service = new();
-            ListResult<AppUser> DataList = await Service.GetListAsync();
+            ApiClientService Service = new();
+            ListResult<AppUser> DataList = await Service.GetListWithFilterAsync(
+                                                            c => c.UserType == AppUserType.Client || c.UserType == AppUserType.Admin,       // filter
+                                                            null                                                                            // order  
+                                                            );
             string JsonText = JsonSerializer.Serialize(DataList);
+
             if (DataList.Succeeded)
             {
-                List<IAppClient> List = DataList.List.Cast<AppUser>().Select(x => x as IAppClient).ToList();
+                List<IApiClient> List = DataList.List.Cast<AppUser>().Select(x => x as IApiClient).ToList();
                 Result.List = List;
             }
             else
@@ -29,17 +33,18 @@
         }
 
         [EndpointDescription("Insert a new AppClient.")]
-        [HttpPost("client", Name = "Client.Insert"), Produces<ItemResult<IAppClient>>]
-        public async Task<ItemResult<IAppClient>> InsertClient(AppUser Model)
+        [HttpPost("client", Name = "Client.Insert"), Produces<ItemResult<IApiClient>>]
+        public async Task<ItemResult<IApiClient>> InsertClient(ApiClientModel Model)
         {
             // TODO: Validation
 
             //
-            AppUser Client = new AppUser(Model.UserName, Model.Password, Model.Name);
-            AppDataService<AppUser> Service = new();
+            AppUser Client = new AppUser(AppUserType.Client, Model.ClientId, Model.Secret, Model.Name);
+            
+            ApiClientService Service = new();
             ItemResult<AppUser> ResultClient = await Service.InsertAsync(Client);
 
-            ItemResult<IAppClient> Result = new();
+            ItemResult<IApiClient> Result = new();
             Result.CopyErrors(ResultClient);
             Result.Item = ResultClient.Item;
             return Result;

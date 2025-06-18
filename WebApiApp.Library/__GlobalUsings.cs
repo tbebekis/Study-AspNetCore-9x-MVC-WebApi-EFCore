@@ -72,6 +72,8 @@ global using AutoMapper;
 global using StudyLib;
 global using StudyLib.Entities;
 
+global using WebApiApp.Models;
+
 
 
 

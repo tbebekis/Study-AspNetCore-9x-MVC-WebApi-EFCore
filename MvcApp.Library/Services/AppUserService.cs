@@ -13,7 +13,7 @@
         public async Task<ItemResult<IAppUser>> ValidateAppUserCredentials(string UserName, string PlainTextSecret)
         {
             ItemResult<IAppUser> Result = new();
-            ItemResult<AppUser> UserResult = await GetByProcAsync(c => c.UserName == UserName);
+            ItemResult<AppUser> UserResult = await GetByProcAsync(c => c.UserName == UserName && (c.UserType == AppUserType.User || c.UserType == AppUserType.Admin));
 
             if (UserResult.Item == null || !UserResult.Succeeded)
             {
