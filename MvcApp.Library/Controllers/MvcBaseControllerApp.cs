@@ -34,6 +34,7 @@
 
         protected virtual RedirectToActionResult RedirectToErrorPage(string ErrorMessage)
         {
+            /*
             ErrorViewModel Model = new ErrorViewModel();
             Model.ErrorMessage = ErrorMessage;
             Model.RequestId = Lib.RequestId;
@@ -41,6 +42,7 @@
             string JsonText = Serialize(Model);
 
             TempData["ErrorModel"] = JsonText;
+            */
 
             return RedirectToAction("Error", "Home", new { });
         }
@@ -51,7 +53,6 @@
         /// </summary>
         public MvcBaseControllerApp()
         {
-
         }
     }
 

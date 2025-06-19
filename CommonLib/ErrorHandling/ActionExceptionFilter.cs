@@ -2,18 +2,15 @@
 {
     /// <summary>
     /// Global exception filter for controller actions. Use this instead of try-catch blocks inside action methods.    
+    /// <para>Catches exceptions thrown inside of an action method. <strong>Not inside a view.</strong></para>
     /// <para>
-    /// Exception filters: <br />
+    /// <strong>NOTE:</strong> Exception filters  <br />
     ///  ● Handle unhandled exceptions that occur in Razor Page or controller creation, model binding, action filters, or action methods. <br />
-    ///  ● Do not catch exceptions that occur in resource filters, result filters, or MVC result execution.  
-    /// </para>
-    /// <para></para>
-    /// <para>
-    /// SEE: https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?view=aspnetcore-3.1#exception-filters
+    ///  ● Do <strong>not</strong> catch exceptions that occur in resource filters, result filters, or MVC result execution.  
     /// </para>
     /// <para>To register</para>
-    /// <para><code> services.AddControllersWithViews(o =&gt; { o.Filters.Add&lt;ActionExceptionFilter&gt;(); })
-    /// </code></para>
+    /// <code> builder.Services.AddControllersWithViews(options => { options.Filters.Add&lt;ActionExceptionFilter&gt;(); });</code>
+    /// SEE: https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#exception-filters
     /// </summary>
     public class ActionExceptionFilter : IExceptionFilter
     {

@@ -5,7 +5,8 @@
         static void GlobalErrorHandlerMvc(ActionExceptionFilterContext Context)
         {
             ErrorViewModel Model = new ErrorViewModel();
-            Model.ErrorMessage = Context.InDevMode?  Context.Exception.GetFullText(): Context.Exception.Message;
+            Model.Exception = Context.Exception;
+            Model.ErrorMessage = Context.Exception.Message; //Context.InDevMode?  Context.Exception.GetFullText(): Context.Exception.Message;
             Model.RequestId = Context.RequestId;
 
             /* SEE: https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#exception-filters */
@@ -13,8 +14,8 @@
             Result.ViewName = "Error";
             Result.ViewData = new ViewDataDictionary(Context.ModelMetadataProvider, Context.ExceptionContext.ModelState);
             Result.ViewData.Model = Model;
-            Result.ViewData.Add("Exception", Context.ExceptionContext.Exception);
-            Result.ViewData.Add("RequestId", Context.RequestId);
+            //Result.ViewData.Add("Exception", Context.ExceptionContext.Exception);
+            //Result.ViewData.Add("RequestId", Context.RequestId);
             Context.ExceptionContext.Result = Result;
         }
         static void GlobalErrorHandlerAjax(ActionExceptionFilterContext Context)
@@ -43,10 +44,15 @@
         /// Add services to the container.
         /// </summary>
         static public void AddServices(WebApplicationBuilder builder)
-        {
+        {         
+
             // ● AppSettings
             App.Configuration = builder.Configuration;
             builder.Configuration.Bind(nameof(AppSettings), Lib.Settings);
+
+            // ● global exception handler
+            //builder.Services.AddExceptionHandler<MvcExceptionHandler>();
+            //builder.Services.AddProblemDetails();
 
             // ● DbContext
             // AddDbContextPool() singleton service
@@ -63,11 +69,7 @@
             builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             PermissionAuthorizationHandler.GetUserPermissionsFunc = RBAC.GetUserPermissionListForMvc;
-
-            // ● global exception handler
-            builder.Services.AddExceptionHandler<MvcExceptionHandler>();
-            builder.Services.AddProblemDetails();
-
+ 
             // ● HttpContext - NOTE: is singleton
             builder.Services.AddHttpContextAccessor();
 
@@ -164,8 +166,6 @@
             builder.Services.ConfigureHttpJsonOptions(options => SetupJsonSerializerOptions(options.SerializerOptions));
 
             MvcBuilder.AddRazorRuntimeCompilation();
-
-
 
             // ● Plugins
             LoadPluginDefinitions();

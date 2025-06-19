@@ -126,27 +126,14 @@ namespace MvcApp.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            ErrorViewModel Model = null;
-            string JsonText = TempData["ErrorModel"] as string;
-
-            if (!string.IsNullOrWhiteSpace(JsonText))
-            {
-                Model = Deserialize<ErrorViewModel>(JsonText);
-            } 
-
-            if (Model == null)
-            { 
-                Model = new ErrorViewModel();
-                Model.ErrorMessage = "Unknown Error";
-                Model.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-            } 
-
-            return View(Model);
+            // the view gathers all error information
+            return View();
         }
 
         [HttpGet("/plugin-test", Name = "PluginTest")]
         public IActionResult PluginTest()
         {
+            throw new Exception("error");
             return View();
         }
 

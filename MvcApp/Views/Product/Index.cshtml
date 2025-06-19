@@ -1,5 +1,5 @@
 ﻿@model ProductListModel
- 
+
 <div class="page">
     <h2>Product List</h2>
 
@@ -13,7 +13,8 @@
     }
     else
     {
-        @await Html.PartialAsync("_ProductList", Model)
+        throw new Exception("error");
+        @await Html.PartialAsync("_ProductList", Model)        
     }
 
 </div>

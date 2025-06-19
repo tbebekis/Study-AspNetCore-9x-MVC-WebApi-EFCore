@@ -49,6 +49,10 @@ Model validation            https://learn.microsoft.com/en-us/aspnet/core/mvc/mo
 Areas                       https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/areas
 Features                    https://learn.microsoft.com/en-us/aspnet/core/fundamentals/request-features
 Error Handling              https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling
+                            https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.filters.exceptionfilterattribute
+                            https://www.infoworld.com/article/2262767/how-to-implement-global-exception-handling-in-aspnet-core-mvc.html
+                            https://medium.com/@jelleverheyen/automatically-handle-exceptions-in-dotnet-core-api-2090d2e574dd
+
 Application Parts           https://learn.microsoft.com/en-us/aspnet/core/mvc/advanced/app-parts
 Razor Class Libraries       https://learn.microsoft.com/en-us/aspnet/core/razor-pages/ui-class
 IChangeToken                https://learn.microsoft.com/en-us/aspnet/core/fundamentals/change-tokens

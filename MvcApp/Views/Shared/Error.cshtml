@@ -1,28 +1,55 @@
 ﻿@model ErrorViewModel
+
+@using System.Text
+@using System.Diagnostics
+@using Microsoft.AspNetCore.Diagnostics
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Hosting
+
+@inject IWebHostEnvironment HostEnvironment
+
 @{
-    ViewData["Title"] = "Error"; 
+    ViewData["Title"] = "Error";
+    ErrorViewModel ErrorModel = Model != null ? Model : new ErrorViewModel();
+    ErrorModel.Update(Context, ViewData, HostEnvironment);
 }
 
-<div class="page tp-Selectable">
-    <h2>Error</h2>
+<div class="error-page">
 
-    <p><strong>Oups! something went wrong.</strong></p>
+    <style>
+        .error-page {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 0 25px;
+            min-height: 800px;
+            user-select: text;
+        }
+
+        pre,
+        code {
+            font-family: monospace;
+        }
+    </style>
+
+    <h1>Error</h1>
+
+    <p><strong>Oοps! something went wrong.</strong></p>
     <p><strong>An error occurred while processing your request.</strong></p>
     <p>We apologize for the error. </p>
     <p>Our staff will be immediately informed regarding the problem and we will try to resolved it as soon as possible. </p>
-    @if (!string.IsNullOrWhiteSpace(Model.RequestId))
+    @if (!string.IsNullOrWhiteSpace(ErrorModel.RequestId))
     {
-        <p><strong>Reference Id:</strong> <code>@Model.RequestId</code></p>
+        <p><strong>Reference Id: </strong> <code>@ErrorModel.RequestId</code></p>
     }
-    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    @if (!string.IsNullOrWhiteSpace(ErrorModel.ErrorMessage))
     {
-        <p><strong>Error Message:</strong></p>
-        <pre>
-            @Model.ErrorMessage
-        </pre>
+        <p><strong>Error Message: </strong><code>@ErrorModel.ErrorMessage</code></p>
+    }
+    @if (!string.IsNullOrWhiteSpace(ErrorModel.StackTrace))
+    {
+        <p><strong>Full Stack</strong></p>
+        <pre>@ErrorModel.StackTrace</pre>
     }
 </div>
-
-        
-
 
