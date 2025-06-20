@@ -51,6 +51,7 @@ global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.Cookies;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 
+global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.FileProviders;
 global using Microsoft.Extensions.Configuration;
@@ -79,6 +80,8 @@ global using AutoMapper;
 
 global using CommonLib;
 global using CommonLib.Entities;
+global using CommonLib.Logging;
+global using CommonLib.Logging.Providers;
 
 global using MvcApp.Library;
 global using MvcApp.Models;

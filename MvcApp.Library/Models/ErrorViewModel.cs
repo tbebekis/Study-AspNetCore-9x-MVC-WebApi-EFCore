@@ -22,6 +22,10 @@
             return SB.ToString();
         }
 
+        /// <summary>
+        /// Updates this instance's properties.
+        /// <para>It is called by the Error view.</para>
+        /// </summary>
         public void Update(HttpContext HttpContext, ViewDataDictionary ViewData, IWebHostEnvironment HostEnvironment)
         {
             // ● RequestId

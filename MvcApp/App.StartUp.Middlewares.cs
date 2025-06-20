@@ -1,11 +1,6 @@
 ﻿namespace MvcApp
 {
-    /*
-    Service Lifetime:           
-        ● Singleton : once per application
-        ● Scoped    : once per HTTP Request
-        ● Transient : each time is requested     
-     */
+
 
 
     static public partial class App
@@ -46,25 +41,25 @@
             app.UseExceptionHandler("/Home/Error");
 
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();            
+            app.UseHsts();
 
-
-            /*
-            app.UseHttpsRedirection();
-           app.UseStaticFiles();
-           // app.UseCookiePolicy();
-
-           app.UseRouting();
-           // app.UseRateLimiter();
-           // app.UseRequestLocalization();
-           // app.UseCors();
-
-           app.UseAuthentication();
-           app.UseAuthorization();
-           // app.UseSession();
-           // app.UseResponseCompression();
-           // app.UseResponseCaching(); 
-           */
+            /// the middleware order is very important.
+            /// SEE: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-9.0#middleware-order
+            /// 
+            /// app.UseHttpsRedirection();
+            /// app.UseStaticFiles();
+            /// app.UseCookiePolicy();
+            ///
+            /// app.UseRouting();
+            /// app.UseRateLimiter();
+            /// app.UseRequestLocalization();
+            /// app.UseCors();
+            ///
+            /// app.UseAuthentication();
+            /// app.UseAuthorization();
+            /// app.UseSession();
+            /// app.UseResponseCompression();
+            /// app.UseResponseCaching(); 
 
             app.UseHttpsRedirection();
             
@@ -95,20 +90,20 @@
 
             // ● Cookie Policy
             app.UseCookiePolicy(new CookiePolicyOptions {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                // If CheckConsentNeeded is set to true, then the IsEssential should be also set to true, for any Cookie's CookieOptions setting.
-                // SEE: https://stackoverflow.com/questions/52456388/net-core-cookie-will-not-be-set
+                /// This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                /// If CheckConsentNeeded is set to true, then the IsEssential should be also set to true, for any Cookie's CookieOptions setting.
+                /// SEE: https://stackoverflow.com/questions/52456388/net-core-cookie-will-not-be-set
                 CheckConsentNeeded = context => true,
 
-                // Set the secure flag, which Chrome's changes will require for SameSite none.
-                // Note this will also require you to be running on HTTPS.
+                /// Set the secure flag, which Chrome's changes will require for SameSite none.
+                /// Note this will also require you to be running on HTTPS.
                 MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None,
 
-                // Set the cookie to HTTP only which is good practice unless you really do need
-                // to access it client side in scripts.
+                /// Set the cookie to HTTP only which is good practice unless you really do need
+                /// to access it client side in scripts.
                 HttpOnly = HttpOnlyPolicy.Always,
 
-                // Add the SameSite attribute, this will emit the attribute with a value of none.
+                /// Add the SameSite attribute, this will emit the attribute with a value of none.
                 Secure = app.Environment.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always
             });
 
@@ -123,10 +118,10 @@
 
  
             // ● Request Localization 
-            // UseRequestLocalization initializes a RequestLocalizationOptions object. 
-            // On every request the list of RequestCultureProvider in the RequestLocalizationOptions is enumerated 
-            // and the first provider that can successfully determine the request culture is used.
-            // SEE: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization#localization-middleware
+            /// UseRequestLocalization initializes a RequestLocalizationOptions object. 
+            /// On every request the list of RequestCultureProvider in the RequestLocalizationOptions is enumerated 
+            /// and the first provider that can successfully determine the request culture is used.
+            /// SEE: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization#localization-middleware
             app.UseRequestLocalization((RequestLocalizationOptions options) =>
             {
                 var Cultures = Lib.GetSupportedCultures();

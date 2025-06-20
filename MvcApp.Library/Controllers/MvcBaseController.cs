@@ -1,4 +1,8 @@
-﻿namespace MvcApp.Library
+﻿
+
+using Microsoft.Extensions.Logging;
+
+namespace MvcApp.Library
 {
 
     /// <summary>
@@ -7,6 +11,7 @@
     public class MvcBaseController : Controller
     {
         MvcUserContext fUserContext;
+        ILogger fLogger;
 
         // ● serialize
         /// <summary>
@@ -103,6 +108,15 @@
             }
         }
 
+        /// <summary>
+        /// Creates and returns a logger.
+        /// </summary>
+        protected virtual ILogger CreateLogger(string Category = "")
+        {
+            Category = !string.IsNullOrWhiteSpace(Category) ? Category : this.GetType().Name;
+            ILogger Result = Lib.CreateLogger(Category);
+            return Result;
+        }
 
         // ●  actions 
         /// <summary>
@@ -122,6 +136,20 @@
             // can be used by overrides as
             // return NotYetInternal(SOME MESSAGE HERE); 
             return View("_NotYet", Text);
+        }
+
+        // ●  properties
+        /// <summary>
+        /// Returns the default logger of this instance.
+        /// </summary>
+        protected virtual ILogger Logger
+        {
+            get
+            {
+                if (fLogger == null)
+                    fLogger = CreateLogger();
+                return fLogger;
+            }
         }
 
         // ● construction

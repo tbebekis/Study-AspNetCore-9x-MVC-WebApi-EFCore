@@ -1,6 +1,7 @@
 ﻿global using System;
 global using System.Collections;
 global using System.Collections.Generic;
+global using System.Collections.Concurrent;
 global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
@@ -57,9 +58,21 @@ global using Microsoft.AspNetCore.Mvc.ModelBinding;
 global using Microsoft.AspNetCore.Mvc.ViewFeatures;
 global using Microsoft.AspNetCore.Mvc.Filters;
 
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Logging.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
 
 global using AutoMapper;
 global using CommonLib.Entities;
+global using CommonLib.Logging;
+
+
+
+
+
 
 
 

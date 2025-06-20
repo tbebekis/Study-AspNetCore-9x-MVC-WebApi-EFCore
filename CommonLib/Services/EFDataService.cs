@@ -131,10 +131,17 @@
         /// </summary>
         protected virtual T Delete(DbContext DataContext, T Entity)
         {
-            EntityEntry<T> Entry = DataContext.Remove(Entity);
+            EntityEntry<T> Entry = DataContext.Remove(Entity);            
             return Entry.Entity;
         }
-
+        /// <summary>
+        /// Deletes a range of entities
+        /// <para>NOTE: it can be used from inside a transaction.</para>
+        /// </summary>
+        protected virtual void DeleteRange(DbContext DataContext, IEnumerable<T> Entities)
+        {
+            DataContext.RemoveRange(Entities);
+        }
 
         // ● construction
         /// <summary>
@@ -592,6 +599,33 @@
                             await DataContext.SaveChangesAsync();
                         }
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                Result.ExceptionResult(ex);
+            }
+
+            return Result;
+        }
+        /// <summary>
+        /// Deletes a range of entities
+        /// <para>NOTE: it can be used from inside a transaction.</para>
+        /// </summary>
+        public virtual async Task<DataResult> DeleteRangeAsync(IEnumerable<T> Entities)
+        {
+            DataResult Result = new();
+            try
+            {
+                CheckCRUDMode(CRUDMode.Delete);
+
+                using (var DataContext = GetDataContext())
+                {
+                    if (Entities.Count() > 0)
+                    {
+                        DeleteRange(DataContext, Entities);
+                        await DataContext.SaveChangesAsync();
+                    } 
                 }
             }
             catch (Exception ex)

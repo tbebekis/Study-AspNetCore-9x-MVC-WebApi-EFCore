@@ -1,5 +1,20 @@
 ﻿namespace CommonLib.Entities
 {
+
+    /// <summary>
+    /// <para><strong>Blob Types</strong></para>
+    /// <code>
+    /// ---------------------------------------------------------------------------------
+    ///  Server         Blob                                    Text Blob
+    /// ---------------------------------------------------------------------------------
+    ///   MsSql         image                                   nvarchar(max)
+    ///   FirebirdSql   BLOB SUB_TYPE 0 SEGMENT SIZE 80         BLOB SUB_TYPE TEXT SEGMENT SIZE 80
+    ///   MySql         LONGBLOB                                LONGTEXT  CHARACTER SET UTF8
+    ///   Oracle        blob                                    nclob
+    ///   PostgreSql    bytea                                   text
+    ///   Sqlite        blob                                    text 
+    /// </code>
+    /// </summary>
     [PrimaryKey(nameof(Id))]
     public class BaseEntity 
     {

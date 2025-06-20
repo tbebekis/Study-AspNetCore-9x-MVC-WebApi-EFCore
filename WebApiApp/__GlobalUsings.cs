@@ -37,6 +37,9 @@ global using Scalar.AspNetCore;
 
 global using CommonLib;
 global using CommonLib.Entities;
+global using CommonLib.Logging;
+global using CommonLib.Logging.Providers;
+
 global using WebApiApp.Library;
 global using WebApiApp.Models;
 

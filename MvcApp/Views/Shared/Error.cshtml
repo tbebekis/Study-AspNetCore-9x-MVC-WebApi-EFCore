@@ -14,42 +14,31 @@
     ErrorModel.Update(Context, ViewData, HostEnvironment);
 }
 
-<div class="error-page">
-
-    <style>
-        .error-page {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            padding: 0 25px;
-            min-height: 800px;
-            user-select: text;
-        }
-
-        pre,
-        code {
-            font-family: monospace;
-        }
-    </style>
-
+<div class="page">
+ 
     <h1>Error</h1>
 
     <p><strong>Oοps! something went wrong.</strong></p>
     <p><strong>An error occurred while processing your request.</strong></p>
     <p>We apologize for the error. </p>
     <p>Our staff will be immediately informed regarding the problem and we will try to resolved it as soon as possible. </p>
+
     @if (!string.IsNullOrWhiteSpace(ErrorModel.RequestId))
     {
         <p><strong>Reference Id: </strong> <code>@ErrorModel.RequestId</code></p>
     }
+
     @if (!string.IsNullOrWhiteSpace(ErrorModel.ErrorMessage))
     {
         <p><strong>Error Message: </strong><code>@ErrorModel.ErrorMessage</code></p>
     }
+
     @if (!string.IsNullOrWhiteSpace(ErrorModel.StackTrace))
     {
         <p><strong>Full Stack</strong></p>
-        <pre>@ErrorModel.StackTrace</pre>
+        <div style="overflow: scroll;">
+            <pre>@ErrorModel.StackTrace</pre>
+        </div>        
     }
 </div>
 

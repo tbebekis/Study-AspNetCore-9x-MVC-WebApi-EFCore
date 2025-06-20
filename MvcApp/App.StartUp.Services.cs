@@ -14,8 +14,8 @@
             Result.ViewName = "Error";
             Result.ViewData = new ViewDataDictionary(Context.ModelMetadataProvider, Context.ExceptionContext.ModelState);
             Result.ViewData.Model = Model;
-            //Result.ViewData.Add("Exception", Context.ExceptionContext.Exception);
-            //Result.ViewData.Add("RequestId", Context.RequestId);
+            // Result.ViewData.Add("Exception", Context.ExceptionContext.Exception);
+            // Result.ViewData.Add("RequestId", Context.RequestId);
             Context.ExceptionContext.Result = Result;
         }
         static void GlobalErrorHandlerAjax(ActionExceptionFilterContext Context)
@@ -23,9 +23,9 @@
             DataResult Result = new();
             Result.ExceptionResult(Context.ExceptionContext.Exception);
 
-            // NO, we do NOT want an invalid HTTP StatusCode. It is a valid HTTP Response.
-            // We just have an action result with errors, so any error should be recorded by our HttpActionResult and delivered to the client.
-            // context.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError; 
+            /// NO, we do NOT want an invalid HTTP StatusCode. It is a valid HTTP Response.
+            /// We just have an action result with errors, so any error should be recorded by our HttpActionResult and delivered to the client.
+            /// context.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError; 
             Context.ExceptionContext.HttpContext.Response.ContentType = "application/json";
             Context.ExceptionContext.Result = new JsonResult(Result);
         }
@@ -44,21 +44,36 @@
         /// Add services to the container.
         /// </summary>
         static public void AddServices(WebApplicationBuilder builder)
-        {         
+        {
+
+            /// Service Lifetime:           
+            /// ● Singleton : once per application
+            /// ● Scoped    : once per HTTP Request
+            /// ● Transient : each time is requested   
+
 
             // ● AppSettings
             App.Configuration = builder.Configuration;
             builder.Configuration.Bind(nameof(AppSettings), Lib.Settings);
 
+            // ● logging
+            builder.Logging.ClearProviders()
+                .AddConsole()
+                .AddFileLogger()
+                .AddDatabaseLogger()
+                ;
+
             // ● global exception handler
-            //builder.Services.AddExceptionHandler<MvcExceptionHandler>();
-            //builder.Services.AddProblemDetails();
+            /// NOTE: we do NOT need this.
+            /// Actually any error ends up in the Error view, because of the app.UseExceptionHandler("/Home/Error"); setting.
+            // builder.Services.AddExceptionHandler<GlobalExceptionHandlerMvc>();
+            // builder.Services.AddProblemDetails();
 
             // ● DbContext
-            // AddDbContextPool() singleton service
-            // AddDbContext() scoped servicea
-            // SEE: https://learn.microsoft.com/en-us/ef/core/performance/advanced-performance-topics
-            //builder.Services.AddDbContextPool<AppDbContext>(context => context.UseSqlite(), poolSize: 1024);
+            /// AddDbContextPool() singleton service
+            /// AddDbContext() scoped servicea
+            /// SEE: https://learn.microsoft.com/en-us/ef/core/performance/advanced-performance-topics
+            /// builder.Services.AddDbContextPool<AppDbContext>(context => context.UseSqlite(), poolSize: 1024);
             builder.Services.AddDbContext<DataContext>();
             RBAC.Initialize(() => new DataContext());
 
@@ -68,6 +83,10 @@
             builder.Services.AddScoped(typeof(AppDataService<>));
             builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
+            // ● provide the proper service to the database logger
+            DatabaseLoggerProvider.GetServiceFunc = () => new DatabaseLoggerService();
+
+            // ● provide the call-back for getting user permissions
             PermissionAuthorizationHandler.GetUserPermissionsFunc = RBAC.GetUserPermissionListForMvc;
  
             // ● HttpContext - NOTE: is singleton
@@ -77,8 +96,8 @@
             builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();  // see: https://github.com/aspnet/mvc/issues/3936
 
             // ● Memory Cache - NOTE: is singleton
-            // NOTE: Distributed Cache is required for Session to function properly
-            // SEE: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state#configure-session-state
+            /// NOTE: Distributed Cache is required for Session to function properly
+            /// SEE: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state#configure-session-state
             builder.Services.AddDistributedMemoryCache(); // AddMemoryCache(); 
 
             // ● Authentication (Cookie) 

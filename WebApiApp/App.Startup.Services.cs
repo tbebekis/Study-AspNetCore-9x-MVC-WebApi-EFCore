@@ -31,6 +31,13 @@
             App.Configuration = builder.Configuration;
             builder.Configuration.Bind(nameof(AppSettings), Lib.Settings);
 
+            // ● logging
+            builder.Logging.ClearProviders()
+                .AddConsole()
+                .AddFileLogger()
+                .AddDatabaseLogger()
+                ;
+
             // ● DbContext
             // AddDbContextPool() singleton service
             // AddDbContext() scoped servicea
@@ -43,12 +50,16 @@
             builder.Services.AddScoped<ApiClientService>();
             builder.Services.AddScoped<ApiClientContext>();     // current Identity context
             builder.Services.AddScoped(typeof(AppDataService<>));
-            builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();  
+            builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
+            // ● provide the proper service to the database logger
+            DatabaseLoggerProvider.GetServiceFunc = () => new DatabaseLoggerService();
+
+            // ● provide the call-back for getting user permissions
             PermissionAuthorizationHandler.GetUserPermissionsFunc = RBAC.GetUserPermissionListForWebApi;            
 
             // ● global exception handler
-            builder.Services.AddExceptionHandler<WebApiExceptionHandler>();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandlerWebApi>();
             builder.Services.AddProblemDetails();
 
             // ● HttpContext - NOTE: is singleton

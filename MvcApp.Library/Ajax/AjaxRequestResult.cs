@@ -9,7 +9,7 @@
     {
         Dictionary<string, object> Properties = new Dictionary<string, object>();
 
-        /* construction */
+        // ● construction
         /// <summary>
         /// Constructor
         /// </summary>
@@ -24,7 +24,7 @@
             this.OperationName = OperationName;
         }
 
-        /* public */
+        // ● public
         /// <summary>
         /// Returns the packet object.
         /// <para>The packet object goes to <see cref="HttpActionResult.Packet"/> property and it is the actual information that is returned to the caller.</para>
@@ -56,7 +56,7 @@
             return Properties.ContainsKey(Key);
         }
 
-        /* properties */
+        // ● properties
         /// <summary>
         /// Optional. The name of the request/response operation, if any, else null.
         /// </summary>

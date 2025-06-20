@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
-
-namespace MvcApp.Controllers
+﻿namespace MvcApp.Controllers
 {
     /// <summary>
     /// Home Controller
@@ -126,14 +124,13 @@ namespace MvcApp.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            // the view gathers all error information
+            // the Error view gathers all error information
             return View();
         }
 
         [HttpGet("/plugin-test", Name = "PluginTest")]
         public IActionResult PluginTest()
         {
-            throw new Exception("error");
             return View();
         }
 

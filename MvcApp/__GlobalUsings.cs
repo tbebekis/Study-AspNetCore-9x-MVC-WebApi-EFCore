@@ -42,6 +42,8 @@ global using Microsoft.Extensions.Caching.Memory;
 
 global using CommonLib;
 global using CommonLib.Entities;
+global using CommonLib.Logging;
+global using CommonLib.Logging.Providers;
 
 global using MvcApp.Library;
 global using MvcApp.Models;

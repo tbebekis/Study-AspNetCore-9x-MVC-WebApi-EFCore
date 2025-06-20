@@ -71,6 +71,8 @@ global using AutoMapper;
 
 global using CommonLib;
 global using CommonLib.Entities;
+global using CommonLib.Logging;
+global using CommonLib.Logging.Providers;
 
 global using WebApiApp.Models;
 
