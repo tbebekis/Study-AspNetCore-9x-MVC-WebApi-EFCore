@@ -40,7 +40,7 @@
     ///  }
     /// </code>
     /// </summary>
-    public class FileLoggerOptions
+    public class FileLoggerOptions: LoggerOptions
     {
         string fFolder;
         string fFileName;
@@ -56,10 +56,6 @@
         }
 
         // ● properties 
-        /// <summary>
-        /// The active log level. Defaults to LogLevel.Information
-        /// </summary>
-        public LoggerLevel LogLevel { get; set; } = new LoggerLevel();
         /// <summary>
         /// The folder where log files should be placed. 
         /// <para>Defaluts to <c>BIN_PATH\Logs</c> where <c>BIN_PATH</c> is the <see cref="System.AppContext.BaseDirectory"/></para>

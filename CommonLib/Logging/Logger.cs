@@ -2,8 +2,15 @@
 {
     /// <summary>
     /// Represents an object that handles log information.
-    /// <para>This class does NOT save log information in a medium. </para>
-    /// <para>Its responsibility is to create a log info, fill the properties of that log info, and then passes it to the associated logger provider.</para>
+    /// <para></para>
+    /// <para>Implementation of the <see cref="ILogger"/> interface.</para>
+    /// <para>This class does <strong>NOT</strong> write or display log information in a medium. </para>
+    /// <para>Its responsibility is to create just a <see cref="LogEntry"/> instance, fill the properties of that log entry, 
+    /// and then pass it to the associated <see cref="LoggerProvider"/> logger provider.</para>
+    /// <para>There is no need to have any other implementation of the <see cref="ILogger"/> interface.</para>
+    /// <para>The <c>Log()</c> method of this logger just prepares a <see cref="LogEntry"/> instance, representing a unit of log information,
+    /// and then it calls the <see cref="LoggerProvider.WriteLogAsync(LogEntry)"/> abstract method.</para>
+    /// <para>The <see cref="LoggerProvider.WriteLogAsync(LogEntry)"/> writes or displays the <see cref="LogEntry"/> according to its own logic. </para>
     /// </summary>
     internal class Logger : ILogger
     {
@@ -41,31 +48,31 @@
         {
             if ((this as ILogger).IsEnabled(logLevel))
             {
-                LogEntry Info = new LogEntry();
-                Info.Category = this.Category;
-                Info.Level = logLevel;
+                LogEntry Entry = new LogEntry();
+                Entry.Category = this.Category;
+                Entry.Level = logLevel;
                 // well, the passed default formatter function does not takes the exception into account
                 // SEE:  https://github.com/aspnet/Extensions/blob/master/src/Logging/Logging.Abstractions/src/LoggerExtensions.cs
-                Info.Text = exception?.Message ?? state.ToString(); // formatter(state, exception)
-                Info.Exception = exception;
-                Info.EventId = eventId;
-                Info.State = state;
+                Entry.Text = exception?.Message ?? state.ToString(); // formatter(state, exception)
+                Entry.Exception = exception;
+                Entry.EventId = eventId;
+                Entry.State = state;
 
                 // well, you never know what it really is
                 if (state is string)
                 {
-                    Info.StateText = state.ToString();
+                    Entry.StateText = state.ToString();
                 }
                 // in case we have to do with a message template, lets get the keys and values (for Structured Logging providers)
                 // SEE: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging#log-message-template
                 // SEE: https://softwareengineering.stackexchange.com/questions/312197/benefits-of-structured-logging-vs-basic-logging
                 else if (state is IEnumerable<KeyValuePair<string, object>> Properties)
                 {
-                    Info.StateProperties = new Dictionary<string, object>();
+                    Entry.StateProperties = new Dictionary<string, object>();
 
                     foreach (KeyValuePair<string, object> item in Properties)
                     {
-                        Info.StateProperties[item.Key] = item.Value;
+                        Entry.StateProperties[item.Key] = item.Value;
                     }
                 }
 
@@ -74,11 +81,11 @@
                 {
                     Provider.ScopeProvider.ForEachScope((value, loggingProps) =>
                     {
-                        if (Info.Scopes == null)
-                            Info.Scopes = new List<LogScopeInfo>();
+                        if (Entry.Scopes == null)
+                            Entry.Scopes = new List<LogScopeInfo>();
 
                         LogScopeInfo Scope = new LogScopeInfo();
-                        Info.Scopes.Add(Scope);
+                        Entry.Scopes.Add(Scope);
 
                         if (value is string)
                         {
@@ -102,7 +109,7 @@
                 Task.Run(async () => {
                     try
                     {
-                        await Provider.WriteLogAsync(Info);
+                        await Provider.WriteLogAsync(Entry);
                     }
                     catch  
                     {

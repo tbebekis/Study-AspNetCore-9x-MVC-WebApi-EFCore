@@ -2,7 +2,8 @@
 {
     /// <summary>
     /// The information of a log entry.
-    /// <para>The logger creates an instance of this class when its Log() method is called, fills the properties and then passes the info to the provider calling WriteLog(). </para>
+    /// <para>The logger creates an instance of this class when its Log() method is called, 
+    /// fills the properties and then passes the info to the provider calling WriteLog(). </para>
     /// </summary>
     public class LogEntry
     {

@@ -6,6 +6,20 @@
     {
         ProductService Service = new();
 
+        void TestLogger()
+        {
+            int CustomerId = 123;
+            int OrderId = 456;
+
+            using (Logger.BeginScope("THIS IS A SCOPE"))
+            {
+                Logger.LogCritical("Customer {CustomerId} order {OrderId} is completed.", CustomerId, OrderId);
+                Logger.LogWarning("Just a warning");
+
+                 
+            }
+        }
+
         // ● Search (with paging)
         [Permission("Product.View")]
         [HttpGet("search", Name = "Product.Search")]
@@ -41,16 +55,7 @@
         [HttpGet("list", Name = "Product.List")]
         public async Task<ActionResult> Index()
         {
-            /*
-            int CustomerId = 123;
-            int OrderId = 456;
-
-            using (Logger.BeginScope("THIS IS A SCOPE"))
-            {
-                Logger.LogCritical("Customer {CustomerId} order {OrderId} is completed.", CustomerId, OrderId);
-                Logger.LogWarning("Just a warning");
-            }
-            */
+            TestLogger();
 
             // get the data
             ListResult<Product> ListResult = await Service.GetAllProducts();

@@ -3,8 +3,8 @@
 
     /// <summary>
     /// A base logger provider class. 
-    /// <para>A logger provider essentialy represents the medium where log information is saved.</para>
-    /// <para>This class may serve as base class in writing a file or database logger provider.</para>
+    /// <para>A logger provider essentialy represents the medium where log information is saved or displayed.</para>
+    /// <para>This class may serve as base class in writing a file or a database logger provider.</para>
     /// </summary>
     public abstract class LoggerProvider : IDisposable, ILoggerProvider, ISupportExternalScope
     {
@@ -60,13 +60,15 @@
         protected virtual void Dispose(bool disposing)
         {
         }
+        protected LoggerOptions Options { get; }
 
         // ● construction 
         /// <summary>
         /// Constructor
         /// </summary>
-        public LoggerProvider()
+        public LoggerProvider(LoggerOptions Options)
         {
+            this.Options = Options;
         }
         /// <summary>
         /// Destructor.
@@ -84,7 +86,17 @@
         /// Returns true if a specified log level is enabled.
         /// <para>Called by logger instances created by this provider.</para>
         /// </summary>
-        public abstract bool IsEnabled(LogLevel logLevel);
+        /// <summary>
+        /// Checks if the given logLevel is enabled. It is called by the Logger.
+        /// </summary>
+        public virtual bool IsEnabled(LogLevel logLevel)
+        {
+            bool Result = logLevel != LogLevel.None
+               && this.Options.LogLevel.Default != LogLevel.None
+               && Convert.ToInt32(logLevel) >= Convert.ToInt32(this.Options.LogLevel.Default);
+
+            return Result;
+        }
         /// <summary>
         /// The loggers do not actually log the information in any medium.
         /// Instead the call their provider WriteLog() method, passing the gathered log information.
@@ -112,5 +124,6 @@
         /// Returns true when this instance is disposed.
         /// </summary> 
         public bool IsDisposed { get; protected set; }
+        
     }
 }

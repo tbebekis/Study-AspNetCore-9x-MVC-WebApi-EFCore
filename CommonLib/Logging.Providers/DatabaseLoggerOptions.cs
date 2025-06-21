@@ -37,7 +37,7 @@
     ///  }
     /// </code>
     /// </summary>
-    public class DatabaseLoggerOptions
+    public class DatabaseLoggerOptions: LoggerOptions
     {
         int fRetainPolicyInDays;
 
@@ -49,12 +49,7 @@
         {
         }
 
-        // ● properties 
-        /// <summary>
-        /// The active log level. Defaults to LogLevel.Information
-        /// </summary>
-        public LoggerLevel LogLevel { get; set; } = new LoggerLevel();
- 
+        // ● properties  
         /// <summary>
         /// The maximum days of log files to retain. Defaults to 7.
         /// </summary>

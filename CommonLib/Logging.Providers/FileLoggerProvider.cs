@@ -19,98 +19,49 @@
     public class FileLoggerProvider : LoggerProvider
     {
         // ● private
-        bool Terminated;
+        ulong Counter = 0;
         WriteLineFile LogFile;
-        ConcurrentQueue<LogEntry> LogEntryQueue = new ConcurrentQueue<LogEntry>();
+
+        /// <summary>
+        /// Returns the settings
+        /// </summary>
+        FileLoggerOptions Settings => Options as FileLoggerOptions; 
  
-        /// <summary>
-        /// A thread proc handling the writing to the log file
-        /// </summary>
-        void ThreadProc()
-        {
-            Task.Run(() => {
-                ulong Counter = 0;
-                while (!Terminated)
-                {
-                    try
-                    {
-                        LogEntry Entry = null;
-                        if (LogEntryQueue.TryDequeue(out Entry))
-                        {
-                            if (LogFile == null)
-                            {
-                                LogFile = new WriteLineFile(Settings.Folder, Settings.FileName, LogEntry.LineCaptions, Settings.MaxSizeInKiloBytes);
-                            }
-
-                            string Line = Entry.AsLine;
-                            LogFile.WriteLine(Line);
-
-                            Counter = Interlocked.Increment(ref Counter);
-                            if (Counter % 100 == 0)
-                            {
-                                LogFile.DeleteFilesOlderThan(Settings.RetainPolicyInDays);
-                            }
-
-                            if (Counter > 10000 && (Counter >= (ulong.MaxValue - 1000)))
-                                Counter = 0;
-                        }
-
-                        System.Threading.Thread.Sleep(300);
-                    }
-                    catch // (Exception ex)
-                    {
-                    }
-                }
-
-            });
-        }
-
-        // ● overrides
-        /// <summary>
-        /// Disposes the options change toker. IDisposable pattern implementation.
-        /// </summary>
-        protected override void Dispose(bool disposing)
-        {
-            Terminated = true;
-            base.Dispose(disposing);
-        }
-
         // ● construction
         /// <summary>
         /// Constructor
         /// </summary>
         public FileLoggerProvider(FileLoggerOptions Settings)
+            : base(Settings)
         {
-            this.Settings = Settings;
-            ThreadProc();
         }
 
         // ● public
-        /// <summary>
-        /// Checks if the given logLevel is enabled. It is called by the Logger.
-        /// </summary>
-        public override bool IsEnabled(LogLevel logLevel)
-        {
-            bool Result = logLevel != LogLevel.None
-               && this.Settings.LogLevel.Default != LogLevel.None
-               && Convert.ToInt32(logLevel) >= Convert.ToInt32(this.Settings.LogLevel.Default);
-
-            return Result;
-        }
         /// <summary>
         /// Writes the specified log information to a log file.
         /// </summary>
         public override async Task WriteLogAsync(LogEntry Entry)
         {
-            LogEntryQueue.Enqueue(Entry);
-            await Task.CompletedTask;
-        }
+            if (LogFile == null)
+            {
+                LogFile = new WriteLineFile(Settings.Folder, Settings.FileName, LogEntry.LineCaptions, Settings.MaxSizeInKiloBytes);
+            }
 
-        // ● properties
-        /// <summary>
-        /// Returns the settings
-        /// </summary>
-        internal FileLoggerOptions Settings { get; private set; }
+            string Line = Entry.AsLine;
+            LogFile.WriteLine(Line);
+
+            Counter = Interlocked.Increment(ref Counter);
+            if (Counter % 100 == 0)
+            {
+                LogFile.DeleteFilesOlderThan(Settings.RetainPolicyInDays);
+            }
+
+            if (Counter > 10000 && (Counter >= (ulong.MaxValue - 1000)))
+                Counter = 0;
+
+            await Task.CompletedTask;
+        } 
+
     }
 }
 

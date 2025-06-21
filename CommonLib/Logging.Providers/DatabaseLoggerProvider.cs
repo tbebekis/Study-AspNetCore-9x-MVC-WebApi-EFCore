@@ -20,30 +20,24 @@
     {
         // ● private
         ulong Counter = 0;
-        IDatabaseLoggerService Service; 
- 
+        IDatabaseLoggerService Service;
+
+        /// <summary>
+        /// Returns the settings
+        /// </summary>
+        DatabaseLoggerOptions Settings => Options as DatabaseLoggerOptions;
+
 
         // ● construction
         /// <summary>
         /// Constructor
         /// </summary>
         public DatabaseLoggerProvider(DatabaseLoggerOptions Settings)
+            : base(Settings)
         {
-            this.Settings = Settings;
         }
 
         // ● public
-        /// <summary>
-        /// Checks if the given logLevel is enabled. It is called by the Logger.
-        /// </summary>
-        public override bool IsEnabled(LogLevel logLevel)
-        {
-            bool Result = logLevel != LogLevel.None
-               && this.Settings.LogLevel.Default != LogLevel.None
-               && Convert.ToInt32(logLevel) >= Convert.ToInt32(this.Settings.LogLevel.Default);
-
-            return Result;
-        }
         /// <summary>
         /// Writes the specified log information to a log file.
         /// </summary>
@@ -69,11 +63,6 @@
         }
 
         // ● properties
-        /// <summary>
-        /// Returns the settings
-        /// </summary>
-        internal DatabaseLoggerOptions Settings { get; private set; }
-
         /// <summary>
         /// A call-back returning the data service used in writing to the database.
         /// </summary>
