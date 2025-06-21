@@ -34,14 +34,20 @@ global using Microsoft.AspNetCore.Authentication.Cookies;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.StaticFiles;
 global using Microsoft.AspNetCore.CookiePolicy;
+global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.FileProviders;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.Extensions.Caching.Memory;
 
+global using Microsoft.Extensions.Diagnostics.HealthChecks;
+global using Microsoft.Extensions.DependencyInjection;
+ 
+
 global using CommonLib;
 global using CommonLib.Entities;
+global using CommonLib.HealthChecks;
 global using CommonLib.Logging;
 global using CommonLib.Logging.Providers;
 

@@ -6,7 +6,11 @@
     {
         ProductService Service = new();
 
-        void TestLogger()
+        protected void Throw()
+        {
+            throw new Exception("This is a test exception.");
+        }
+        protected void TestLogger()
         {
             int CustomerId = 123;
             int OrderId = 456;
@@ -14,9 +18,7 @@
             using (Logger.BeginScope("THIS IS A SCOPE"))
             {
                 Logger.LogCritical("Customer {CustomerId} order {OrderId} is completed.", CustomerId, OrderId);
-                Logger.LogWarning("Just a warning");
-
-                 
+                Logger.LogWarning("Just a warning");                 
             }
         }
 
@@ -55,7 +57,8 @@
         [HttpGet("list", Name = "Product.List")]
         public async Task<ActionResult> Index()
         {
-            TestLogger();
+            //TestLogger();
+            //Throw();
 
             // get the data
             ListResult<Product> ListResult = await Service.GetAllProducts();

@@ -44,6 +44,7 @@ global using Microsoft.AspNetCore.Mvc.ViewFeatures;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.FileProviders;
@@ -53,7 +54,7 @@ global using Microsoft.Extensions.Caching;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.Extensions.Options;
-
+global using Microsoft.Extensions.Logging;
 
 global using Microsoft.IdentityModel.Tokens;
 

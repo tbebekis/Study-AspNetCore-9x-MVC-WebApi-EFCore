@@ -1,4 +1,7 @@
-﻿namespace MvcApp
+﻿using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.Xml;
+
+namespace MvcApp
 {
     static public partial class App
     {
@@ -38,6 +41,32 @@
                 );
         }
 
+        static HealthCheckResult DataContextGetAllProductsCheckFunc(object Info)
+        {     
+            try
+            {
+                long StartTime = Stopwatch.GetTimestamp();
+
+                using (var DataContext = new DataContext())
+                {
+                    DbSet<Product> DbSet = DataContext.Set<Product>();
+                    var List = DbSet.AsNoTracking().ToList();
+                }
+
+                int MaxSeconds = Convert.ToInt32(Info);
+
+                TimeSpan ElapsedTime = Stopwatch.GetElapsedTime(StartTime);
+                if (ElapsedTime.TotalSeconds > MaxSeconds)
+                    return new HealthCheckResult(HealthStatus.Unhealthy, "Operation exceeds the specified timeout.");
+
+                return new HealthCheckResult(HealthStatus.Healthy, "Operation timeout not exceeded.");
+
+            }
+            catch (Exception ex)
+            {
+                return new HealthCheckResult(HealthStatus.Unhealthy, "An exception is thrown", ex);
+            }   
+        }
 
         // ● public
         /// <summary>
@@ -62,6 +91,17 @@
                 .AddFileLogger()
                 .AddDatabaseLogger()
                 ;
+
+            // ● health checks
+            builder.Services.AddHealthChecks()
+                .AddCheck("Environment", new EnvironmentHealthCheck(), tags: ["host"])
+                .AddCheck("Url Check", new UrlHealthCheck("https://google.com", () => Lib.GetService<IHttpClientFactory>()))
+                .AddCheck("IP Check", new PingHealthCheck("8.8.8.8"))
+                .AddCheck("DataContext GetAllProducts Check", new GenericHealthCheck(DataContextGetAllProductsCheckFunc, 60), tags: ["DbContext"])
+                ;
+
+            //.AddMyHealthCheck()
+            //.AddCheck<ServerHealthCheck>("general", tags: ["server"])
 
             // ● global exception handler
             /// NOTE: we do NOT need this.

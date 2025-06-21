@@ -52,6 +52,7 @@
         {
             List<AppPermission> List = new List<AppPermission>
             {
+                new AppPermission("Admin"),
                 new AppPermission(AppPermission.RbacAdmin),
                 new AppPermission("Product.Insert"),
                 new AppPermission("Product.Edit"  ),

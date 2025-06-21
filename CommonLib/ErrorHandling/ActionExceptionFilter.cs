@@ -1,4 +1,6 @@
-﻿namespace CommonLib
+﻿using Microsoft.AspNetCore.Mvc.Abstractions;
+
+namespace CommonLib
 {
     /// <summary>
     /// Global exception filter for controller actions. Use this instead of try-catch blocks inside action methods.    
@@ -16,14 +18,16 @@
     {
         IWebHostEnvironment HostEnvironment;
         IModelMetadataProvider ModelMetadataProvider;
+        ILogger Logger;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public ActionExceptionFilter(IWebHostEnvironment HostEnvironment, IModelMetadataProvider ModelMetadataProvider)
+        public ActionExceptionFilter(IWebHostEnvironment HostEnvironment, IModelMetadataProvider ModelMetadataProvider, ILogger<ActionExceptionFilter> logger)
         {
             this.HostEnvironment = HostEnvironment;
             this.ModelMetadataProvider = ModelMetadataProvider;
+            this.Logger = logger;
         }
 
 
@@ -52,7 +56,11 @@
             }
  
             context.ExceptionHandled = true;
-            // TODO: Logger.Error(ActionDescriptor.ControllerName, ActionDescriptor.ActionName, RequestId, context.Exception);
+
+            string Controller = FilterContext.ActionDescriptor.ControllerName;
+            string Action = FilterContext.ActionDescriptor.ActionName;
+
+            Logger.LogError(context.Exception, "Exception in Controller: {Controller}, Action: {Action}", Controller, Action);
         }
 
         /* properties */

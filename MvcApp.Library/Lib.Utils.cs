@@ -97,6 +97,14 @@
         }
 
         /// <summary>
+        /// Throws an exception.
+        /// </summary>
+        static public void Throw(string ErrorMessage)
+        {
+            throw new Exception(ErrorMessage);
+        }
+
+        /// <summary>
         /// Returns a localized string based on a specified resource key, e.g. Customer, and the culture code of the current request, e.g. el-GR
         /// </summary>
         static public string Localize(string Key, string Default = "")

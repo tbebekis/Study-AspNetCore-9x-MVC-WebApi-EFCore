@@ -1,4 +1,6 @@
-﻿namespace MvcApp
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+
+namespace MvcApp
 {
 
 
@@ -39,6 +41,16 @@
             // ● error handling
             // we handle errors in the same page for all environments
             app.UseExceptionHandler("/Home/Error");
+
+            app.MapHealthChecks("/health-check", new HealthCheckOptions() {
+                ResponseWriter = (HttpContext, HealthReport) =>
+                {
+                    // write all health check results to the response stream
+                    HttpContext.Response.ContentType = "application/json";
+                    string JsonText = HealthCheckReport.GetReportText(HttpContext, HealthReport);// JsonSerializer.Serialize(HealthReport.Entries, new JsonSerializerOptions() { WriteIndented  = true});
+                    return HttpContext.Response.WriteAsync(JsonText);
+                }
+            });
 
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();

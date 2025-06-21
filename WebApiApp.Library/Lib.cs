@@ -104,6 +104,17 @@
             return Result;
         }
 
+        /// <summary>
+        /// Creates and returns a logger.
+        /// </summary>
+        static public ILogger CreateLogger(string Category = "")
+        {
+            ILoggerFactory LoggerFactory = Lib.GetService<ILoggerFactory>();
+            Category = !string.IsNullOrWhiteSpace(Category) ? Category : "Global";
+            ILogger Result = LoggerFactory.CreateLogger(Category);
+            return Result;
+        }
+
         // ● miscs
         /// <summary>
         /// Returns the list of supported cultures.

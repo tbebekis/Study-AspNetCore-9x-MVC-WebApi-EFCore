@@ -1,8 +1,4 @@
-﻿
-
-using Microsoft.Extensions.Logging;
-
-namespace MvcApp.Library
+﻿namespace MvcApp.Library
 {
 
     /// <summary>

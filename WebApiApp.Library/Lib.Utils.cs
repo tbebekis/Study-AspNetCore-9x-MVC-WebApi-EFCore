@@ -96,7 +96,13 @@
             return GenId(false);
         }
 
- 
+        /// <summary>
+        /// Throws an exception.
+        /// </summary>
+        static public void Throw(string ErrorMessage)
+        {
+            throw new Exception(ErrorMessage);
+        }
 
         // ● properties
         static public bool IsWindows => Environment.OSVersion.Platform == PlatformID.Win32NT || Environment.OSVersion.Platform == PlatformID.Win32Windows || Environment.OSVersion.Platform == PlatformID.WinCE;

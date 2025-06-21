@@ -3,7 +3,6 @@
     /// <summary>
     /// Home Controller
     /// </summary>
-    [AllowAnonymous]
     public class HomeController : MvcBaseControllerApp
     {
         
@@ -72,7 +71,7 @@
 
             return View("Login", Model); // something went wrong 
         }
-        [Route("/logout", Name = "Logout")]
+        [Route("/logout", Name = "Logout"), Authorize]
         public async Task<IActionResult> Logout()
         {
             if (UserContext.IsAuthenticated)
@@ -119,6 +118,7 @@
             await Task.CompletedTask;
             return View();
         }
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

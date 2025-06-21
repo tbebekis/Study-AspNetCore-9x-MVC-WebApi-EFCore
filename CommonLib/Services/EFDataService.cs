@@ -1,4 +1,6 @@
-﻿namespace CommonLib
+﻿using System.Runtime.CompilerServices;
+
+namespace CommonLib
 {
 
     /// <summary>
@@ -17,6 +19,11 @@
             bool IsSet = (AllowedCRUDModes & Mode) == Mode;
             if (!IsSet)
                 throw new ApplicationException($"CRUD mode not supported: {Mode}");
+        }
+        protected virtual void HandleException(Exception Ex, DataResult DataResult, [CallerMemberName] string CallerName = "")
+        {
+            if (DataResult != null) 
+                DataResult.ExceptionResult(Ex);
         }
 
         // ● (overridables) get entity lists    
@@ -210,7 +217,10 @@
             }
         }
 
-
+        /// <summary>
+        /// Returns a list of <see cref="SelectListItem"/> items.
+        /// <para><strong>CAUTION: </strong> The Entity must implement the <see cref="ILookUpEntity"/> interface or an exception is thrown. </para>
+        /// </summary>
         public virtual async Task<List<SelectListItem>> GetSelectList(string SelectedId = "", bool AddDefaultItem = false)
         {
             if (!typeof(T).ImplementsInterface(typeof(ILookUpEntity)))
@@ -260,7 +270,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -293,7 +303,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -328,7 +338,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -365,7 +375,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -399,7 +409,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -433,7 +443,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -461,7 +471,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -486,7 +496,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -513,7 +523,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -538,7 +548,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -563,7 +573,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -603,7 +613,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;
@@ -630,7 +640,7 @@
             }
             catch (Exception ex)
             {
-                Result.ExceptionResult(ex);
+                HandleException(ex, Result);
             }
 
             return Result;

@@ -24,7 +24,18 @@
 
             return Text.PadRight(MaxLength);
         }
+        List<string> GetStatePropertiesList()
+        {
+            List<string> List = new();
 
+            if (StateProperties != null && StateProperties.Count > 0)
+            {
+                foreach (var Pair in StateProperties)
+                    List.Add($"{Pair.Key} = {Pair.Value.ToString()}");
+            }
+
+            return List;
+        }
 
         // ● construction
         /// <summary>
@@ -75,26 +86,9 @@
         public string GetPropertiesAsSingleLine()
         {
             string Result = string.Empty;
-
-            if (StateProperties == null)
-            {
-                int Count = StateProperties.Count;
-                int i = 0;
-
-                foreach (var Pair in StateProperties)
-                {
-                    i++;
-                    if (Pair.Value != null)
-                    {
-                        Result += Pair.Key;
-                        Result += " = ";
-                        Result += Pair.Value.ToString();
-                        if (i < Count)
-                            Result += ", ";
-                    }
-                }
-            }
-
+            List<string> List = GetStatePropertiesList();
+            if (List != null && List.Count > 0) 
+                Result = string.Join(", ", List);
             return Result;
         }
         /// <summary>
@@ -103,26 +97,9 @@
         public string GetPropertiesAsTextList()
         {
             string Result = string.Empty;
-
-            if (StateProperties == null)
-            {
-                int Count = StateProperties.Count;
-                int i = 0;
-
-                foreach (var Pair in StateProperties)
-                {
-                    i++;
-                    if (Pair.Value != null)
-                    {
-                        Result += Pair.Key;
-                        Result += " = ";
-                        Result += Pair.Value.ToString();
-                        if (i < Count)
-                            Result += Environment.NewLine;
-                    }
-                }
-            }
-
+            List<string> List = GetStatePropertiesList();
+            if (List != null && List.Count > 0)
+                Result = string.Join(Environment.NewLine, List);
             return Result;
         }
 

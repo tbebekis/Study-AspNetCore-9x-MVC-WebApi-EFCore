@@ -13,6 +13,7 @@ global using System.Xml;
 global using System.IO;
 global using System.Buffers;
 global using System.Net;
+global using System.Net.NetworkInformation;
 global using System.Net.Http.Json;
 global using System.Web;
 global using System.Data;
@@ -27,6 +28,7 @@ global using System.Text.Encodings.Web;
 global using System.Security.Cryptography;
 global using System.Security.Claims;
 global using System.IdentityModel.Tokens.Jwt;
+
 
 global using Microsoft.Net.Http.Headers;
 
@@ -64,6 +66,7 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Logging.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
+global using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 global using AutoMapper;
 global using CommonLib.Entities;
