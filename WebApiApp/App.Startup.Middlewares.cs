@@ -12,12 +12,14 @@
             // ● Lib initialization
             Lib.Initialize(RootServiceProvider, HttpContextAccessor, WebHostEnvironment, Configuration);
 
+            App.Initialize();
+
             // ● AppSettings
             // get an IOptionsMonitor<AppSettings> service instance
             // IOptionsMonitor is a singleton service
             IOptionsMonitor<AppSettings> AppSettingsMonitor = app.Services.GetRequiredService<IOptionsMonitor<AppSettings>>();
 
-            // Lib App.SetupAppSettingsMonitor to hook into IOptionsMonitor<AppSettings>.OnChange()
+            // call Lib.SetupAppSettingsMonitor to hook into IOptionsMonitor<AppSettings>.OnChange()
             Lib.SetupAppSettingsMonitor(AppSettingsMonitor);
 
             //----------------------------------------------------------------------------------------

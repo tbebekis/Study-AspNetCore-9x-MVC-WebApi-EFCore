@@ -20,6 +20,28 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcApp.Library", "MvcApp.Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Test", "Plugin.Test\Plugin.Test.csproj", "{D2A6A49E-E4AC-6384-1269-7BB61B3B6346}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\ApplicationStartup.md = Docs\ApplicationStartup.md
+		Docs\AuthenticationSchemes.md = Docs\AuthenticationSchemes.md
+		Docs\Authorization.md = Docs\Authorization.md
+		Docs\Configuration.md = Docs\Configuration.md
+		Docs\ClaimsAndIdentity.md = Docs\ClaimsAndIdentity.md
+		Docs\DependencyInjection.md = Docs\DependencyInjection.md
+		Docs\Index.md = Docs\Index.md
+		Docs\Localization.md = Docs\Localization.md
+		Docs\Middlewares.md = Docs\Middlewares.md
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVC", "MVC", "{5DEADFCD-BD14-4910-B703-9830CA1EC1D4}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\MVC\AuthenticationWithCookies.md = Docs\MVC\AuthenticationWithCookies.md
+		Docs\MVC\Plugins.md = Docs\MVC\Plugins.md
+		Docs\MVC\Session.md = Docs\MVC\Session.md
+		Docs\MVC\StaticFilesAndFileProviders.md = Docs\MVC\StaticFilesAndFileProviders.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +79,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5DEADFCD-BD14-4910-B703-9830CA1EC1D4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {54BC9FF1-E4CB-4A3A-95EB-4272988BF993}

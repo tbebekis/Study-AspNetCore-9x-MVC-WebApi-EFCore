@@ -82,7 +82,8 @@ namespace MvcApp
 
 
             // ● AppSettings
-            App.Configuration = builder.Configuration;
+            IConfigurationSection AppSettingsSection = builder.Configuration.GetRequiredSection(nameof(AppSettings));
+            builder.Services.Configure<AppSettings>(AppSettingsSection);
             builder.Configuration.Bind(nameof(AppSettings), Lib.Settings);
 
             // ● logging

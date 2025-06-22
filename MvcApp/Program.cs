@@ -2,7 +2,7 @@ namespace MvcApp
 {
     public class Program
     {
-        public static void Main(string[] args)
+        static public void Main(string[] args)
         {
             /// the WebApplication.CreateBuilder(args) adds the default logging providers, 
             ///  Console
