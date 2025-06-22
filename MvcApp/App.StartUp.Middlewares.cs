@@ -1,14 +1,7 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-
-namespace MvcApp
+﻿namespace MvcApp
 {
-
-
-
     static public partial class App
     {
-
-
         /// <summary>
         /// Static file response callback.
         /// </summary>
@@ -47,7 +40,7 @@ namespace MvcApp
                 {
                     // write all health check results to the response stream
                     HttpContext.Response.ContentType = "application/json";
-                    string JsonText = HealthCheckReport.GetReportText(HttpContext, HealthReport);// JsonSerializer.Serialize(HealthReport.Entries, new JsonSerializerOptions() { WriteIndented  = true});
+                    string JsonText = HealthCheckCenter.SerializeReport(HttpContext, HealthReport);
                     return HttpContext.Response.WriteAsync(JsonText);
                 }
             });
