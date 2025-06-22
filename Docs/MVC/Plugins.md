@@ -1,6 +1,6 @@
 # Asp.Net Core Plugins with Views, Javascript and CSS 
 
-> This text is part of a group of texts describing [Asp.Net Core](..\Index.md).
+> This text is part of a group of texts describing [Asp.Net Core](../Index.md).
 
 A [Plugin](https://en.wikipedia.org/wiki/Plug-in_(computing)) is a software module, external to an application and **dynamically loadable**. A plugin adds or extends the functionality of an application, without requiring an application rebuild.
 

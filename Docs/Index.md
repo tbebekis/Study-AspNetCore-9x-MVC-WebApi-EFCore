@@ -43,9 +43,9 @@ Texts are organized in three groups
 - [Localization](Localization.md)
 
 # Asp.Net Core MVC
-- [Authentication with a Cookie](MVC\AuthenticationWithCookies.md)
-- [Session](MVC\Session.md)
-- [Static Files and File Providers](MVC\StaticFilesAndFileProviders.md)
-- [Plugins with Views, Javascript and CSS](MVC\Plugins.md)
+- [Authentication with a Cookie](MVC/AuthenticationWithCookies.md)
+- [Session](MVC/Session.md)
+- [Static Files and File Providers](MVC/StaticFilesAndFileProviders.md)
+- [Plugins with Views, Javascript and CSS](MVC/Plugins.md)
 
 # Asp.Net Core WebApi

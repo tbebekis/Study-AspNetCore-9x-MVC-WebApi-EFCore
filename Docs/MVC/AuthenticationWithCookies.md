@@ -1,6 +1,6 @@
 # Authentication with Cookies
 
-> This text is part of a group of texts describing [Asp.Net Core](..\Index.md).
+> This text is part of a group of texts describing [Asp.Net Core](../Index.md).
 
 [**Authentication**](https://en.wikipedia.org/wiki/Authentication) is a  process that verifies the identity of an application user.
 

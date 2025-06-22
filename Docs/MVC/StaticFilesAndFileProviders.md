@@ -1,6 +1,6 @@
 # Static Files and File Providers
 
-> This text is part of a group of texts describing [Asp.Net Core](..\Index.md).
+> This text is part of a group of texts describing [Asp.Net Core](../Index.md).
 
 `Static Files` are files that they are not pre-processed by the Razor pre-processor, but they are served to the client, i.e. the browser, as they are. Such static files are the `HTML`, `CSS` and `Javascript` files.
 

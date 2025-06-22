@@ -1,6 +1,6 @@
 # Session
 
-> This text is part of a group of texts describing [Asp.Net Core](..\Index.md).
+> This text is part of a group of texts describing [Asp.Net Core](../Index.md).
 
 [HTTP](https://en.wikipedia.org/wiki/HTTP) is a [stateless protocol](https://en.wikipedia.org/wiki/Stateless_protocol).
 
