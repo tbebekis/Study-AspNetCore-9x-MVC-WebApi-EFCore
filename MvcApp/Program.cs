@@ -14,7 +14,7 @@ namespace MvcApp
             App.AddServices(builder);
             var app = builder.Build();
             App.AddMiddlewares(app);
-            app.Run();
+            app.Run(); 
         }
     }
 }

@@ -19,10 +19,10 @@
         /// Constructor.
         /// <para>CAUTION: You never create a logger directly. This is a responsibility of the logging framework by calling the provider's CreateLogger().</para>
         /// </summary>
-        public Logger(LoggerProvider Provider, string Category)
+        public Logger(LoggerProvider Provider, string Source)
         {
             this.Provider = Provider;
-            this.Category = Category;
+            this.Source = Source;
         }
 
         // ● ILogger implementation 
@@ -49,7 +49,7 @@
             if ((this as ILogger).IsEnabled(logLevel))
             {
                 LogEntry Entry = new LogEntry();
-                Entry.Category = this.Category;
+                Entry.Source = this.Source;
                 Entry.Level = logLevel;
                 // well, the passed default formatter function does not takes the exception into account
                 // SEE:  https://github.com/aspnet/Extensions/blob/master/src/Logging/Logging.Abstractions/src/LoggerExtensions.cs
@@ -125,9 +125,10 @@
         /// </summary>
         public LoggerProvider Provider { get; private set; }
         /// <summary>
-        /// The category this instance serves.
-        /// <para>The category is usually the fully qualified class name of a class asking for a logger, e.g. MyNamespace.MyClass </para>
+        /// The source that created this log entry.
+        /// <para>Asp.Net Core calls it <c>Category</c>.</para>
+        /// <para>The source is usually the fully qualified class name of a class using a logger, e.g. MyNamespace.MyClass </para>
         /// </summary>
-        public string Category { get; private set; }
+        public string Source { get; private set; }
     }
 }

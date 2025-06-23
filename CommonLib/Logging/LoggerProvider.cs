@@ -23,12 +23,12 @@
         }
         /// <summary>
         /// Returns an ILogger instance to serve a specified category.
-        /// <para>The category is usually the fully qualified class name of a class asking for a logger, e.g. MyNamespace.MyClass </para>
+        /// <para>Asp.Net Core calls it <c>Category</c> but in reality it is the <c>Source</c> code entity that creates log entries.</para>
+        /// <para>The source is usually the fully qualified class name of a class using a logger, e.g. MyNamespace.MyClass </para>
         /// </summary>
         ILogger ILoggerProvider.CreateLogger(string Category)
         {
-            return loggers.GetOrAdd(Category,
-            (category) => {
+            return loggers.GetOrAdd(Category, (category) => {
                 return new Logger(this, category);
             });
         }

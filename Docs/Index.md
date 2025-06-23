@@ -32,7 +32,6 @@ Texts are organized in three groups
 - **Asp.Net Core WebApi**. Covers aspects pertinent to WebApi.
 
 # Asp.Net Core
-
 - [Application Startup](ApplicationStartup.md)
 - [Dependency Injection](DependencyInjection.md)
 - [Middlewares](Middlewares.md)
@@ -42,10 +41,56 @@ Texts are organized in three groups
 - [Authorization](Authorization.md)
 - [Localization](Localization.md)
 
+#### TODO
+- [Request Features](RequestFeatures.md)
+- [Routing](Routing.md)
+- [Model Binding](ModelBinding.md)
+- [Model Validation](ModelValidation.md)
+- [Filters](Filters.md)
+- [Environments](Environments.md)
+- [HttpContext](HttpContext.md)
+- [Error Handling](ErrorHandling.md)
+- [Entity Framework Core](EFCore.md)
+- [Health Checks](HealthChecks.md)
+- [RBAC, Role Based Access Control](RBAC.md)
+- [Caching](Caching.md)
+- [Background Services](BackgroundServices.md)
+- [Object Mapper](ObjectMapper.md)
+- [Image handling](ImageHandling.md)
+- [IP Geolocation](IpGeolocation.md)
+- [Sending Email](SendingEmail.md)
+- [XML Export](XmlExport.md)
+- [Enforce HTTPS and HSTS](EnforceHTTPSandHSTS.md)
+
+
 # Asp.Net Core MVC
-- [Authentication with a Cookie](MVC/AuthenticationWithCookies.md)
+- [Cookie Authentication](MVC/AuthenticationWithCookies.md)
 - [Session](MVC/Session.md)
 - [Static Files and File Providers](MVC/StaticFilesAndFileProviders.md)
 - [Plugins with Views, Javascript and CSS](MVC/Plugins.md)
 
+#### TODO
+- [Themes](MVC/Themes.md)
+- [Ajax Controller](MVC/AjaxController.md)
+- [Breadcrumb](MVC/Breadcrumb.md)
+- [Converting to PDF](MVC/ConvertingToPDF.md)
+- [Javascript and CSS minification](MVC/JsCssMinification.md)
+- [Menus](MVC/Menus.md)
+- [Paging](MVC/Paging.md)
+- [Searching](MVC/Searching.md)
+- [Controllers and Views](MVC/ControllersAndViews.md)
+- [View Components](MVC/ViewComponents.md)
+- [Layout](MVC/Layout.md)
+- [Razor](MVC/Razor.md)
+- [Tag Helpers](MVC/TagHelpers.md)
+- [Display and Editor Templates](MVC/DisplayAndEditorTemplates.md)
+- [Areas](MVC/Areas.md)
+- [CSS Notes](MVC/CssNotes.md)
+- [Javascript Notes](MVC/JavascriptNotes.md)
+
+
 # Asp.Net Core WebApi
+
+#### TODO
+- [JWT Token Authentication](WebApi/JWTTokenAuthentication.md)
+- [Claims Transformation](WebApi/ClaimsTransformation.md)

@@ -26,9 +26,16 @@ namespace MvcApp.Library
                 Lib.HttpContextAccessor = HttpContextAccessor;
                 Lib.Configuration = Configuration;
                 Lib.WebHostEnvironment = WebHostEnvironment;
+                
+                Caches.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
+
+                // ● events
+                IHostApplicationLifetime appLifetime = Lib.GetService<IHostApplicationLifetime>();
+                appLifetime.ApplicationStarted.Register(Lib.OnStarted);
+                appLifetime.ApplicationStopping.Register(Lib.OnStopping);
+                appLifetime.ApplicationStopped.Register(Lib.OnStopped);
 
                 Session.Initialize(HttpContextAccessor);
-                Caches.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
             }
         }
 
@@ -114,11 +121,11 @@ namespace MvcApp.Library
         /// <summary>
         /// Creates and returns a logger.
         /// </summary>
-        static public ILogger CreateLogger(string Category = "")
+        static public ILogger CreateLogger(string Source = "")
         {
             ILoggerFactory LoggerFactory = Lib.GetService<ILoggerFactory>();
-            Category = !string.IsNullOrWhiteSpace(Category) ? Category : "Global";
-            ILogger Result = LoggerFactory.CreateLogger(Category);
+            Source = !string.IsNullOrWhiteSpace(Source) ? Source : "Global";
+            ILogger Result = LoggerFactory.CreateLogger(Source);
             return Result;
         }
 

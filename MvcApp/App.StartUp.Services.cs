@@ -227,10 +227,8 @@ namespace MvcApp
 
             MvcBuilder.AddRazorRuntimeCompilation();
 
-            // ● Plugins
-            LoadPluginDefinitions();
-            LoadPluginAssemblies();
-            AddPluginsToApplicationPartManager(MvcBuilder.PartManager);
+            // ● Plugins 
+            App.PartManager = MvcBuilder.PartManager;
         }
     }
 }

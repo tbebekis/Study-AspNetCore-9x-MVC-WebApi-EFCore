@@ -18,7 +18,7 @@ A session cookie is deleted when the browser session ends by the user.
 
 A session has a default timeout of 20 minutes. The developer may define a more suitable timeout value. 
 
-Session is mostly used in storing data specific to the user, such as some of the user preferences, that are not required to be permanent accross sessions.
+Session is mostly used in storing data specific to the user, such as some user preferences, that are not required to be permanent accross sessions.
 
 Since session data are stored in a cookie there is a limit in the cookie size, which is less than 4096 bytes.
 
@@ -63,12 +63,14 @@ The [Controller](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetco
 
 But sometimes a need arises to access session data outside of a `Controller` or `PageModel` context.
 
-It is easy to write up with a class that provides session services to any code in an application.
+It is easy to write up a class that provides session services to any code in an application.
 
 ```
+
 static public class Session
 {
-    static IHttpContextAccessor fAccessor;
+    static IHttpContextAccessor HttpContextAccessor;
+    static public HttpContext GetHttpContext() => HttpContextAccessor.HttpContext;
 
     // ● private
     static T Get<T>(this ISession Instance, string Key)
@@ -78,7 +80,7 @@ static public class Session
         if (JsonText == null)
             return default(T);
 
-        return JsonConvert.DeserializeObject<T>(JsonText);
+        return JsonSerializer.Deserialize<T>(JsonText);
     }
     static T Get<T>(this ISession Instance, string Key, T Default)
     {
@@ -87,24 +89,24 @@ static public class Session
         if (JsonText == null)
             return Default;
 
-        return JsonConvert.DeserializeObject<T>(JsonText);
+        return JsonSerializer.Deserialize<T>(JsonText);
     }
     static void Set<T>(this ISession Instance, string Key, T Value)
     {
         Key = Key.ToLowerInvariant();
-        string JsonText = JsonConvert.SerializeObject(Value);
+        string JsonText = JsonSerializer.Serialize(Value);
         Instance.SetString(Key, JsonText);
     }
 
     // ● public
     static public void Initialize(IHttpContextAccessor HttpContextAccessor)
     {
-        if (fAccessor == null)
-            fAccessor = HttpContextAccessor;
+        Session.HttpContextAccessor = HttpContextAccessor;
     }
+
     static public ISession GetSession()
     {
-        return fAccessor.HttpContext.Session;
+        return GetHttpContext().Session;
     }
 
     static public T Get<T>(string Key)
@@ -174,9 +176,11 @@ static public class Session
     {
         get
         {
-            return fAccessor.HttpContext != null ? fAccessor.HttpContext.Items : new Dictionary<object, object>();
+            HttpContext HttpContext = GetHttpContext();
+            return HttpContext != null ? HttpContext.Items : new Dictionary<object, object>();
         }
     }
+
 }
 ```
 

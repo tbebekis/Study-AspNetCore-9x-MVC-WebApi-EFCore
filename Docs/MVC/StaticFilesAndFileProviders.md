@@ -30,11 +30,11 @@ The `app` variable is of type [WebApplication](https://learn.microsoft.com/en-us
 The `IWebHostEnvironment` interface provides the following properties.
 
 - `ContentRootPath`. A string. By default it is the absolute physical path to the folder containing the application executable, e.g. `C:\MyApp`.
-- `ContentRootFileProvider`. A [IFileProvider](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.fileproviders.ifileprovider) interface of a `File Provider` pointing at `ContentRootPath`.
+- `ContentRootFileProvider`. A [IFileProvider](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.fileproviders.ifileprovider) interface of a `File Provider` pointing to the3 `ContentRootPath`.
 - `WebRootPath`. A string. By default it is the absolute physical path to the `wwwroot` folder of the application, e.g. `C:\MyApp\wwwwroot`.
-- `WebRootFileProvider`. A [IFileProvider](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.fileproviders.ifileprovider) interface of a `File Provider` pointing at `WebRootPath`.
+- `WebRootFileProvider`. A [IFileProvider](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.fileproviders.ifileprovider) interface of a `File Provider` pointing to the `WebRootPath`.
 
-The above root paths can be changed using the `UseContentRoot()` and `UseWebRoot` extension methods found in [HostingAbstractionsWebHostBuilderExtensions](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.hostingabstractionswebhostbuilderextensions) class.
+The above root paths can be changed using the `UseContentRoot()` and `UseWebRoot()` extension methods found in [HostingAbstractionsWebHostBuilderExtensions](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.hostingabstractionswebhostbuilderextensions) class.
 
 ```
 public static void Main(string[] args)
@@ -51,7 +51,7 @@ public static void Main(string[] args)
 
 ## File Providers
 
-File Providers provide access to the file system. A file provider is a class implementing the `IFileProvider` interface. 
+File Providers provide access to a file system. A file provider is a class implementing the `IFileProvider` interface. 
 
 ```
 public interface IFileProvider

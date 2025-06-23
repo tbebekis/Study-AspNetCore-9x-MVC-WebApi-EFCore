@@ -1,10 +1,12 @@
-# Asp.Net Core Plugins with Views, Javascript and CSS 
+﻿# Asp.Net Core Plugins with Views, Javascript and CSS 
 
 > This text is part of a group of texts describing [Asp.Net Core](../Index.md).
 
 A [Plugin](https://en.wikipedia.org/wiki/Plug-in_(computing)) is a software module, external to an application and **dynamically loadable**. A plugin adds or extends the functionality of an application, without requiring an application rebuild.
 
-Asp.Net Core offers [Razor Class Library](https://learn.microsoft.com/en-us/aspnet/core/razor-pages/ui-class) template project, which may contain Views, Controllers and static files, such as Javascript and CSS, as a type of a resusable application component. But Razor Class Libraries are not designed to be dynamically loadable.
+Asp.Net Core offers the [Razor Class Library](https://learn.microsoft.com/en-us/aspnet/core/razor-pages/ui-class) template project, which may contain Views, Controllers and static files, such as Javascript and CSS. A `Razor Class Library` is a type of a resusable application component. 
+
+But Razor Class Libraries are not designed to be dynamically loadable.
 
 This text describes a way to have dynamically loadable external class libraries containing Views, Controllers and static files, such as Javascript and CSS, as plugins to an Asp.Net Core MVC application.
 
@@ -13,7 +15,7 @@ This text describes a way to have dynamically loadable external class libraries 
 The projects required to create a plugin MVC application, are
 
 - the MVC application
-- a class library, where both the MVC application and the plugin libraries, depend on.
+- a common class library, where both the MVC application and the plugin libraries, depend on.
 - one or more plain class libraries as plugins
 
 The sample application accompanying this text has the following projects, accordingly
@@ -76,7 +78,7 @@ Here is the `Plugin.Test` project file.
 This project file instructs the build system to
 
 - not append the target framework and runtime identifier to output folders (i.e. not create a net9.0, linux, win-x64, etc. folder)
-- set the output folder, for both Debut and Release, to `MvcApp\Plugins\Plugin.Test` folder
+- set the output folder, for both Debug and Release, to `MvcApp\Plugins\Plugin.Test` folder
 - include as `Content` the folders `Views`, `wwwroot` and their contents
 - include as `Content` the `plugin-def.json` file
  
@@ -149,11 +151,13 @@ The `MvcApp` uses the `plugin-def.json` files to identify and load plugin librar
 
     <ItemGroup>
         <!-- Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation is needed if we are to have Views not embedded into assembly -->
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.4" />          
-        <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="9.0.4" />
-        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.4" />
-        <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.3.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="9.0.5" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.5" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.5" />
     </ItemGroup>
 
     <ItemGroup>
@@ -167,9 +171,7 @@ The `MvcApp` uses the `plugin-def.json` files to identify and load plugin librar
     </ItemGroup>    
 
     <ItemGroup>
-        <ProjectReference Include="..\MvcApp.Library\MvcApp.Library.csproj" />
-        <ProjectReference Include="..\tp.Web\tp.Web.csproj" />
-        <ProjectReference Include="..\tp\tp.csproj" />
+      <ProjectReference Include="..\MvcApp.Library\MvcApp.Library.csproj" />
     </ItemGroup>    
 
     <ItemGroup>
@@ -208,80 +210,121 @@ MvcBuilder.AddRazorRuntimeCompilation();
 
 ## Loading Plugins
 
-Here is the procedure.
+An [ApplicationPart](https://learn.microsoft.com/en-us/aspnet/core/mvc/advanced/app-parts) allows Asp.Net Core to discover Controllers and other application parts.
 
-First a reference to an [ApplicationPartManager](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.applicationparts.applicationpartmanager) instance is needed.
+The [AssemblyPart](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.applicationparts.assemblypart) is an `ApplicationPart` representing an `Assembly`, which exposes types and resources.  
 
-An `ApplicationPart` allows Asp.Net Core to discover Controllers and other application parts.
+The [ApplicationPartManager](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.applicationparts.applicationpartmanager) is the central code entity, in this application part system, that manages the parts and features of an MVC application.
 
-```
-IMvcBuilder MvcBuilder = builder.Services.AddControllersWithViews();
-
-...
-
-LoadPlugins(MvcBuilder.PartManager);
-```
-
-After that the `LoadPlugins()` method is called.
+Following is a part of a user-defined `App` static class that handles plugin discovering, loading, creation and configuration.
+ 
 
 ```
-static void LoadPlugins(ApplicationPartManager PartManager)
+static public partial class App
 { 
-    string RootPluginFolder = Path.Combine(App.BinPath, "Plugins");
-    string[] PluginFolders = Directory.GetDirectories(RootPluginFolder);
 
-    // load plugin definitions and assemblies
-    DirectoryInfo DI;
-    string FolderName;
-    foreach (string PluginFolderPath in PluginFolders)
+    static void CleanPluginFolder(string PluginFolderPath)
     {
-        DI = new DirectoryInfo(PluginFolderPath);
-        FolderName = DI.Name;
-        if (FolderName.StartsWith("Plugin."))
+        string[] Patterns = {"Plug.WebLib.*", "*.pdb", "*.deps.json" };
+        string[] FilePaths;
+        foreach (string Pattern in Patterns)
         {
-            //LoadPlugin(PartManager, PluginFolderPath);
-            // load the plugin definition
-            CleanPluginFolder(PluginFolderPath);
-            string PluginDefFilePath = Path.Combine(PluginFolderPath, "plugin-def.json");
-            PluginDef Def = new PluginDef(PluginFolderPath);
-            Json.LoadFromFile(Def, PluginDefFilePath);
+            FilePaths = Directory.GetFiles(PluginFolderPath, Pattern);
+            if (FilePaths != null && FilePaths.Length > 0)
+            {
+                foreach (string FilePath in FilePaths)
+                {
+                    if (File.Exists(FilePath))
+                        File.Delete(FilePath);
+                }
+            }
+        }      
+    }
 
-            // find plugin assembly file path  
-            string[] FilePaths = Directory.GetFiles(PluginFolderPath, "Plugin.*.dll");
-            if (FilePaths == null || FilePaths.Length == 0)
-                Sys.Throw($"No Plugin Assembly found in folder: {PluginFolderPath}");
-            Def.PluginAssemblyFilePath = FilePaths[0];
-            Def.Id = Path.GetFileName(Def.PluginAssemblyFilePath);
+    static void LoadPluginDefinitions()
+    {
+        string RootPluginFolder = Path.Combine(Lib.BinPath, "Plugins");
+        string[] PluginFolders = Directory.GetDirectories(RootPluginFolder);
 
-            PluginDefList.Add(Def);
+        // load plugin definitions and assemblies
+        DirectoryInfo DI;
+        string FolderName;
+        foreach (string PluginFolderPath in PluginFolders)
+        {
+            DI = new DirectoryInfo(PluginFolderPath);
+            FolderName = DI.Name;
+            if (FolderName.StartsWith("Plugin."))
+            {
+                // load the plugin definition
+                CleanPluginFolder(PluginFolderPath);
+                string PluginDefFilePath = Path.Combine(PluginFolderPath, "plugin-def.json");
+                MvcAppPluginDef Def = new MvcAppPluginDef(PluginFolderPath);
+
+                Json.LoadFromFile(Def, PluginDefFilePath);
+
+                // find plugin assembly file path  
+                string[] FilePaths = Directory.GetFiles(PluginFolderPath, "Plugin.*.dll");
+                if (FilePaths == null || FilePaths.Length == 0)
+                    throw new Exception($"No Plugin Assembly found in folder: {PluginFolderPath}");
+                Def.PluginAssemblyFilePath = FilePaths[0];
+                Def.Id = Path.GetFileName(Def.PluginAssemblyFilePath);
+
+                PluginDefList.Add(Def);
+            }
+        }
+
+        // sort definition list
+        PluginDefList = PluginDefList.OrderBy(item => item.LoadOrder).ToList();
+    }
+    static void LoadPluginAssemblies()
+    {
+        // create plugins
+        List<Type> ImplementorClassTypes;
+        foreach (MvcAppPluginDef Def in PluginDefList)
+        {
+            // load the assembly and the application part for that assembly
+            Def.PluginAssembly = Assembly.LoadFrom(Def.PluginAssemblyFilePath);
+ 
+            ImplementorClassTypes = TypeFinder.FindImplementorClasses(typeof(IMvcAppPlugin), Def.PluginAssembly);
+            if (ImplementorClassTypes.Count == 0)
+                throw new Exception($"Plugin: {Def.Id} does not implement IAppPlugin");
+
+            if (ImplementorClassTypes.Count > 1)
+                throw new Exception($"Plugin: {Def.Id} implements more than one IAppPlugin");
+
+            IMvcAppPlugin Plugin = (IMvcAppPlugin)Activator.CreateInstance(ImplementorClassTypes[0]);
+            Plugin.Descriptor = Def;
+            PluginList.Add(Plugin);
+        }
+    }
+    static void AddPluginsToApplicationPartManager()
+    {
+        foreach (var Def in PluginDefList)
+        {
+            ApplicationPart Part = new AssemblyPart(Def.PluginAssembly);
+            PartManager.ApplicationParts.Add(Part);
         }
     }
 
-    // sort definition list
-    PluginDefList = PluginDefList.OrderBy(item => item.LoadOrder).ToList();
 
-    // create plugins
-    List<Type> ImplementorClassTypes;
-    foreach (PluginDef Def in PluginDefList)
+    static void LoadPlugins()
     {
-        // load the assembly and the application part for that assembly
-        Def.PluginAssembly = Assembly.LoadFrom(Def.PluginAssemblyFilePath);
-        ApplicationPart Part = new AssemblyPart(Def.PluginAssembly);
-        PartManager.ApplicationParts.Add(Part);
+        LoadPluginDefinitions();
+        LoadPluginAssemblies();
+        AddPluginsToApplicationPartManager();
 
-        ImplementorClassTypes = TypeFinder.FindImplementorClasses(typeof(IAppPlugin), Def.PluginAssembly);
-        if (ImplementorClassTypes.Count == 0)
-            Sys.Throw($"Plugin: {Def.Id} does not implement IAppPlugin");
-        if (ImplementorClassTypes.Count > 1)
-            Sys.Throw($"Plugin: {Def.Id} implements more than one IAppPlugin");
-
-        IAppPlugin Plugin = (IAppPlugin)Activator.CreateInstance(ImplementorClassTypes[0]);
-        Plugin.Descriptor = Def;
-
-        PluginList.Add(Plugin);
+        foreach (IMvcAppPlugin Plugin in PluginList)
+        {
+            Plugin.Initialize();
+            Plugin.AddViewLocations();
+        }
     }
-}
 
+    // ● properties
+    static List<MvcAppPluginDef> PluginDefList { get; set; } = new List<MvcAppPluginDef>();
+    static List<IMvcAppPlugin> PluginList { get; } = new List<IMvcAppPlugin>();
+    static ApplicationPartManager PartManager { get; set; }
+}
  
 ```
 
@@ -292,13 +335,28 @@ The `LoadPlugins()` method
 - adds the `PluginDef` instance to a list
 - sorts the `PluginDef` list according to `LoadOrder` property
 - loads the plugin assembly using `Assembly.LoadFrom()`
-- adds the loaded assembly as `ApplicationPart` to `ApplicationPartManager`
 - searches the assembly for a class `Type` implementing the `IAppPlugin` interface
 - creates an instance of the `IAppPlugin` and adds it to a list.
+- adds the loaded assembly as `ApplicationPart` to `ApplicationPartManager`
+- calls the `IMvcAppPlugin.Initialize()` for each loaded plugin
+- calls the `IMvcAppPlugin.AddViewLocations()` permitting the plugin to add its own view locations to a custom `IViewLocationExpander`
+
+Following is the `IMvcAppPlugin` interface.
+
+```
+public interface IMvcAppPlugin
+{
+    public void Initialize();
+    void AddViewLocations();
+
+    MvcAppPluginDef Descriptor { get; set; }
+}
+```
+
 
 ## Plugin Views
 
-For plugin Views to be discoverable by Asp.Net the developer has to register an implementation of the [IViewLocationExpander](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razor.iviewlocationexpander) interface.
+For plugin Views to be discoverable by Asp.Net the developer has to register an custom implementation of the [IViewLocationExpander](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razor.iviewlocationexpander) interface.
 
 ```
 IMvcBuilder MvcBuilder = builder.Services.AddControllersWithViews();
@@ -316,32 +374,34 @@ public class ViewLocationExpander : IViewLocationExpander
     public void PopulateValues(ViewLocationExpanderContext context);
 
     static public void AddViewLocation(string Location);        
-    static public void AddPluginViewLocations(PluginDef Def);
 }
 ```
 
 The `ExpandViewLocations()` and `PopulateValues()` are required by the `IViewLocationExpander`.
 
-The next two static methods, `AddViewLocation()` and `AddPluginViewLocations()` are our own helpers for easily adding view locations to the expander.
+The  static methods, `AddViewLocation()` are our own helper for easily adding view locations to the expander.
 
-After plugins are loaded by the `LoadPlugins()` method the `MvcApp` calls the `InitializePlugins()`. 
+After plugins are loaded by the `LoadPlugins()` method the `MvcApp` calls the `Plugin.AddViewLocations()` for each plugin telling it to add any view locations it might have, to the `IViewLocationExpander`.
 
 ```
-static void InitializePlugins()
+static void LoadPlugins()
 {
-    foreach (IAppPlugin Plugin in PluginList)
+    LoadPluginDefinitions();
+    LoadPluginAssemblies();
+    AddPluginsToApplicationPartManager();
+
+    foreach (IMvcAppPlugin Plugin in PluginList)
     {
         Plugin.Initialize();
         Plugin.AddViewLocations();
     }
 }
 ```
-
-The `Plugin.AddViewLocations()` is called which then just calls the static `ViewLocationExpander.AddPluginViewLocations()` passing its `PluginDef` instance. This call adds plugin view locations to the location expander.
+ 
 
 ## Plugin Static files
 
-For plugin static files, such as Javascript and CSS files, to be discoverable by Asp.Net the developer has to register the appropriate [PhysicalFileProvider](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/file-providers)s, pointing to the write paths.
+For plugin static files, such as Javascript and CSS files, to be discoverable by Asp.Net the developer has to register the appropriate [PhysicalFileProvider](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/file-providers)s, in the main MVC application startup code, pointing to the write paths.
 
 ```
 app.UseStaticFiles(new StaticFileOptions 

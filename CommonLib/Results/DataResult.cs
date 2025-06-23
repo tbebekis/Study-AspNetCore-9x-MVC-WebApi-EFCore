@@ -7,7 +7,7 @@
     [Description("Base data result.")]
     public class DataResult
     {
-        protected const string SCheckErrorList = "Check the Errors list";
+        protected const string SCheckErrorList = "Check the Error list";
         List<string> fErrors;
 
         // ● construction

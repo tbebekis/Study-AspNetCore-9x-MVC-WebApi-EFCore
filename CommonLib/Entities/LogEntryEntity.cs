@@ -10,7 +10,7 @@
             this.UserName = Source.UserName;
             this.HostName = Source.HostName;
             this.EntryTimeUtc = Source.TimeStampUtc;
-            this.Category = Source.Category;
+            this.Source = Source.Source;
             this.Level = Source.Level;
             this.Scope = Source.GetScopeText();
             this.EventId = Source.EventId.Id;
@@ -36,11 +36,12 @@
         /// </summary>
         public DateTime EntryTimeUtc { get; set; }
         /// <summary>
-        /// Category this instance belongs to.
-        /// <para>The category is usually the fully qualified class name of a class asking for a logger, e.g. MyNamespace.MyClass </para>
+        /// The source that created this log entry.
+        /// <para>Asp.Net Core calls it <c>Category</c>.</para>
+        /// <para>The source is usually the fully qualified class name of a class using a logger, e.g. MyNamespace.MyClass </para>
         /// </summary>
         [MaxLength(96)]
-        public string Category { get; set; }
+        public string Source { get; set; }
         /// <summary>
         /// The log level of this information.
         /// </summary>

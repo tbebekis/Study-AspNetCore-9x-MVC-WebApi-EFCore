@@ -10,25 +10,25 @@
         /// <summary>
         /// Returns true if a claim exists in a sequence of claims
         /// </summary>
-        static public bool ContainsClaim(IEnumerable<Claim> Claims, string TokenType)
+        static public bool ContainsClaim(IEnumerable<Claim> Claims, string ClaimType)
         {
-            return FindClaim(Claims, TokenType) != null;
+            return FindClaim(Claims, ClaimType) != null;
         }
         /// <summary>
         /// Finds and returns a claim, if a claim exists in a sequence of claims, else null.
         /// </summary>
-        static public Claim FindClaim(IEnumerable<Claim> Claims, string TokenType)
+        static public Claim FindClaim(IEnumerable<Claim> Claims, string ClaimType)
         {
-            TokenType = TokenType.ToLowerInvariant();
-            return Claims.FirstOrDefault(item => item.Type.ToLowerInvariant() == TokenType);
+            ClaimType = ClaimType.ToLowerInvariant();
+            return Claims.FirstOrDefault(item => item.Type.ToLowerInvariant() == ClaimType);
         }
 
         /// <summary>
         /// Returns the value of a claim, if a claim exists in a sequence of claims, else null.
         /// </summary>
-        static public string GetClaimValue(IEnumerable<Claim> Claims, string TokenType)
+        static public string GetClaimValue(IEnumerable<Claim> Claims, string ClaimType)
         {
-            Claim Claim = FindClaim(Claims, TokenType);
+            Claim Claim = FindClaim(Claims, ClaimType);
             return Claim != null ? Claim.Value : null;
         }
         /// <summary>

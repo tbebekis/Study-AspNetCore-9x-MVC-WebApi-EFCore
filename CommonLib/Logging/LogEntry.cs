@@ -125,10 +125,11 @@
         /// </summary>
         public string TimeStampText => TimeStampUtc.ToString("yyyy-MM-dd HH:mm:ss.fff");
         /// <summary>
-        /// Category this instance belongs to.
-        /// <para>The category is usually the fully qualified class name of a class asking for a logger, e.g. MyNamespace.MyClass </para>
+        /// The source that created this log entry.
+        /// <para>Asp.Net Core calls it <c>Category</c>.</para>
+        /// <para>The source is usually the fully qualified class name of a class using a logger, e.g. MyNamespace.MyClass </para>
         /// </summary>
-        public string Category { get; set; }
+        public string Source { get; set; }
         /// <summary>
         /// The log level of this information.
         /// </summary>
@@ -226,7 +227,7 @@
                     SB.Append(Pad(this.UserName,              fLineLengths["User"]));
                     SB.Append(Pad(this.Level.ToString(),      fLineLengths["Level"]));
                     SB.Append(Pad(this.EventId.Id.ToString(), fLineLengths["EventId"]));
-                    SB.Append(Pad(this.Category,              fLineLengths["Category"]));
+                    SB.Append(Pad(this.Source,              fLineLengths["Category"]));
                     SB.Append(Pad(this.GetScopeText(),        fLineLengths["Scope"])); 
 
                     if (!string.IsNullOrWhiteSpace(this.Text))
@@ -276,7 +277,7 @@
                     AddLine(SB, "Id", this.Id);
                     AddLine(SB, "TimeStamp", this.TimeStampText);
                     AddLine(SB, "Level", this.Level.ToString());
-                    AddLine(SB, "Category", this.Category);
+                    AddLine(SB, "Category", this.Source);
                     AddLine(SB, "Scope", this.GetScopeText());
                     AddLine(SB, "EventId", this.EventId.Id.ToString());
                     AddLine(SB, "Host", this.HostName);
@@ -314,7 +315,7 @@
                     Result.Add("Id", JsonValue.Create(this.Id));
                     Result.Add("TimeStamp", JsonValue.Create(this.TimeStampText));
                     Result.Add("Level", JsonValue.Create(this.Level.ToString()));
-                    Result.Add("Category", JsonValue.Create(this.Category));
+                    Result.Add("Category", JsonValue.Create(this.Source));
                     Result.Add("Scope", JsonValue.Create(this.GetScopeText()));
                     Result.Add("EventId", JsonValue.Create(this.EventId.Id.ToString()));
                     Result.Add("Host", JsonValue.Create(this.HostName));

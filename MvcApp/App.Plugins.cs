@@ -1,8 +1,7 @@
 ﻿namespace MvcApp
 {
     static public partial class App
-    {
-        // ● private
+    { 
         /// <summary>
         /// Removes files from a specified plugin folder
         /// </summary>
@@ -90,7 +89,7 @@
         /// <summary>
         /// Adds plugin assemblies to the <see cref="ApplicationPartManager"/>
         /// </summary>
-        static void AddPluginsToApplicationPartManager(ApplicationPartManager PartManager)
+        static void AddPluginsToApplicationPartManager()
         {
             foreach (var Def in PluginDefList)
             {
@@ -100,10 +99,14 @@
         }
 
         /// <summary>
-        /// After plugin objects are created, initialize them
+        /// Load, create and initialize plugins
         /// </summary>
-        static void InitializePlugins()
+        static void LoadPlugins()
         {
+            LoadPluginDefinitions();
+            LoadPluginAssemblies();
+            AddPluginsToApplicationPartManager();
+
             foreach (IMvcAppPlugin Plugin in PluginList)
             {
                 Plugin.Initialize();
@@ -119,6 +122,11 @@
         /// <summary>
         /// List of plugins
         /// </summary>
-        static List<IMvcAppPlugin> PluginList { get; } = new List<IMvcAppPlugin>();  
+        static List<IMvcAppPlugin> PluginList { get; } = new List<IMvcAppPlugin>();
+        /// <summary>
+        /// Gets the <see cref="ApplicationPartManager"/> where <see cref="ApplicationPart"/>s
+        /// are configured.
+        /// </summary>
+        static ApplicationPartManager PartManager { get; set; }
     }
 }

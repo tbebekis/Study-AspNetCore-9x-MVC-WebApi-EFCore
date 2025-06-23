@@ -26,6 +26,12 @@
                 Lib.WebHostEnvironment = WebHostEnvironment;
 
                 Caches.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
+
+                // ● events
+                IHostApplicationLifetime appLifetime = Lib.GetService<IHostApplicationLifetime>();
+                appLifetime.ApplicationStarted.Register(Lib.OnStarted);
+                appLifetime.ApplicationStopping.Register(Lib.OnStopping);
+                appLifetime.ApplicationStopped.Register(Lib.OnStopped);
             }
         }
 
