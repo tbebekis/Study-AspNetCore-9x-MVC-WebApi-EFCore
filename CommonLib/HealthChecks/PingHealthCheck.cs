@@ -7,6 +7,7 @@
     /// </summary>
     public class PingHealthCheck : IHealthCheck
     {
+        string IP;
         IPAddress IPAddress;
 
 
@@ -22,6 +23,7 @@
             if (!System.Net.IPAddress.TryParse(IP, out var ip))
                 throw new Exception($"An invalid Url {IP} is passed to {this.GetType().Name}");
 
+            this.IP = IP;
             this.IPAddress = ip;
         }
 
@@ -38,9 +40,9 @@
                 PingReply Reply = await Ping.SendPingAsync(IPAddress);
 
                 if (Reply.Status == IPStatus.Success)
-                    return HealthCheckResult.Healthy("The IP is reachable.");
+                    return HealthCheckResult.Healthy($"The IP {IP} is reachable.");
 
-                return HealthCheckResult.Unhealthy("The IP is unreachable.");
+                return HealthCheckResult.Unhealthy($"The IP {IP} is unreachable.");
             }      
 
         }

@@ -124,7 +124,7 @@
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            // the Error view gathers all error information
+            // the Error view gathers all error information needed, so we do not need a model here
             return View();
         }
 

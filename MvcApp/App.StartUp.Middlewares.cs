@@ -51,7 +51,7 @@
                 {
                     // write all health check results to the response stream
                     HttpContext.Response.ContentType = "application/json";
-                    string JsonText = HealthCheckCenter.SerializeReport(HttpContext, HealthReport);
+                    string JsonText = HealthChecksHelper.SerializeReport(HttpContext, HealthReport);
                     return HttpContext.Response.WriteAsync(JsonText);
                 }
             });

@@ -7,6 +7,7 @@
     /// </summary>
     public class UrlHealthCheck : IHealthCheck
     {
+        string Url;
         Uri fUri;
         Func<IHttpClientFactory> GetHttpClientFactory;
 
@@ -25,6 +26,7 @@
             if (!Uri.TryCreate(Url, UriKind.Absolute, out var uri))
                 throw new Exception($"An invalid Url {Url} is passed to {this.GetType().Name}");
 
+            this.Url = Url;
             this.fUri = uri;
             this.GetHttpClientFactory = GetHttpClientFactoryFunc;
         }
@@ -43,9 +45,9 @@
                 var Response = await Client.GetAsync(fUri);
 
                 if (Response.StatusCode < HttpStatusCode.BadRequest)
-                    return HealthCheckResult.Healthy("The Url is accessible.");
+                    return HealthCheckResult.Healthy($"The Url {Url} is accessible.");
 
-                return HealthCheckResult.Unhealthy("The Url is NOT accessible.");
+                return HealthCheckResult.Unhealthy($"The Url {Url} is NOT accessible.");
             }     
             
         }

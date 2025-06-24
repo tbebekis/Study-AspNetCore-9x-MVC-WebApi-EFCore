@@ -51,6 +51,7 @@ global using CommonLib.HealthChecks;
 global using CommonLib.Logging;
 global using CommonLib.Logging.Providers;
 
-global using MvcApp.Library;
 global using MvcApp.Models;
- 
+global using MvcApp.Library;
+global using MvcApp.Library.ErrorHandling;
+

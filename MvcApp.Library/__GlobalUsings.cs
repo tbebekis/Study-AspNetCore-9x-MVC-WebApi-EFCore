@@ -61,8 +61,7 @@ global using Microsoft.Extensions.Caching;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.Extensions.Options;
-
-
+global using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 
 global using Microsoft.IdentityModel.Tokens;
@@ -83,6 +82,7 @@ global using CommonLib;
 global using CommonLib.Entities;
 global using CommonLib.Logging;
 global using CommonLib.Logging.Providers;
+global using CommonLib.HealthChecks;
 
 global using MvcApp.Library;
 global using MvcApp.Models;

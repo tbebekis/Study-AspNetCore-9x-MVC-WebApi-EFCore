@@ -14,6 +14,7 @@
             // context.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError; 
             Context.ExceptionContext.HttpContext.Response.ContentType = "application/json";
             Context.ExceptionContext.Result = new JsonResult(Result);
+            Context.ExceptionContext.ExceptionHandled = true;
         }
 
         static void SetupJsonSerializerOptions(JsonSerializerOptions JsonOptions)

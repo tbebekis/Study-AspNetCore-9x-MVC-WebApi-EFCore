@@ -4,7 +4,7 @@
     /// <summary>
     /// Helper
     /// </summary>
-    static public class HealthCheckCenter
+    static public class HealthChecksHelper
     {
         /// <summary>
         /// Serializes to <c>JSON</c> text a <see cref="HealthReport"/> instance.

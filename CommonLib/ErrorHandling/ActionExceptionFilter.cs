@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Abstractions;
-
-namespace CommonLib
+﻿namespace CommonLib
 {
     /// <summary>
     /// Global exception filter for controller actions. Use this instead of try-catch blocks inside action methods.    

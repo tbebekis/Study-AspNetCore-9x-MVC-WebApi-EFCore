@@ -1,37 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.Xml;
-
-namespace MvcApp
+﻿namespace MvcApp
 {
     static public partial class App
     {
-        static void GlobalErrorHandlerMvc(ActionExceptionFilterContext Context)
-        {
-            ErrorViewModel Model = new ErrorViewModel();
-            Model.Exception = Context.Exception;
-            Model.ErrorMessage = Context.Exception.Message; //Context.InDevMode?  Context.Exception.GetFullText(): Context.Exception.Message;
-            Model.RequestId = Context.RequestId;
-
-            /* SEE: https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#exception-filters */
-            var Result = new ViewResult();
-            Result.ViewName = "Error";
-            Result.ViewData = new ViewDataDictionary(Context.ModelMetadataProvider, Context.ExceptionContext.ModelState);
-            Result.ViewData.Model = Model;
-            // Result.ViewData.Add("Exception", Context.ExceptionContext.Exception);
-            // Result.ViewData.Add("RequestId", Context.RequestId);
-            Context.ExceptionContext.Result = Result;
-        }
-        static void GlobalErrorHandlerAjax(ActionExceptionFilterContext Context)
-        {
-            DataResult Result = new();
-            Result.ExceptionResult(Context.ExceptionContext.Exception);
-
-            /// NO, we do NOT want an invalid HTTP StatusCode. It is a valid HTTP Response.
-            /// We just have an action result with errors, so any error should be recorded by our HttpActionResult and delivered to the client.
-            /// context.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError; 
-            Context.ExceptionContext.HttpContext.Response.ContentType = "application/json";
-            Context.ExceptionContext.Result = new JsonResult(Result);
-        }
 
         static void SetupJsonSerializerOptions(JsonSerializerOptions JsonOptions)
         {
@@ -41,32 +11,6 @@ namespace MvcApp
                 );
         }
 
-        static HealthCheckResult DataContextGetAllProductsCheckFunc(object Info)
-        {     
-            try
-            {
-                long StartTime = Stopwatch.GetTimestamp();
-
-                using (var DataContext = new DataContext())
-                {
-                    DbSet<Product> DbSet = DataContext.Set<Product>();
-                    var List = DbSet.AsNoTracking().ToList();
-                }
-
-                int MaxSeconds = Convert.ToInt32(Info);
-
-                TimeSpan ElapsedTime = Stopwatch.GetElapsedTime(StartTime);
-                if (ElapsedTime.TotalSeconds > MaxSeconds)
-                    return new HealthCheckResult(HealthStatus.Unhealthy, "Operation exceeds the specified timeout.");
-
-                return new HealthCheckResult(HealthStatus.Healthy, "Operation timeout not exceeded.");
-
-            }
-            catch (Exception ex)
-            {
-                return new HealthCheckResult(HealthStatus.Unhealthy, "An exception is thrown", ex);
-            }   
-        }
 
         // ● public
         /// <summary>
@@ -94,15 +38,9 @@ namespace MvcApp
                 ;
 
             // ● health checks
-            builder.Services.AddHealthChecks()
-                .AddCheck("Environment", new EnvironmentHealthCheck(), tags: ["host"])
-                .AddCheck("Url Check", new UrlHealthCheck("https://google.com", () => Lib.GetService<IHttpClientFactory>()))
-                .AddCheck("IP Check", new PingHealthCheck("8.8.8.8"))
-                .AddCheck("DataContext GetAllProducts Check", new GenericHealthCheck(DataContextGetAllProductsCheckFunc, 60), tags: ["DbContext"])
-                ;
-
-            //.AddMyHealthCheck()
-            //.AddCheck<ServerHealthCheck>("general", tags: ["server"])
+            IHealthChecksBuilder HealthChecksBuilder = builder.Services.AddHealthChecks();
+            HealthChecksStore.AddHealthChecks(HealthChecksBuilder);
+ 
 
             // ● global exception handler
             /// NOTE: we do NOT need this.
@@ -219,8 +157,8 @@ namespace MvcApp
             IMvcBuilder MvcBuilder = builder.Services.AddControllersWithViews(options => {                
                 options.ModelBinderProviders.Insert(0, new ModelBinderProvider());
                 options.Filters.Add<ActionExceptionFilter>();
-                ActionExceptionFilter.MvcHandlerFunc = GlobalErrorHandlerMvc;
-                ActionExceptionFilter.AjaxHandlerFunc = GlobalErrorHandlerAjax;
+                ActionExceptionFilter.MvcHandlerFunc = GlobalErrorHandlers.MvcActionErrorHandler;
+                ActionExceptionFilter.AjaxHandlerFunc = GlobalErrorHandlers.AjaxActionErrorHandler;
             });
             MvcBuilder.AddJsonOptions(options => SetupJsonSerializerOptions(options.JsonSerializerOptions));
             builder.Services.ConfigureHttpJsonOptions(options => SetupJsonSerializerOptions(options.SerializerOptions));

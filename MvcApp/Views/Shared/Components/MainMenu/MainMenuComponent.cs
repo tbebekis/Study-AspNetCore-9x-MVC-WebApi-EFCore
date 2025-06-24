@@ -27,6 +27,7 @@
             // ● demos
             MenuModel mnuPluginTest = mnuDemos.Add("Plugin Test", "/plugin-test");
             MenuModel mnuAjaxDemos = mnuDemos.Add("Ajax Demos", "/ajax-demos");
+            MenuModel mnuHealthChecks = mnuDemos.Add("Health Checks", "/health-check");
 
             // ● products
             MenuModel mnuProductList = mnuProducts.Add("Product List", "/product/list");
