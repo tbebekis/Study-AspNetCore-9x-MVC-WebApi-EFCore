@@ -1,12 +1,16 @@
-# Session
+# Session and State Management
 
 > This text is part of a group of texts describing [Asp.Net Core](../Index.md).
 
-[HTTP](https://en.wikipedia.org/wiki/HTTP) is a [stateless protocol](https://en.wikipedia.org/wiki/Stateless_protocol).
+
+
+[HTTP](https://en.wikipedia.org/wiki/HTTP) is a [stateless protocol](https://en.wikipedia.org/wiki/Stateless_protocol). No state is automatically maintained between subsequent requests and responses.
 
 Asp.Net Core provides [a number of ways](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state) for application state management.
 
 One such a way is [Session state](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state#session-state).
+
+> `Session`, in a broad sense, is a conversation between a client and a server. 
 
 ## The ISession interface
 In Asp.Net Core session services are provided through the [HttpContext.Session](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.httpcontext.session) property of type [ISession](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.isession).
@@ -16,7 +20,7 @@ Asp.Net Core uses a [Cookie](https://en.wikipedia.org/wiki/HTTP_cookie) for stor
 
 A session cookie is deleted when the browser session ends by the user.
 
-A session has a default timeout of 20 minutes. The developer may define a more suitable timeout value. 
+A session has a default **idle timeout** of 20 minutes. If the idle timeout elapses without session activity, session content is discarded. The developer may define a more suitable timeout value. 
 
 Session is mostly used in storing data specific to the user, such as some user preferences, that are not required to be permanent accross sessions.
 
@@ -59,7 +63,9 @@ The order of session middleware is important. Is should be after `UseRouting()` 
 
 ## Read and Write to Session
 
-The [Controller](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controller) and [PageModel](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.pagemodel) classes provide access to session data through the [HttpContext.Session](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.httpcontext.session) property of type [ISession](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.isession).
+The [HttpContext.Session](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.httpcontext.session) property, of type [ISession](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.isession), provides access to session data.
+
+That is session is available inside a [Controller](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controller) class or [PageModel](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.pagemodel), i.e. `View`, class. 
 
 But sometimes a need arises to access session data outside of a `Controller` or `PageModel` context.
 
@@ -190,3 +196,24 @@ Some notes on the above class.
 - the above static class requires an [IHttpContextAccessor](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.ihttpcontextaccessor) to be passed in its `Initialize()` method.
 - using this static `Session` class the developer may store any object in the session, since the data is serialized to `json`. Avoid saving large data amounts to session, since the storage medium is a cookie with a limited size.
 - the `Request` property of this static `Session` class provides access to `HttpContext.Items` property. That property is a generic dictionary and it is used in storing data while processing a single request. The lifetime of that dictionary is the lifetime of the HTTP request. The dictionary's contents are discarded after the request is processed. 
+
+
+## TempData
+
+`TempData` is another way to maintain application state.
+
+The controller and the view provide the `TempData` property, of type [ITempDataDictionary](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewfeatures.itempdatadictionary). 
+
+`TempData` is a dictionary, i.e. a collection of `Key-Value` pairs. 
+
+Data in a `TempData` dictionary is maintained until it is read in the **next** request which makes `TempData` very useful in redirection.
+
+## HttpContext.Items
+
+`HttpContext.Items` is a dictionary of type `IDictionary<object, object>`. 
+
+Data stored in `HttpContext.Items` can be shared within the scope of the current request.
+
+ 
+
+ 

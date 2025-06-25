@@ -40,22 +40,22 @@ Texts are organized in three groups
 - [Claims and Identity](ClaimsAndIdentity.md)
 - [Authorization](Authorization.md)
 - [Localization](Localization.md)
+- [Error Handling](ErrorHandling.md)
+- [HttpContext](HttpContext.md)
 
 #### TODO
+- [Entity Framework Core](EFCore.md)
+- [Object Mapper](ObjectMapper.md)
+- [Caching](Caching.md)
+- [RBAC, Role Based Access Control](RBAC.md)
 - [Request Features](RequestFeatures.md)
 - [Routing](Routing.md)
 - [Model Binding](ModelBinding.md)
 - [Model Validation](ModelValidation.md)
 - [Filters](Filters.md)
 - [Environments](Environments.md)
-- [HttpContext](HttpContext.md)
-- [Error Handling](ErrorHandling.md)
-- [Entity Framework Core](EFCore.md)
 - [Health Checks](HealthChecks.md)
-- [RBAC, Role Based Access Control](RBAC.md)
-- [Caching](Caching.md)
 - [Background Services](BackgroundServices.md)
-- [Object Mapper](ObjectMapper.md)
 - [Image handling](ImageHandling.md)
 - [IP Geolocation](IpGeolocation.md)
 - [Sending Email](SendingEmail.md)
@@ -70,6 +70,7 @@ Texts are organized in three groups
 - [Plugins with Views, Javascript and CSS](MVC/Plugins.md)
 
 #### TODO
+- [ViewBag and ViewData](MVC/ViewBagAndViewData.md)
 - [Themes](MVC/Themes.md)
 - [Ajax Controller](MVC/AjaxController.md)
 - [Breadcrumb](MVC/Breadcrumb.md)
@@ -90,6 +91,7 @@ Texts are organized in three groups
 
 
 # Asp.Net Core WebApi
+- [Api Data Results](WebApi/DataResults.md)
 
 #### TODO
 - [JWT Token Authentication](WebApi/JWTTokenAuthentication.md)

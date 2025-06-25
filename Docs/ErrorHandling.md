@@ -1,5 +1,7 @@
 # Error Handling
 
+> This text is part of a group of texts describing [Asp.Net Core](Index.md).
+
 Error handling is an important issue in any kind of application. 
 
 The most common approach is handling errors locally with the `try-catch` block.
@@ -24,6 +26,7 @@ Following are the available options.
 - `UseStatusCodePages()` with a callback function
 - implement the `IExceptionHandler` interface
 - implement the `IExceptionFilter` interface
+- use an exception handling custom middleware
 
 
 ## UseExceptionHandler() with an error handling path (MVC only)
@@ -81,7 +84,6 @@ The [IExceptionHandlerPathFeature](https://learn.microsoft.com/en-us/dotnet/api/
 public static void Main(string[] args)
 {
     var builder = WebApplication.CreateBuilder(args);
-
 
     builder.Services.AddControllersWithViews();
 
@@ -205,9 +207,9 @@ Registration of the handler is required.
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 ```
 
-## Implement the `IExceptionFilter` interface
+## Implementing the `IExceptionFilter` interface
 
-A [IExceptionFilter](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?#exception-filters) implementor class is a global action exception filter.
+A [IExceptionFilter](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?#exception-filters) implementor class is a global **action exception filter**.
 
 Such an action exception filter 
 - catches exceptions thrown in a Razor Page or controller creation, model binding, action filters, or action methods.
@@ -258,7 +260,7 @@ public class ActionExceptionFilter : IExceptionFilter
 
     public void OnException(ExceptionContext context)
     {
-        ErrorViewModel Model = new ErrorViewModel();
+        ApiResultModel Model = new ApiResultModel();
         Model.Exception = context.Exception;
         Model.ErrorMessage = context.Exception.Message;  
 
@@ -278,6 +280,64 @@ The `ActionExceptionFilter` must be registered as a filter.
   });
 ```
 
+## Using an exception handling custom middleware
+
+A possible implementation of an exception handling custom middleware
+
+```
+public class ExceptionHandlerMiddleware: IMiddleware
+{
+    Task HandleExceptionAsync(HttpContext context, Exception exception)
+    { 
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        string Message = "Unknown error";
+        return context.Response.WriteAsync(Message);
+    }
+
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        try
+        {
+            await next(context);
+        }
+        catch (Exception ex)
+        {
+            await HandleExceptionAsync(context, ex);
+        }
+    }
+}
+```
+
+And the required registration.
+
+```
+public static void Main(string[] args)
+{
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddControllersWithViews();
+    builder.Services.AddSingleton<ExceptionHandlerMiddleware>();
+
+    var app = builder.Build();
+
+    app.UseMiddleware<ExceptionHandlerMiddleware>();
+
+    app.UseHttpsRedirection();
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapStaticAssets();
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}")
+        .WithStaticAssets();
+
+    app.Run();
+}
+```
+
+
 ## The Error view (MVC only)
 
 When the application startup code contains a statement like
@@ -290,7 +350,7 @@ then the `Error` view becomes a sort of an exception handler.
 
 The effect of that statement is that any unhandled exception ends up in the `Error` view.
 
-That means that, in a case of an error, the `Error` view maybe displayed even without the `HomeController.Error()` action to be called.
+That means that, in a case of an error, the `Error` view maybe displayed even **without** the `HomeController.Error()` action to be called.
 
 So because the `HomeController.Error()` may not be called we have to gather all the exception information and prepare the view model **inside** the view.
 
@@ -346,8 +406,20 @@ So here is such an `Error` view.
 
 ## The Developer exception page
 
+In Asp.Net Core applications, when running in the **Development environment**, the [`Developer Exception Page`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling#developer-exception-page) is enabled by default in both types of applications, MVC or WebApi.
 
+The `Developer Exception Page` displays very detailed information regarding an unhandled error, such as the full stack, the query string, the headers and the routing.
 
-https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling#developer-exception-page
+The `Developer Exception Page` is used by the system when no other exception handlers exist that handled the error.
 
-https://learn.microsoft.com/en-us/aspnet/core/web-api/handle-errors#developer-exception-page
+To see the `Developer Exception Page` just disable any other exception handler and generate an exception in a controller or a view.
+
+```
+public class MyController : Controller
+{
+    public IActionResult Action1()
+    {
+        throw new Exception("This is a test error from a Controller.");
+    } 
+}
+```

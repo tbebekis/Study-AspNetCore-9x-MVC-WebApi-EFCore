@@ -1,5 +1,8 @@
 ﻿namespace CommonLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IPaging
     {
         /// <summary>

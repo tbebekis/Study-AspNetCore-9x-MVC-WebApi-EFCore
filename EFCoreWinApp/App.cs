@@ -10,12 +10,5 @@
             else 
                 DataContext.EnsureDatabase(); 
         }
-
-
-        //static public DataContext GetDataContext() => new DataContext();
-
-
-
- 
     }
 }
