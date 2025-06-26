@@ -26,7 +26,7 @@ Following are the available options.
 - `UseStatusCodePages()` with a callback function
 - implement the `IExceptionHandler`  interface
 - implement the `IExceptionFilter`  interface
-- use an exception handling custom middleware 
+- use an exception handling [custom middleware](#using-an-exception-handling-custom-middleware) 
 
 
 ## UseExceptionHandler() with an error handling path (MVC only)
