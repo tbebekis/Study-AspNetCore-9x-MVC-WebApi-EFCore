@@ -21,7 +21,7 @@ Although handling errors locally, as above, is a common practice and the prefera
 
 Following are the available options.
 
-- `UseExceptionHandler()` with an error handling path (MVC only)
+- [`UseExceptionHandler()`](#UseExceptionHandler-With-Error-Handling-Path) with an error handling path (MVC only)
 - `UseExceptionHandler()` with a callback function
 - `UseStatusCodePages()` with a callback function
 - implement the `IExceptionHandler` interface
@@ -29,7 +29,7 @@ Following are the available options.
 - use an exception handling custom middleware
 
 
-## UseExceptionHandler() with an error handling path (MVC only)
+## UseExceptionHandler() with an error handling path (MVC only){#UseExceptionHandler-With-Error-Handling-Path}
 
 ```
 public static void Main(string[] args)
