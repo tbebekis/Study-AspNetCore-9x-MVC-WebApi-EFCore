@@ -19,7 +19,6 @@
         [HttpGet("/", Name = "Home")]
         public IActionResult Index()
         {
-            TempData
             return View();
         }
 

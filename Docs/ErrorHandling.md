@@ -21,12 +21,12 @@ Although handling errors locally, as above, is a common practice and the prefera
 
 Following are the available options.
 
-- `UseExceptionHandler()` with an error handling path (MVC only)
-- `UseExceptionHandler()` with a callback function
-- `UseStatusCodePages()` with a callback function
-- implement the `IExceptionHandler`  interface
-- implement the `IExceptionFilter`  interface
-- use an exception handling [custom middleware](#using-an-exception-handling-custom-middleware) 
+- [`UseExceptionHandler()` with an error handling path (MVC only)](#useexceptionhandler-with-an-error-handling-path-mvc-only)
+- [`UseExceptionHandler()` with a callback function](#useexceptionhandler-with-a-callback-function)
+- [`UseStatusCodePages()` with a callback function](#usestatuscodepages-with-a-callback-function)
+- [implement the `IExceptionHandler`  interface](#implementing-the-iexceptionhandler-interface)
+- [implement the `IExceptionFilter`  interface](#implementing-the-iexceptionfilter-interface)
+- [use an exception handling custom middleware](#using-an-exception-handling-custom-middleware) 
 
 
 ## UseExceptionHandler() with an error handling path (MVC only)

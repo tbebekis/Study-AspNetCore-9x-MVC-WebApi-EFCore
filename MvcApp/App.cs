@@ -12,7 +12,6 @@
         /// </summary>
         static void Initialize()
         {
-            // App.InitializePlugins();
             AjaxRequestHandlers.Initialize();
         }
  
