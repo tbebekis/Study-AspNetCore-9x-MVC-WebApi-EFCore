@@ -21,15 +21,15 @@ Although handling errors locally, as above, is a common practice and the prefera
 
 Following are the available options.
 
-- [`UseExceptionHandler()`](#UseExceptionHandler-With-Error-Handling-Path) with an error handling path (MVC only)
-- `UseExceptionHandler()` with a callback function
-- `UseStatusCodePages()` with a callback function
-- implement the `IExceptionHandler` interface
-- implement the `IExceptionFilter` interface
-- use an exception handling custom middleware
+- [`UseExceptionHandler()`](#Error-Handling-Path) with an error handling path (MVC only)
+- [`UseExceptionHandler()`]{#Error-Handling-Callback} with a callback function
+- [`UseStatusCodePages()`](#UseStatusCodePages) with a callback function
+- implement the [`IExceptionHandler`](#IExceptionHandler) interface
+- implement the [`IExceptionFilter`](#IExceptionFilter) interface
+- use an [exception handling custom middleware](#Custom-Middleware)
 
 
-## UseExceptionHandler() with an error handling path (MVC only){#UseExceptionHandler-With-Error-Handling-Path}
+## UseExceptionHandler() with an error handling path (MVC only){#Error-Handling-Path}
 
 ```
 public static void Main(string[] args)
@@ -74,7 +74,7 @@ is that any unhandled exception ends up in the `Error` view. And the `Error` vie
 It is possible to customize the `Error` view and in this text there is an example of how to do it.
 
 
-## UseExceptionHandler() with a callback function
+## UseExceptionHandler() with a callback function{#Error-Handling-Callback}
 
 Using another overload of the `UseExceptionHandler()` extension method it is possible to use a [global error handler function](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling#exception-handler-lambda), as the next example displays.
 
@@ -128,7 +128,7 @@ public static void Main(string[] args)
 
 
 
-## `UseStatusCodePages()` with a callback function
+## `UseStatusCodePages()` with a callback function{#UseStatusCodePages}
 
 When an application sets the `Response.StatusCode` to a value from [`400` to `599`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status), for example
 
@@ -174,7 +174,7 @@ public static void Main(string[] args)
 ```
 
 
-## Implementing the `IExceptionHandler` interface
+## Implementing the `IExceptionHandler` interface{#IExceptionHandler}
 
 This approach is similar to passing a global exception handler callback to the `UseExceptionHandler()` extension method. 
 
@@ -207,7 +207,7 @@ Registration of the handler is required.
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 ```
 
-## Implementing the `IExceptionFilter` interface
+## Implementing the `IExceptionFilter` interface{#IExceptionFilter}
 
 A [IExceptionFilter](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?#exception-filters) implementor class is a global **action exception filter**.
 
@@ -280,7 +280,7 @@ The `ActionExceptionFilter` must be registered as a filter.
   });
 ```
 
-## Using an exception handling custom middleware
+## Using an exception handling custom middleware{#Custom-Middleware}
 
 A possible implementation of an exception handling custom middleware
 
