@@ -53,7 +53,7 @@
             /// AddDbContext() scoped servicea
             /// SEE: https://learn.microsoft.com/en-us/ef/core/performance/advanced-performance-topics
             /// builder.Services.AddDbContextPool<AppDbContext>(context => context.UseSqlite(), poolSize: 1024);
-            builder.Services.AddDbContext<DataContext>();
+            builder.Services.AddDbContext<DataContext>();            
             RBAC.Initialize(() => new DataContext());
 
             // ● custom services

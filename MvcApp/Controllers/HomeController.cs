@@ -5,8 +5,6 @@
     /// </summary>
     public class HomeController : MvcBaseControllerApp
     {
-        
-
         // ● construction
         /// <summary>
         /// Constructor
