@@ -485,6 +485,10 @@ public class MyController
 } 
 ```
 
+## DbSet&lt;T&gt;
+
+TODO: DbSet
+
 ## Configuring a DbContext Database Provider
 
 A `DbContext` uses a single [Database Provider](https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/#configuring-the-database-provider).
@@ -525,6 +529,9 @@ Most common are the following.
 - **Data Types**. The Database Provider decides the appropriate mapping. 
 - **Nullable Types**. Properties with nullable data types can be null, e.g. `string? Name { get; set; }`, otherwise a value is required, e.g. `string Name { get; set; }`.
  
+
+By convention, an alternate key is introduced for you when you identify a property which isn't the primary key as the target of a relationship.
+
 ## Configuration using Data Annotation Attributes
 
 Attributes can be placed on a class or property and specify metadata about that class or property.
@@ -619,6 +626,21 @@ public class Post
 
     [ForeignKey(nameof(BlogKey))]
     public Blog Blog { get; init; }
+}
+```
+
+- [**KeylessAttibute**](https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types). Annotates an entity specifying that the entity has no primary key. Can be used to execute database queries returning keyless entities.
+
+```
+[Keyless]
+public class ProductOrdersTotal  
+{
+    public ProductOrdersTotal()
+    {
+    }
+
+    public string Name { get; set; }
+    public decimal OrdersTotal { get; set; } 
 }
 ```
 
@@ -771,7 +793,43 @@ public class AppUser: BaseEntity
 }
 ```
 
+- [**ComplexTypeAttibute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.complextypeattribute). Specifies that a type is a [complex type](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#value-objects-using-complex-types).
+
+```
+[ComplexType]
+public class Address
+{
+    public string Street { get; set; }
+    public string City { get; set; }
+    public string Country { get; set; }
+    public string PostCode { get; set; }
+}
+
+public class SalesOrder
+{
+    public int Id { get; set; }
+    public Address ShippingAddress { get; set; }
+    public Address BillingAddress { get; set; }
+    ...
+}
+```
+
+A discussion on complex types can be found in this [announcement](https://devblogs.microsoft.com/dotnet/announcing-ef8-rc1/).
+
+A complex type
+
+- it is not an entity per se, i.e. no `DbSet<MyComplexType>`
+- it is not identified by a key value and is not tracked 
+- should be used as a property of an entity type
+- it is not autonomously saved by a `DbContext` or a `DbSet`, but instead is saved as a part of an entity
+- can be a reference or a value type, i.e. either class or record
+- can be shared by multiple properties in the same entity.
+- can be used by multipte entities
+- must be defined as a **required** value in the `OnModelCreating()` method.
+
 ## Configuration using Fluent Syntax
+
+Fluent API methods reside in the [Microsoft.EntityFrameworkCore.Metadata.Builders](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders) as members in various `builder` classes.
 
 Configuration using fluent syntax can be done in `IEntityTypeConfiguration<T>.Configure()` or `DbContext.OnModelCreating()`.
 
@@ -808,22 +866,101 @@ public class DataContext: DbContext
 {
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
- 
+        ...
     } 
     ...
 }
 ```
 
 ### Fluent API Methods - Model Configuration
-- [**HasDbFunction()**](https://learn.microsoft.com/en-us/ef/core/querying/user-defined-function-mapping). Maps a CLR function to database function.
+
+The following methods are members of the [ModelBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder) class. The presented list is not exhaustive.
+
+- [**Entity()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.entity). Performs configuration of a specified entity type.
+
+```
+modelBuilder.Entity<Product>().HasKey(p => p.Id);
+```
+
+- [**Owned()**](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities). Specifies that an entity is an owned one.
+
+```
+TODO: Owned()
+```
+
+- [**HasDbFunction()**](https://learn.microsoft.com/en-us/ef/core/querying/user-defined-function-mapping). Maps a CLR function to a database [UDF](https://learn.microsoft.com/en-us/sql/relational-databases/user-defined-functions/user-defined-functions) function.
+
+A database UDF function.
  
+```
+CREATE FUNCTION get_product_salesorders_total(@ProductId nvarchar(40))
+RETURNS DECIMAL AS 
+BEGIN
+    RETURN (SELECT SUM(LineAmount) FROM SalesOrderLine WHERE ProductId = ProductId);
+END;
+```
+
+A **not-mapped** entity.
+
+```
+[NotMapped]
+public class ProductOrdersTotal : BaseEntity
+{
+    public ProductOrdersTotal() { }
+    public ProductOrdersTotal(string Id, string Name, decimal OrdersTotal)
+    {
+        this.Id = Id;
+        this.Name = Name;
+        this.OrdersTotal = OrdersTotal;
+    }
+
+    public string Name { get; set; }
+    public decimal OrdersTotal { get; set; } 
+}
+```
+
+The `DbContext`.
+
+```
+public class DataContext: DbContext
+{
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasDbFunction(
+            typeof(DataContext).GetMethod(nameof(GetProductSalesOrderTotalMap), 
+            new[] { typeof(string) })
+        ).HasName("get_product_salesorders_total");
+    }
+    
+    // this method is never called, 
+    // it is here just for the mapping to a database function
+    public static decimal GetProductSalesOrderTotalMap(string ProductId)
+        => throw new NotImplementedException();
+
+    // a method that uses the mapped function
+    public List<ProductOrdersTotal> GetSalesOrderTotals()
+    { 
+        return this.Products.Select
+          (p => new ProductOrdersTotal(p.Id, 
+                                       p.Name,
+                                       GetProductSalesOrderTotalMap(p.Id))
+          ).ToList();
+    }
+
+    public DbSet<Product> Products { get; set; }
+    public DbSet<SalesOrderLine> SalesOrderLines { get; set; }
+    ...
+}
+```
+
 - [**HasDefaultSchema()**](https://learn.microsoft.com/en-us/ef/core/modeling/entity-types#table-schema). Specifies the default database schema.
-- 
+
+
 ```
 modelBuilder.HasDefaultSchema("dbo");
 ```
 
-- [**HasSequence()**](https://learn.microsoft.com/en-us/ef/core/modeling/sequences).	Configures a database sequence when targeting a relational database.
+- [**HasSequence()**](https://learn.microsoft.com/en-us/ef/core/modeling/sequences).	Configures a database sequence. Valid with relational databases that support sequences.
 
 ```
 modelBuilder.HasSequence<int>("SalesOrderCodeNo");
@@ -833,18 +970,137 @@ modelBuilder.Entity<SalesOrder>()
     .HasDefaultValueSql("NEXT VALUE FOR SalesOrderCodeNo");
 ```
 
-- `HasAnnotation()`	Adds or updates data annotation attributes on the entity.
+- [**HasAnnotation()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.hasannotation). A `Key-Value` pair that attaches arbitrary information to the `Model` which can later be read from the `Model` using its key. `EF Core` uses `HasAnnotation()` internally to configure things such as the constraint name of a foreign key. It has little value to a developer unless he implements something that uses it. Check [this discussion](https://github.com/dotnet/efcore/issues/13028).
 
+```
+modelBuilder.HasAnnotation("MyKey", "MyValue");
+```
+
+- [**HasChangeTrackingStrategy**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.haschangetrackingstrategy). Specifies the [ChangeTrackingStrategy](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.changetrackingstrategy) to be used with this `EF Core Model`. A `ChangeTrackingStrategy` indicates how the `DbContext` detects changes happened in entity properties.
+
+```
+modelBuilder.HasChangeTrackingStrategy(ChangeTrackingStrategy.ChangingAndChangedNotifications);
+```
+
+- [**Ignore()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.ignore). When used with a [ModelBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder) specifies that an entity is not-mapped to a database table.
+
+```
+modelBuilder.Ignore("ProductOrdersTotal");
+
+modelBuilder.Ignore(typeof(ProductOrdersTotal));
+
+modelBuilder.Ignore<ProductOrdersTotal>();
+```
 
 ### Fluent API Methods - Entity Configuration
 
+The following methods are members of the [EntityTypeBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1) class. The presented list is not exhaustive.
+
+- [**ToTable()**](https://learn.microsoft.com/en-us/dotnet/api/system.data.entity.modelconfiguration.entitytypeconfiguration-1.totable). Specifies the name of a database table that the entity maps to.
+```
+modelBuilder.Entity<SalesOrder>().ToTable("Sales_Order");
+```
+- [**HasKey()**](https://learn.microsoft.com/en-us/ef/core/modeling/keys#configuring-a-primary-key). Configures one or more properties as the primary key.
+```
+modelBuilder.Entity<Product>().HasKey(p => p.Id);
+modelBuilder.Entity<RolePermission>().HasKey(rp => new { rp.RoleId, rp.PermissionId });
+```
+- [**HasNoKey()**]()
+Annotates an entity specifying that the entity has no primary key. Can be used to execute database queries returning keyless entities.
+```
+modelBuilder.Entity<ProductOrdersTotal>().HasNoKey();
+```
+
+
+- [**HasAlternateKey()**](https://learn.microsoft.com/en-us/ef/core/modeling/keys?tabs=data-annotations#alternate-keys). Configures an alternate key for an entity. An alternate key, just like a primary key, uniquely identifies an entity. It can be a multi-column key and it is useful in establishing relationships between entities.
+
+```
+modelBuilder.Entity<Company>().HasAlternateKey(c => c.TaxPayerId);  // a TIN
+modelBuilder.Entity<Car>().HasAlternateKey(c => new { c.PlateNo, c.ChassisNo });
+```
+
+- [**HasIndex()**](https://learn.microsoft.com/en-us/ef/core/modeling/indexes). Creates an index on one or more properties. The index can be a unique one.
+
+```
+modelBuilder.Entity<Product>().HasIndex(p => p.Name });
+modelBuilder.Entity<User>().HasIndex(u => new { u.FirstName, u.LastName });
+```
+- [**Ignore()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.ignore). When used with an [EntityTypeBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1) specifies one or more properties that are excluded from mapping.
+
+```
+modelBuilder.Entity<User>().Ignore(u => u.FullName);
+```
+
+- [**ComplexProperty()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.complexproperty). Specifies that a property of a class or structure type is a `Complex Type`. Check the `ComplexTypeAttribute` presented earlier.
+
+```
+modelBuilder.Entity<SalesOrder>(so => {
+		so.ComplexProperty(sa => sa.ShippingAddress, sa => { sa.IsRequired(); });
+		so.ComplexProperty(ba => ba.BillingAddress, ba => { ba.IsRequired(); });
+	});
+```
+
+- [**HasData()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.hasdata). Used in adding initial data to the database.
+
+```
+modelBuilder.Entity<Product>().HasData(new List<Product>()
+{
+    new Product(){ ... }
+    ...
+});
+```
+
+- [**ToView()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalentitytypebuilderextensions.toview). Specifies that an entity maps to a database view.
+
+```
+modelBuilder.Entity<ProductOrdersTotal>().ToView("v_product_salesorders_total");
+```
+- [**ToSqlQuery()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalentitytypebuilderextensions.tosqlquery). Maps an entity to a `SELECT` Sql statement.
+
+```
+modelBuilder.Entity<ProductOrdersTotal>(builder => { builder.ToSqlQuery("select * from v_product_salesorders_total"); });
+
+...
+
+// example usage
+var Totals = MyDataContext.Set<ProductOrdersTotal>().ToList();
+```
+
+- [**HasQueryFilter()**](https://learn.microsoft.com/en-us/ef/core/querying/filters). Specifies that the entity has a global query filter that should be automatically applied to queries of this entity type.
+
+```
+modelBuilder.Entity<User>().HasQueryFilter(p => p.UserType == "ClientApplication");
+```
+
+- [**Property()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.property). Returns a [PropertyBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1) which is use in configuring a property of the entity.
+
+```
+modelBuilder.Entity<User>().Property(u => u.Salt).HasColumnName("PasswordSalt");
+```
 
 ### Fluent API Methods - Property Configuration
+
+- [**HasColumnType()**]().	Configures the data type of the corresponding column in the database for the property.
+- [**HasComputedColumnSql()**]().	Configures the property to map to computed column in the database when targeting a relational database.
+- [**HasDefaultValue()**]().	Configures the default value for the column that the property maps to when targeting a relational database.
+- [**HasDefaultValueSql()**]().	Configures the default value expression for the column that the property maps to when targeting relational database.
+- [**HasField()**]().	Specifies the backing field to be used with a property.
+- [**HasMaxLength()**]().	Configures the maximum length of data that can be stored in a property.
+- [**IsConcurrencyToken()**]().	Configures the property to be used as an optimistic concurrency token.
+- [**IsRequired()**]().	Configures whether the valid value of the property is required or whether null is a valid value.
+- [**IsRowVersion()**]().	Configures the property to be used in optimistic concurrency detection.
+- [**IsUnicode()**]().	Configures the string property which can contain unicode characters or not.
+- [**ValueGeneratedNever()**]().	Configures a property which cannot have a generated value when an entity is saved.
+- [**ValueGeneratedOnAdd()**]().	Configures that the property has a generated value when saving a new entity.
+- [**ValueGeneratedOnAddOrUpdate()**]().	Configures that the property has a generated value when saving new or existing entity.
+- [**ValueGeneratedOnUpdate()**]().	Configures that a property has a generated value when saving an existing entity. 
 
  
 ## XXX
  
- 
+ - [**HasOne()**]().
+- [**HasMany()**]().
+- [**OwnsOne()**]().
 
 ## ZZZ
 
