@@ -1,7 +1,7 @@
 ﻿namespace CommonLib.Entities
 {
     [Table(nameof(AppRolePermission))]
-    [PrimaryKey(nameof(RoleId), nameof(PermissionId))]
+    [Index(nameof(RoleId), nameof(PermissionId), IsUnique = true)]
     public class AppRolePermission : BaseEntity
     {
         public AppRolePermission() 
@@ -14,11 +14,8 @@
             this.PermissionId = PermissionId;
         }
 
-
-        [ForeignKey(nameof(AppRole))]
-        [Required, MaxLength(40)]
+        [Required, MaxLength(40), ForeignKey()]
         public string RoleId { get; set; }
-        [ForeignKey(nameof(AppPermission))]
         [Required, MaxLength(40)]
         public string PermissionId { get; set; }
     }

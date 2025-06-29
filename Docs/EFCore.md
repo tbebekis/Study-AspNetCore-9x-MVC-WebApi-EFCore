@@ -376,12 +376,12 @@ All the `CRUD` operation methods, such as `Add()`, `Remove()` and `Update()`, ar
  
 ## DbContext in Dependency Injection
  
-`DbContext` can be registered as a [Scoped Service](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection) using
+`DbContext` is registered as a [Scoped Service](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection) using
 
 ```
 builder.Services.AddDbContext<DataContext>();
 ```
-There is variation that accepts an options instance.
+There is a variation that accepts an options instance.
 
 ```
 string ConnectionString = "...";
@@ -392,7 +392,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 `DbContext` does not provide a public default constructor, i.e. a constructor without any parameter. 
 
-For a `DbContext` to be used in Dependency Injection a public constructor is required with a single `DbContextOptions` parameter. This is the constructor used by Dependency Injection container when an instance of a `DbContext` is constructed.
+For a `DbContext` to be used in Dependency Injection a public constructor is required with a single `DbContextOptions` parameter. That constructor is used by Dependency Injection container when an instance of a `DbContext` is constructed.
 
 ```
 public class DataContext: DbContext
@@ -404,7 +404,7 @@ public class DataContext: DbContext
 }
 ``` 
 
-After that the `DbContext` can be injected wherever Dependency Injection can be used.
+Having a constructor like that the `DbContext` can be injected anywhere Dependency Injection can be used.
 
 ```
 public class MyController
@@ -487,7 +487,62 @@ public class MyController
 
 ## DbSet&lt;T&gt;
 
-TODO: DbSet
+[DbSet&lt;T&gt;](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1) represents a collection of entities. Provides `CRUD` methods such as `Add()`, `Update()` and `Remove()`. Also it can be used in issuing queries to the database using [LINQ](https://learn.microsoft.com/en-us/dotnet/csharp/linq/) queries.
+
+`DbSet<T>` is used in declaring properties in a `DbContext`.
+
+```
+public class DataContext: DbContext
+{
+    ...
+    public DbSet<Product> Products { get; set; }
+}
+```
+
+Another way to get a `DbSet<T>` is to use the `DbContext.Set<T>()` method.
+
+```
+DbSet<Product> DbSet = DataContext.Set<Product>();
+```
+
+`DbSet<T>` is used in adding, updating and deleting an entity.
+
+```
+using (var Context = new DataContext())
+{ 
+    var P = new Product() { ... };
+
+    Context.Products.Add(P);
+    Context.Products.Update(P);
+    Context.Products.Remove(P);
+
+    Context.SaveChanges();
+}
+```
+
+A `DbSet<T>` is also an `IQueryable<T>` instance.
+
+```
+using (var Context = new DataContext())
+{ 
+    var List = Context.Products
+        .Select(p => new { p.Id, p.Name })
+        .ToList(); 
+}
+```
+`DbSet<T>` can execute [Sql statements](https://learn.microsoft.com/en-us/ef/core/querying/sql-queries).
+
+`DbSet<T>` is an `IQueryable<T>` which provides a lot of useful methods, such as [FromSql](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalqueryableextensions.fromsql) and [FromSqlRaw](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalqueryableextensions.fromsqlraw).
+
+```
+using (var Context = new DataContext())
+{ 
+    string SqlText = "select * from Products"
+    var List = Context.Products
+        .FromSqlRaw(SqlText)
+        .ToList(); 
+}
+```
 
 ## Configuring a DbContext Database Provider
 
@@ -526,11 +581,10 @@ Most common are the following.
 - **Column Name**. The name of a property is used in mapping the property to a table column with the same name in the underlying database.
 - **Primary Key**. A property named `ID`, `Id`, `id` or `EntityNameId` (not case-sensitive), is configured as the primary key.
 - **Foreign Key**. If a property is named `ForeignEntityId` and there is an entity having `ForeignName` as name and a primary key of the same data type then that property is configured as a foreign key.
+- **Alternate Key**. When a property, which is not the primary key, is used as the target of a relationship then an alternate key is created.
 - **Data Types**. The Database Provider decides the appropriate mapping. 
 - **Nullable Types**. Properties with nullable data types can be null, e.g. `string? Name { get; set; }`, otherwise a value is required, e.g. `string Name { get; set; }`.
- 
 
-By convention, an alternate key is introduced for you when you identify a property which isn't the primary key as the target of a relationship.
 
 ## Configuration using Data Annotation Attributes
 
@@ -542,7 +596,7 @@ There is a great number of data annotation attributes. Some of them are `mapping
 
 Data annotation attributes can be found in many namespaces such as [System.ComponentModel.DataAnnotations](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations),  [System.ComponentModel.DataAnnotations.Schema](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema) or [Microsoft.EntityFrameworkCore](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore).
 
-Next is a list of frequently used attributes.
+Next is a list of frequently used attributes. The presented list is not exhaustive.
 
 - [**TableAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.tableattribute). Annotates an entity class specifying the database table the entity is mapped to.
 ```
@@ -559,6 +613,19 @@ public class Product : BaseEntity
 public class BaseEntity 
 {
     ...
+}
+
+...
+
+[PrimaryKey(nameof(RoleId), nameof(PermissionId))]
+public class AppRolePermission  
+{
+    public AppRolePermission() 
+    { 
+    }
+ 
+    public string RoleId { get; set; }
+    public string PermissionId { get; set; }
 }
 ```
 
@@ -588,6 +655,26 @@ public class BaseEntity
 - [**ForeignKeyAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.foreignkeyattribute). Annotates a property denoting that the property is used as a foreign key in a relationship between two entites.
 
 > In `EF Core` terminology the `foreign` entity is called `Principal` entity while the entity that depends on the principal entity is called `Dependent` entity.
+
+The `ForeignKey` attribute accepts a single string parameter which is the name either of an associated navigation property (i.e. a property of an entity type) or the name of a property of a primitive type which is the actual foreign key. 
+
+In other words, in `EF Core`, in order to define a foreign key two things are required:
+- an associated navigation property of an entity type, as the `Category` in the next example
+- a property of a primitive type which is the actual foreign key, as the `CategoryId` in the next example.
+
+```
+public class Product : BaseEntity
+{
+    public Product() { }
+
+    public string Name { get; set; }
+    public decimal Price { get; set; }
+
+    public string CategoryId { get; set; }
+    [ForeignKey(nameof(CategoryId))]
+    public virtual Category Category { get; set; }
+}
+```
 
 Next two examples are taken from `EF Core` [docs](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/mapping-attributes#foreignkeyattribute).
 
@@ -827,7 +914,7 @@ A complex type
 - can be used by multipte entities
 - must be defined as a **required** value in the `OnModelCreating()` method.
 
-## Configuration using Fluent Syntax
+## Configuration using Fluent API
 
 Fluent API methods reside in the [Microsoft.EntityFrameworkCore.Metadata.Builders](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders) as members in various `builder` classes.
 
@@ -872,7 +959,7 @@ public class DataContext: DbContext
 }
 ```
 
-### Fluent API Methods - Model Configuration
+## Fluent API Methods - Model Configuration
 
 The following methods are members of the [ModelBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder) class. The presented list is not exhaustive.
 
@@ -992,7 +1079,7 @@ modelBuilder.Ignore(typeof(ProductOrdersTotal));
 modelBuilder.Ignore<ProductOrdersTotal>();
 ```
 
-### Fluent API Methods - Entity Configuration
+## Fluent API Methods - Entity Configuration
 
 The following methods are members of the [EntityTypeBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1) class. The presented list is not exhaustive.
 
@@ -1078,7 +1165,9 @@ modelBuilder.Entity<User>().HasQueryFilter(p => p.UserType == "ClientApplication
 modelBuilder.Entity<User>().Property(u => u.Salt).HasColumnName("PasswordSalt");
 ```
 
-### Fluent API Methods - Property Configuration
+## Fluent API Methods - Property Configuration
+
+The following methods are members of the [PropertyBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1) class. The presented list is not exhaustive. 
 
 - [**HasColumnType()**]().	Configures the data type of the corresponding column in the database for the property.
 - [**HasComputedColumnSql()**]().	Configures the property to map to computed column in the database when targeting a relational database.
