@@ -32,4 +32,4 @@ The `IHttpContextAccessor` should be registered as a service in application's st
 builder.Services.AddHttpContextAccessor();
 ```
 
-After that the `IHttpContextAccessor` service can be injected wherever a service can be injected, i.e. constructors, properties, `[FromServices]` controller action parameters, etc. Check the `Dependency Injection` text of this group of texts.
+After that the `IHttpContextAccessor` service can be injected anywhere a service can be injected, i.e. constructors, properties, `[FromServices]` controller action parameters, etc. Check the `Dependency Injection` text of this group of texts.

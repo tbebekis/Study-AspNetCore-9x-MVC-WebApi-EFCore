@@ -1,4 +1,6 @@
-﻿namespace CommonLib.Entities
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace CommonLib.Entities
 {
 
     /// <summary>
@@ -100,6 +102,11 @@
             //builder
             //    .Property(e => e.ClientId)
             //    .IsRequired();
+
+            builder.Property(u => u.UserType)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (AppUserType)Enum.Parse(typeof(AppUserType), v));
         }
     }
 }

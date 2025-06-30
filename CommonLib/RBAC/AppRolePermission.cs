@@ -14,7 +14,7 @@
             this.PermissionId = PermissionId;
         }
 
-        [Required, MaxLength(40), ForeignKey()]
+        [Required, MaxLength(40)]
         public string RoleId { get; set; }
         [Required, MaxLength(40)]
         public string PermissionId { get; set; }

@@ -190,7 +190,7 @@ public static void Main(string[] args)
 
 > NOTE: The `AddOptions()` method installs monitors that get notifications when a  **file-based** configuration source, e.g. a JSON, XML or INI file, is altered. Only **file-based** configuration sources support dynamic changes. The `builder.Services.Configure<IOptions>(IConfigurationSection)` ends up calling `AddOptions()` too. If `AddOptions()` is called, directly or indirectly, a second time, then the application gets notified **twice** for a single change in a configuration file. There is a section below on how to monitor changes in JSON configuration files.
 
-After that the user defined Configuration class may injected wherever a Dependency Injection is allowed.
+After that the user defined Configuration class may injected anywhere a Dependency Injection is allowed.
 
 ```
 public class HomeController : Controller
@@ -373,7 +373,7 @@ Although Asp.Net Core merges the configuration sources into a single configurati
 
 > In the above code both the `OnChange()` methods will be called even if just one of the files changes. It looks like the consolidation of the configuration sources fails to distinguish the changed file and thus to call just the corresponding `OnChange()`. Or I have done something wrong which is very possible too.
 
-Because `AppSettings` and `AppOptions` classes are registerd as Dependency Injection services too they can be injected wherever a Dependency Injection is allowed.
+Because `AppSettings` and `AppOptions` classes are registerd as Dependency Injection services too they can be injected anywhere a Dependency Injection is allowed.
 
 ## Other Configuration Sources
 
