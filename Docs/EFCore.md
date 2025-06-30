@@ -70,7 +70,7 @@ All these `UseXXX()` methods accept a connection string as a sole parameter.
 
 ## DbContext in Dependency Injection
 
-`DbContext` can be used either as a normal class or as a service.
+`DbContext` can be used either as a regular class or as a service.
 
 The `AddDbContext()` method is used in registering a `DbContext`. `AddDbContext()` registers `DbContext` as a [Scoped Service](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection).
 
@@ -182,66 +182,6 @@ public class MyController
         }
     }
 } 
-```
-
-## DbSet&lt;T&gt;
-
-[DbSet&lt;T&gt;](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1) represents a collection of entities. Provides `CRUD` methods such as `Add()`, `Update()` and `Remove()`. Also it can be used in issuing queries to the database using [LINQ](https://learn.microsoft.com/en-us/dotnet/csharp/linq/) queries.
-
-`DbSet<T>` is used in declaring properties in a `DbContext`.
-
-```
-public class DataContext: DbContext
-{
-    ...
-    public DbSet<Product> Products { get; set; }
-}
-```
-
-Another way to get a `DbSet<T>` is to use the `DbContext.Set<T>()` method.
-
-```
-DbSet<Product> DbSet = DataContext.Set<Product>();
-```
-
-`DbSet<T>` is used in adding, updating and deleting an entity.
-
-```
-using (var Context = new DataContext())
-{ 
-    var P = new Product() { ... };
-
-    Context.Products.Add(P);
-    Context.Products.Update(P);
-    Context.Products.Remove(P);
-
-    Context.SaveChanges();
-}
-```
-
-A `DbSet<T>` is also an `IEnumerable<T>` and `IQueryable<T>` instance.
-
-```
-using (var Context = new DataContext())
-{ 
-    var List = Context.Products
-        .Select(p => new { p.Id, p.Name })
-        .ToList(); 
-}
-```
-
-`DbSet<T>` can execute [Sql statements](https://learn.microsoft.com/en-us/ef/core/querying/sql-queries).
-
-`DbSet<T>` provides a lot of useful methods, such as [FromSql](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalqueryableextensions.fromsql) and [FromSqlRaw](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalqueryableextensions.fromsqlraw).
-
-```
-using (var Context = new DataContext())
-{ 
-    string SqlText = "select * from Products"
-    var List = Context.Products
-        .FromSqlRaw(SqlText)
-        .ToList(); 
-}
 ```
 
 ## Entities and the DbContext
@@ -516,6 +456,69 @@ using (var Context = new DataContext())
 ```
 
 > Projections limit the result size. There maybe entities with tenths of fields that not always needed.
+
+
+
+## DbSet&lt;T&gt;
+
+[DbSet&lt;T&gt;](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1) represents a collection of entities. Provides `CRUD` methods such as `Add()`, `Update()` and `Remove()`. Also it can be used in issuing queries to the database using [LINQ](https://learn.microsoft.com/en-us/dotnet/csharp/linq/) queries.
+
+`DbSet<T>` is used in declaring properties in a `DbContext`.
+
+```
+public class DataContext: DbContext
+{
+    ...
+    public DbSet<Product> Products { get; set; }
+}
+```
+
+Another way to get a `DbSet<T>` is to use the `DbContext.Set<T>()` method.
+
+```
+DbSet<Product> DbSet = DataContext.Set<Product>();
+```
+
+`DbSet<T>` is used in adding, updating and deleting an entity.
+
+```
+using (var Context = new DataContext())
+{ 
+    var P = new Product() { ... };
+
+    Context.Products.Add(P);
+    Context.Products.Update(P);
+    Context.Products.Remove(P);
+
+    Context.SaveChanges();
+}
+```
+
+A `DbSet<T>` is also an `IEnumerable<T>` and `IQueryable<T>` instance.
+
+```
+using (var Context = new DataContext())
+{ 
+    var List = Context.Products
+        .Select(p => new { p.Id, p.Name })
+        .ToList(); 
+}
+```
+
+`DbSet<T>` can execute [Sql statements](https://learn.microsoft.com/en-us/ef/core/querying/sql-queries).
+
+`DbSet<T>` provides a lot of useful methods, such as [FromSql](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalqueryableextensions.fromsql) and [FromSqlRaw](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalqueryableextensions.fromsqlraw).
+
+```
+using (var Context = new DataContext())
+{ 
+    string SqlText = "select * from Products"
+    var List = Context.Products
+        .FromSqlRaw(SqlText)
+        .ToList(); 
+}
+```
+
 
 ## Change Tracking
 
