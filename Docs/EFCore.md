@@ -594,7 +594,7 @@ Configuration is done
 
 - with `EF Core` built-in configuration conventions
 - using Data Annotation attributes
-- using fluent syntax in `DbContext.OnModelCreating()` or `IEntityTypeConfiguration<T>.Configure()`.
+- using Fluent syntax in `DbContext.OnModelCreating()` or `IEntityTypeConfiguration<T>.Configure()`.
 
 ## Configuration - built-in Conventions
 
@@ -983,9 +983,9 @@ A complex type
 
 Fluent API methods reside in the [Microsoft.EntityFrameworkCore.Metadata.Builders](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders) as members in various `builder` classes.
 
-Configuration using fluent syntax can be done in `IEntityTypeConfiguration<T>.Configure()` or `DbContext.OnModelCreating()`.
+Configuration using Fluent API syntax can be done in `IEntityTypeConfiguration<T>.Configure()` or `DbContext.OnModelCreating()`.
 
-Configuration using fluent syntax modify or override configuration which is imposed by `EF Core` built-in conventions or added using Data annotation attributes.
+Configuration using Fluent API syntax **modifies or overrides** configuration which is imposed by `EF Core` built-in conventions or added using Data annotation attributes.
 
 It is not a bad idea to implement the `IEntityTypeConfiguration<T>` for every entity.
 
@@ -1523,8 +1523,261 @@ modelBuilder.Entity<SalesOrder>().Property(o => o.DateUpdated)
     .ValueGeneratedOnAddOrUpdate();
 ```
 
-## Relationships 
+## Relationships
 
+`Relationship` is a term denoting two entities related to each other.
+
+In the next example `Product` and `Category` form a relationship.
+
+```
+// Principal
+public class Category 
+{
+    [Key]
+    public string Id { get; set; }
+    public string Name { get; set; }
+}
+
+// Dependent
+public class Product
+{
+    [Key]
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public decimal Price { get; set; }
+
+    public string CategoryId { get; set; }
+
+    [ForeignKey(nameof(CategoryId))]
+    public Category Category { get; set; }
+}
+```
+
+The `Product` **has** a `Category`.
+
+A relationship can be expressed in the opposite direction too.
+
+```
+public class Category  
+{
+    [Key]
+    public string Id { get; set; }
+    public string Name { get; set; }
+
+    public ICollection<Product> Products { get; }
+}
+```
+
+## Relationship Mapping
+
+In `EF Core` relationship mapping is done mapping primary keys and foreign keys in the underlying relational database.
+ 
+To form a relationship the following are required
+
+- a primary key property in one entity, the **Principal** entity
+- a foreign key property in another entity, the **Dependent** entity
+- a configuration that establishes the relationship between the two.
+
+In the previous example both entities configure a primary key, using the `Key` attribute.
+
+Also the `Product` entity configures a foreign key using the `ForeignKey` attribute. 
+
+The relationship can be expressed using Fluent API too.
+
+```
+modelBuilder.Entity<Category>()
+    .HasMany(c => c.Products)
+    .WithOne(p => p.Category)
+    .HasForeignKey(p => p.CategoryId)
+    .HasPrincipalKey(c => c.Id);
+```
+
+## Relationship Types
+
+The following relationship types are supported.
+
+- **One-to-one**. A single entity is associated with another single entity.
+- **One-to-many**. A single entity is associated with any number of other entities.
+- **Many-to-many**. Any number of entities are associated with any number of other entities.
+
+## One-to-one Relationship
+
+A single entity is associated with another single entity.
+
+In an one-to-one relationship  
+
+- a primary key is required in the principal entity, e.g. `Driver.Id`
+- a foreign key is required in the dependent entity, e.g. `Car.DriverId`
+- optionally the principal entity may have a reference to the dependent entity, e.g. `Driver.Car`
+- optionally the dependent entity may have a reference to the principal entity, e.g. `Car.Driver`
+
+### The common case: both entities contain reference to each other
+The most common case is 
+- to have the dependent entity having a foreign key property, e.g. `Car.DriverId`
+- to have the dependent entity having a reference to the principal entity, e.g. `Car.Driver`
+- to optionally have the principal entity having a reference to the dependent entity, e.g. `Driver.Car`
+
+Consider the next example.
+
+```
+// Principal
+public class Driver 
+{
+    [Key]
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public Car Car { get; set; }
+}
+
+// Dependent
+public class Car  
+{
+    [Key]
+    public string Id { get; set; }
+    public string PlateNumber { get; set; }
+
+    public string DriverId { get; set; }
+
+    [ForeignKey(nameof(DriverId))]
+    public Driver Driver { get; set; }
+}
+
+public class DriverEntityTypeConfiguration : IEntityTypeConfiguration<Driver>
+{
+    public void Configure(EntityTypeBuilder<Driver> builder)
+    {
+        // nothing here
+    }
+}
+
+public class CarEntityTypeConfiguration : IEntityTypeConfiguration<Car>
+{
+    public void Configure(EntityTypeBuilder<Car> builder)
+    {
+        // nothing here
+    }
+}
+
+```
+This relationship can also be expressed using Fluent API in which case the data annotation attributes are not required.
+
+```
+// Principal
+public class Driver 
+{
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public Car Car { get; set; }
+}
+
+// Dependent
+public class Car  
+{
+    public string Id { get; set; }
+    public string PlateNumber { get; set; }
+
+    public string DriverId { get; set; }
+    public Driver Driver { get; set; }
+}
+```
+
+Starting configuration with the principal entity.
+
+```
+modelBuilder.Entity<Driver>()
+    .HasOne(d => d.Car)
+    .WithOne(c => c.Driver)
+    .HasForeignKey<Car>(c => c.DriverId)
+    .IsRequired();
+```
+
+Starting configuration with the dependent entity.
+
+ ```
+modelBuilder.Entity<Car>()
+    .HasOne(c => c.Driver)
+    .WithOne(d => d.Car)
+    .HasForeignKey<Car>(c => c.DriverId)
+    .IsRequired();
+ ```
+
+Both approaches result in the exactly same configuration.
+
+ > Configuration using Fluent API syntax **modifies or overrides** configuration imposed by `EF Core` built-in conventions or added using Data annotation attributes.
+
+ As it is now the `Car.DriverId` foreign key is required to have a valid value. It can be configured as optional using either `IsRequired(false)` or a nullable string, e.g.  
+
+ ```public string DriverId? { get; set; }```
+
+ **IMPORTANT**: Even without the `Data Annotation` attributes or the `Fluent API` configuration in the last example, `EF Core` will use configuration convention logic and it will detect the relationship. That is it will create the correct foreign keys in the database.
+
+### Principal without reference to dependent
+
+A usual case is to omit the relational property in the principal entity.
+
+```
+// Principal
+public class Driver
+{
+    public string Id { get; set; }
+    public string Name { get; set; }
+}
+
+// Dependent
+public class Car
+{
+    public string Id { get; set; }
+    public string PlateNumber { get; set; }
+
+    public string DriverId { get; set; }
+    public Driver Driver { get; set; }
+}
+```
+
+The Fluent configuration for the above. 
+
+It starts with the dependent entity and the `WithOne()` method is called without arguments indicating that there is no navigation in this direction, i.e. the `Driver` has no reference to a `Car`.
+
+```
+modelBuilder.Entity<Car>()
+    .HasOne(c => c.Driver)
+    .WithOne();
+```
+
+`EF Core` configuration convention logic will detect the above relationship even without the Fluent configuration.
+
+### No references at all
+
+Another usual case is to omit the relationals properties in both entities altogether. 
+
+```
+// Principal 
+public class Driver
+{
+    public string Id { get; set; }
+}
+
+// Dependent  
+public class Car
+{
+    public string Id { get; set; }
+    public string DriverId { get; set; } // Required foreign key property
+}
+```
+
+The above cannot be detected by configuration conventions. A Fluent configuration is required.
+
+```
+modelBuilder.Entity<Driver>()
+    .HasOne<Car>()
+    .WithOne();
+```
+
+### More cases
+ 
+Except of the most common cases as depicted above there are many other cases, actually variations, described in the [docs](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/one-to-one).
+
+## One-to-many Relationship
 
 ## XXX
 
