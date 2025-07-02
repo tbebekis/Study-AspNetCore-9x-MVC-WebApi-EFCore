@@ -294,7 +294,7 @@ public class DataContext: DbContext
 - In other words `DbContext` implements the [Unit of Work](https://en.wikipedia.org/wiki/Unit_of_work) pattern.
 - An `EF Core` application may call many times `Add()`, `Remove()` or `Update()` methods, against one or more entities, and then, in the end, call the `DbContext.SaveChanges()` method in order to [commit](https://en.wikipedia.org/wiki/Commit_(data_management)) the changes to the database.
 
-## Insert, Update, Delete
+## Saving Data Basics
 
 > There are `Async()` versions of most of the methods used in the next example.
 
@@ -345,7 +345,7 @@ using (var Context = new DataContext())
 - The `Products` property is actually a [IQueryable<Product>](https://learn.microsoft.com/en-us/dotnet/api/system.linq.iqueryable-1) instance.
 - A `DbSet<T>` is a `IQueryable<T>` instance.
 
-## Quering Data
+## Quering Data Basics
 
 In `EF Core` [Language-Integrated Query (LINQ)](https://learn.microsoft.com/en-us/dotnet/csharp/linq/) is used in querying data from the database.
 
@@ -943,6 +943,68 @@ public class AppUser: BaseEntity
 }
 ```
 
+### [**InversePropertyAttribute**](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/mapping-attributes#inversepropertyattribute)
+
+When an entity has more than one relational properties to the same type then `EF Core` cannot automatically detect the right relationship. 
+
+The `InversePropertyAttribute` attibute is used to address this situation.
+
+Following is the example taken from the official documentation.
+
+```
+public class Blog
+{
+    public int Id { get; set; }
+
+    [InverseProperty("Blog")]
+    public List<Post> Posts { get; } = new();
+
+    public int FeaturedPostId { get; set; }
+    public Post FeaturedPost { get; set; }
+}
+
+public class Post
+{
+    public int Id { get; set; }
+    public int BlogId { get; set; }
+
+    public Blog Blog { get; init; }
+}
+```
+
+### [**DeleteBehaviorAttribute**](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/mapping-attributes#deletebehaviorattribute)
+
+The [DeleteBehavior](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.deletebehavior) enumeration type indicates what happens to dependent entities when the [principal entity is deleted](https://learn.microsoft.com/en-us/ef/core/saving/cascade-delete).
+
+`EF Core` by convention uses  
+- the `DeleteBehavior.ClientSetNull` for optional relationships and
+- the `DeleteBehavior.Cascade` for required relationships.
+
+The `DeleteBehaviorAttribute` attribute can be used to change this default behavior.
+
+```
+// Principal
+public class Driver 
+{
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public Car Car { get; set; }
+}
+
+// Dependent
+public class Car  
+{
+    public string Id { get; set; }
+    public string PlateNumber { get; set; }
+
+    public string DriverId { get; set; }
+
+    [DeleteBehavior(DeleteBehavior.ClientCascade)]
+    public Driver Driver { get; set; }
+}
+
+``` 
+
 ### [**ComplexTypeAttibute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.complextypeattribute). 
 
 Specifies that a type is a [complex type](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#value-objects-using-complex-types).
@@ -978,6 +1040,34 @@ A complex type
 - can be shared by multiple properties in the same entity.
 - can be used by multipte entities
 - must be defined as a **required** value in the `OnModelCreating()` method.
+
+
+### [**OwnedAttribute**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.ownedattribute)
+
+Specifies that an entity is an owned one.
+
+An owned entity is not an autonomous entity and it is only used as a navigation property contained by another entity which is called the _owner_ entity.
+
+An owned entity cannot exist without its container _owner_ entity.
+
+```
+[Owned]
+public class Address
+{
+    public string Street { get; set; }
+    public string City { get; set; }
+    public string Country { get; set; }
+    public string PostCode { get; set; }
+}
+
+public class SalesOrder
+{
+    public int Id { get; set; }
+    public Address ShippingAddress { get; set; }
+    public Address BillingAddress { get; set; }
+    ...
+}
+```
 
 ## Configuration - Fluent API
 
@@ -1042,8 +1132,31 @@ modelBuilder.Entity<Product>().HasKey(p => p.Id);
 
 Specifies that an entity is an owned one.
 
+An owned entity is not an autonomous entity and it is only used as a navigation property contained by another entity which is called the _owner_ entity.
+
+An owned entity cannot exist without its container _owner_ entity.
+
 ```
-TODO: Owned()
+public class Address
+{
+    public string Street { get; set; }
+    public string City { get; set; }
+    public string Country { get; set; }
+    public string PostCode { get; set; }
+}
+
+public class SalesOrder
+{
+    public int Id { get; set; }
+    public Address ShippingAddress { get; set; }
+    public Address BillingAddress { get; set; }
+    ...
+}
+```
+
+```
+modelBuilder.Entity<SalesOrder>().OwnsOne(p => p.ShippingAddress);
+modelBuilder.Entity<SalesOrder>().OwnsOne(p => p.BillingAddress);
 ```
 
 ### [**HasDbFunction()**](https://learn.microsoft.com/en-us/ef/core/querying/user-defined-function-mapping)
@@ -2129,9 +2242,33 @@ modelBuilder.Entity<Driver>()
 Except of the most common cases as depicted above there are many other cases, actually variations, described in the [docs](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/many-to-many).
 
 
-## XXX
+## Quering Data
 
+TODO: https://learn.microsoft.com/en-us/ef/core/querying/
+ 
+## Saving Data
 
-- [**OwnsOne()**]().
+TODO: https://learn.microsoft.com/en-us/ef/core/saving/
 
-## ZZZ
+## Migrations
+
+TODO: https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations
+
+## Further Reading
+
+- [DbContext Pooling](https://learn.microsoft.com/en-us/ef/core/performance/advanced-performance-topics?tabs=with-di%2Cexpression-api-with-constant#dbcontext-pooling)
+- [Keys](https://learn.microsoft.com/en-us/ef/core/modeling/keys)
+- [Indexes](https://learn.microsoft.com/en-us/ef/core/modeling/indexes)
+- [Generated Values](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties)
+- [Shadow and Indexer Properties](https://learn.microsoft.com/en-us/ef/core/modeling/shadow-properties)
+- [Backing Fields](https://learn.microsoft.com/en-us/ef/core/modeling/backing-field)
+- [Value Conversions](https://learn.microsoft.com/en-us/ef/core/modeling/value-conversions)
+- [Value Comparers](https://learn.microsoft.com/en-us/ef/core/modeling/value-comparers)
+- [Data Seeding](https://learn.microsoft.com/en-us/ef/core/modeling/data-seeding)
+- [Advanced Table Mapping](https://learn.microsoft.com/en-us/ef/core/modeling/table-splitting)
+- [Owned Entity Types](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities)
+- [Logging, Events and Diagnostics](https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/)
+- [Navigations](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/navigations)
+- [Conventions for Relationship Discovery](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/conventions)
+- [Keyless Entity Types](https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types)
+- [Bulk Configuration](https://learn.microsoft.com/en-us/ef/core/modeling/bulk-configuration)
