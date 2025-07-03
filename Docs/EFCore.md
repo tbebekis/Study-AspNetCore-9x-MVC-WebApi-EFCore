@@ -31,7 +31,7 @@ All that `CRUD` methods are executed inside a transaction. The `SaveChanges()` m
 
 `DbContext` is [IDisposable](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose). Its lifetime should be as short as possible.
 
-## Configuring a DbContext Database Provider
+### Configuring a DbContext Database Provider
 
 A `DbContext` connects to a database using a single [Database Provider](https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/#configuring-the-database-provider).
 
@@ -68,7 +68,7 @@ For the required `UseXXX()` method to be available the proper [NuGet package](ht
 
 All these `UseXXX()` methods accept a connection string as a sole parameter.
 
-## DbContext in Dependency Injection
+### DbContext in Dependency Injection
 
 `DbContext` can be used either as a regular class or as a service.
 
@@ -117,7 +117,7 @@ public class MyController
 
 > Using `DbContext` as a scope service it is useful when an application needs to use the same `DbContext` instance in performing multiple `units of work` within the scope of a single HTTP request.
 
-## Creating a DbContext with `new()`
+### Creating a DbContext with `new()`
 
 `DbContext` can be used as a normal class too.
 
@@ -154,7 +154,7 @@ using (var Context = new DataContext())
 }
 ```
 
-## Creating a DbContext with a DbContext factory
+### Creating a DbContext with a DbContext factory
 
 A call to `AddDbContextFactory()` is required. That call registers an [IDbContextFactory<DbContext>](https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/#use-a-dbcontext-factory) **scoped** service.
 
@@ -184,7 +184,7 @@ public class MyController
 } 
 ```
 
-## Entities and the DbContext
+### Entities and the DbContext
 
 Consider the following entities.
 
@@ -296,7 +296,7 @@ public class DataContext: DbContext
 
 ## Saving Data Basics
 
-> There are `Async()` versions of most of the methods used in the next example.
+> There are `Async()` versions of most of the methods used in the next examples.
 
 ### Insert.
 
@@ -351,7 +351,11 @@ In `EF Core` [Language-Integrated Query (LINQ)](https://learn.microsoft.com/en-u
 
 `EF Core` provides a [great number of facilities](https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/) in querying data.
 
-> There are `Async()` versions of most of the methods used in the next example.
+In `EF Core` queries are conducted through the `IQueryable<T>` interface implemented by `DbSet<T>`.
+
+There is a great number of **very useful** `IQueryable<T>` extension methods in the [EntityFrameworkQueryableExtensions](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.entityframeworkqueryableextensions) and it is **very important for a developer to explore it**.
+
+> There are `Async()` versions of most of the methods used in the next examples.
 
 ### Loading a single entity
 
@@ -396,12 +400,43 @@ using (var Context = new DataContext())
 }
 ```
 
+### Paging
+
+```
+public class Paging<T> where T : class
+{
+    public int TotalItems { get; set; }
+    public int PageSize { get; set; }
+    public int PageIndex { get; set; }
+
+    public List<T> List { get; set; }
+}
+
+...
+
+var Paging = new Paging<Product>();
+Paging.PageSize = 10;
+Paging.PageSize = 0;
+
+using (var Context = new DataContext())
+{
+    IQueryable<Product> Q = Context.Products;
+
+    Paging.TotalItems = Q.Count();
+
+    Q = Q.Skip(Paging.PageIndex * Paging.PageSize)
+        .Take(Paging.PageSize);
+
+    Paging.List = Q.ToList();
+}
+```
+
 ### Query result types
 
 ```
 IQueryable<Product> Q1 = Context.Products;
 
-IQueryable<Product> Q2 = Q1.Where(p => p.Name.Contains("blet"));
+IQueryable<Product> Q2 = Q1.Where(p => p.Price > 0.5M);
 
 IOrderedQueryable<Product> Q3 = Q2.OrderBy(p => p.Name);
 
@@ -416,7 +451,7 @@ Chained all together.
 using (var Context = new DataContext())
 {
     List<Product> List = Context.Products
-      .Where(p => p.Name.Contains("blet"))
+      .Where(p => p.Price > 0.5M)
       .OrderBy(p => p.Name)  
       .ToList();
 }
@@ -1681,7 +1716,7 @@ public class Category
 }
 ```
 
-## Relationship Mapping
+### Relationship Mapping
 
 In `EF Core` relationship mapping is done by mapping primary keys and foreign keys in the underlying relational database.
  
@@ -1705,7 +1740,7 @@ modelBuilder.Entity<Category>()
     .HasPrincipalKey(c => c.Id);
 ```
 
-## Relationship Types
+### Relationship Types
 
 The following relationship types are supported.
 
@@ -2242,17 +2277,347 @@ modelBuilder.Entity<Driver>()
 Except of the most common cases as depicted above there are many other cases, actually variations, described in the [docs](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/many-to-many).
 
 
-## Quering Data
+## Loading Related Data
 
-TODO: https://learn.microsoft.com/en-us/ef/core/querying/
+`Related data` is a term referring to navigation properties of an entity.
+
+Navigation properties of an entity [can be loaded](https://learn.microsoft.com/en-us/ef/core/querying/related-data/) along with the entity itself.
+
+A navigation property can be configured to be loaded every time the container entity is loaded, using the `AutoInclude()` method in configuration.
+
+In the next example the `SalesOrder.Customer` property is configured to be loaded when a `SalesOrder` is loaded.
+
+```
+modelBuilder.Entity<SalesOrder>().Navigation(so => so.Customer).AutoInclude();
+```
+
+Except of the `AutoInclude()` method, `EF Core` offers three ways in loading related data.
+
+- **Eager Loading**. Related data is loaded at the same time and along with the container.
+- **Explicit Loading**. Related data is loaded at a later time explicitly.
+- **Lazy Loading**. Related data is loaded when the navigation property is accessed. 
+
+> There are `Async()` versions of most of the methods used in the next examples.
  
-## Saving Data
+### Eager Loading
 
-TODO: https://learn.microsoft.com/en-us/ef/core/saving/
+In [Eager Loading](https://learn.microsoft.com/en-us/ef/core/querying/related-data/eager) related data is loaded at the same time and along with the container entity using methods such as [`Include()`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.entityframeworkqueryableextensions.include) and [`ThenInclude()`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.entityframeworkqueryableextensions.theninclude).
+
+The `Include()` method is used in loading related data directly attached to the container entity.
+
+In the next example `Customer` and `OrderLines` are navigations of the `SalesOrder` entity.
+
+```
+using (var Context = new DataContext())
+{
+    SalesOrder SO = Context.SalesOrders                        
+                    .Include(so => so.Customer)
+                    .Include(so => so.OrderLines)
+                    .Single(so => so.Code == "SO-0001");
+}
+```
+
+The `ThenInclude()` method is used in loading related data attached to an entity belonging to a level just loaded with a previous `Include()` or `ThenInclude()` call.
+
+In the next example `Product` is a navigational property of the `SalesOrderLine` entity while the `Category` is a navigational property of the `Product` entity.
+
+```
+using (var Context = new DataContext())
+{
+    SalesOrder SO = Context.SalesOrders                        
+                    .Include(so => so.Customer)
+                    .Include(so => so.OrderLines)
+                    .ThenInclude(sol => sol.Product)
+                    .ThenInclude(p => p.Category)
+                    .Single(so => so.Code == "SO-0001");
+}
+```
+ 
+### Explicit Loading
+
+In [Explicit Loading](https://learn.microsoft.com/en-us/ef/core/querying/related-data/explicit) related data is loaded explicitly at a later time, after the container entity is loaded first, using methods such as [`Entry()`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext.entry), [`Reference()`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.changetracking.entityentry-1.reference) and [`Collection()`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.changetracking.entityentry-1.collection).
+
+The `Entry()` method returns an [`EntityEntry<T>`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.changetracking.entityentry-1) which provides operations for the entity.
+
+The next example is a transcription of the previous one.
+ 
+```
+using (var Context = new DataContext())
+{
+    SalesOrder SO = Context.SalesOrders
+                    .Single(so => so.Code == "SO-0001");
+
+    Context.Entry(SO)
+        .Reference(so => so.Customer)
+        .Load();
+
+    Context.Entry(SO)
+        .Collection(so => so.OrderLines)
+        .Query()
+        .Include(so => so.Product)
+        .ThenInclude(p => p.Category)
+        .Load();
+}
+```
+
+### Lazy Loading
+
+In [Lazy Loading](https://learn.microsoft.com/en-us/ef/core/querying/related-data/lazy) related data is loaded when the navigation property is accessed. 
+
+There is a **warning** about `Lazy Loading` in [docs](https://learn.microsoft.com/en-us/ef/core/performance/efficient-querying#beware-of-lazy-loading). Please consult it carefully.
+
+There are two ways to use `Lazy Loading`.
+
+- using lazy loading proxies
+- without using lazy loading proxies.
+
+#### Lazy Loading using proxies
+
+There are three requirements
+
+- the [Microsoft.EntityFrameworkCore.Proxies](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Proxies/) must be installed
+- a configuration using the `UseLazyLoadingProxies()` method
+- navigation properties should be declared as **virtual**.
+
+The configuration can be done in the `DbContext.OnConfiguring()` method
+
+```
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    => optionsBuilder
+        .UseLazyLoadingProxies()
+        .UseSqlite(ConnectionString);
+```
+
+or in the `AddDbContext()` in the application's startup code.
+
+```
+builder.Services.AddDbContext<DataContext>(
+    c => c.UseLazyLoadingProxies()
+    .UseSqlite(ConnectionString)
+);
+```
+
+Navigation properties must be **virtual**.
+
+```
+public class SalesOrder : BaseEntity
+{
+    public SalesOrder()
+    {
+    }
+
+    // ...
+
+    public string CustomerId { get; set; }
+    public virtual Customer Customer { get; set; }
+
+    public virtual ICollection<SalesOrderLine> OrderLines { get; set; }
+}
+```
+
+That way navigation properties are loaded automatically just when they accessed.
+
+ 
+```
+using (var Context = new DataContext())
+{
+    SalesOrder SO = Context.SalesOrders
+                    .Single(so => so.Code == "SO-0001");
+
+    if (SO.Customer.Balance <= 500) // lazy loading Customer
+    {
+        foreach (var SOLine in SO.OrderLines) // lazy loading OrderLines
+        {
+            // ...
+        }
+    }
+}
+```
+ 
+#### Lazy Loading without proxies 
+
+This lazy loading method requires an [ILazyLoader](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.infrastructure.ilazyloader) service to be injected in the entity.
+
+```
+public class SalesOrder : BaseEntity
+{
+    ILazyLoader LazyLoader;
+    ICollection<SalesOrderLine> orderLines;
+    Customer customer;
+
+    public SalesOrder()
+    {
+    }
+    public SalesOrder(ILazyLoader lazyLoader)
+    {
+        LazyLoader = lazyLoader;
+    }
+    // ...
+
+    public string CustomerId { get; set; }
+    public virtual Customer Customer
+    { 
+        get => LazyLoader.Load(this, ref customer); 
+        set => customer = value; 
+    } 
+    public virtual ICollection<SalesOrderLine> OrderLines 
+    { 
+        get => LazyLoader.Load(this, ref orderLines); 
+        set => orderLines = value; 
+    } 
+    
+}
+```
 
 ## Migrations
 
-TODO: https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations
+`EF Core` provides the [Migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations) feature as a way to keep application entities and database schema synchronize.
+
+`Migrations` alter the database schema according to changes in application entities while preserving existing data in the database.
+
+The [Microsoft.EntityFrameworkCore.Tools](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Tools) package is required.
+
+`EF Core Migrations` provide a set of operations that can be used
+
+- either in the `Package Manager Console` in Visual Studio `(Tools | NuGet Package Manager | Package Manager Console)`
+- or in the [NET Core CLI](https://learn.microsoft.com/en-us/ef/core/cli/dotnet)
+ 
+
+### Visual Studio Migration Operations
+
+Next are the most [usual operations](https://learn.microsoft.com/en-us/ef/core/cli/powershell).
+
+- `Add-Migration MIGRATION_NAME`. Creates a migration under a specified name.
+- `Update-Database`. Creates the database if not exists and updates database schema after an `Add-Migration`
+- `Update-Database MIGRATION_NAME`. Reverts the schema of the underlying database into one migration previously applied by `Add-Migration`
+- `Remove-Migration`. Removes the last migration applied by `Add-Migration`
+
+### NET Core CLI Migration Operations
+
+The corresponding operations using NET Core CLI are the following.
+
+- `dotnet ef migrations add MIGRATION_NAME`
+- `dotnet ef database update`
+- `dotnet ef database update MIGRATION_NAME`
+- `dotnet ef migrations remove`
+ 
+### Migrations procedure
+
+- the developer adds a `DbContext` and some entities in the application.
+- executes the `Add-Migration MIGRATION_NAME`, e.g. `Add-Migration Initial_Migration`
+- this creates a `Migrations` folder in the application root folder with two files: 
+- - `<TimeStamp>_<Migration Name>.cs`. Contains the migration operations in the `Up()` and `Down()` methods.
+- - `<ContextClassName>ModelSnapshot.cs`. Contains a snapshot of the current configuration of application entities.
+- every next time the `Add-Migration MIGRATION_NAME` is executed a new pair of files is added to that `Migrations` folder.
+- the developer calls `Update-Database` to create the database and apply the last migration.
+- calling `Remove-Migration` removes the last applied migration. 
+
+### Migration considerations
+
+If the application seeds initial data to the database, using use `OnModelCreating()` and `HasData()` methods, may face some warnings or exceptions, especially if there are entities with `Id` of type string that changes in each execution, e.g. `Id = Guid.NewGuid().ToString()`.
+
+Check this [reddit thread](https://www.reddit.com/r/dotnet/comments/1h92qst/ef_core_the_model_for_context/) about that problem.
+
+It is preferable to not use `HasData()` in `OnModelCreating()` to seed data, in order to avoid the problem.
+
+```
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Product>().HasData(ProductList);
+}
+```
+
+Instead a static class can be used that checks if a table is empty and if it is it pumps the data.
+
+```
+static public void AddData()
+{
+    using (var Context = new DataContext())
+    {
+        if (Context.Products.Count() <= 0)
+        {
+            DbSet<Category> Categories = Context.Set<Category>();
+            Categories.AddRange(CategoryList);
+
+            DbSet<MeasureUnit> MeasureUnits = Context.Set<MeasureUnit>();
+            MeasureUnits.AddRange(MeasureUnitList);
+
+            DbSet<Product> Products = Context.Set<Product>();
+            Products.AddRange(ProductList);
+
+            DbSet<ProductMeasureUnit> ProductMeasureUnits = Context.Set<ProductMeasureUnit>();
+            ProductMeasureUnits.AddRange(ProductMeasureUnitList);
+
+            Context.SaveChanges();
+        }
+    }
+}
+```
+### Easy way to explore Migrations with a Windows.Forms application
+
+Here is the `.proj` file.
+
+```
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
+    </ItemGroup>
+
+</Project>
+```
+
+And here is the `Program.cs` file.
+
+```
+internal static class Program
+{
+    [STAThread]
+    static void Main()
+    {
+        ApplicationConfiguration.Initialize();
+
+        IHostBuilder builder = Host.CreateDefaultBuilder();
+        
+        builder.ConfigureServices((context, services) => {
+            services.AddTransient<DemoService>();
+        });
+
+        ServiceProvider = builder.Build().Services;
+
+        Application.Run(new MainForm());
+    }
+
+    public static IServiceProvider ServiceProvider { get; private set; }
+}
+```
+
+Migrations require a Dependency Injection container in order to function properly.
+
+Consult the docs about how to [setup a host](https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host?tabs=hostbuilder#set-up-a-host).
+
+The `ServiceProvider` can be later used as
+
+```
+var Service = Program.ServiceProvider.GetService<DemoService>();
+
+// call a service method here
+
+```
 
 ## Further Reading
 

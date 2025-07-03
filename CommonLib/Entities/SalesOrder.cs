@@ -20,7 +20,7 @@
             this.CodeNo = CodeNumber;
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // not working with Sqlite
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // not working with Sqlite // TODO: Sqlite sequence
         public int CodeNo { get; set; }
         [MaxLength(40)]
         public string Code //=> new string('0', 9 - CodeNo.ToString().Length) + CodeNo.ToString();
