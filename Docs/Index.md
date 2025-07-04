@@ -42,10 +42,10 @@ Texts are organized in three groups
 - [Localization](Localization.md)
 - [Error Handling](ErrorHandling.md)
 - [HttpContext](HttpContext.md)
+- [Object Mapper](ObjectMapper.md)
 - [Entity Framework Core](EFCore.md)
 
 #### TODO
-- [Object Mapper](ObjectMapper.md)
 - [Caching](Caching.md)
 - [RBAC, Role Based Access Control](RBAC.md)
 - [Request Features](RequestFeatures.md)

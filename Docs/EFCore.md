@@ -1460,6 +1460,9 @@ public class SalesOrder : BaseEntity
     public virtual Customer Customer { get; set; }        
 
     public virtual List<SalesOrderLine> Lines { get; set; }
+
+    // fake
+    public int rowid { get; set; }
 }
 
 public class SalesOrderEntityTypeConfiguration : IEntityTypeConfiguration<SalesOrder>

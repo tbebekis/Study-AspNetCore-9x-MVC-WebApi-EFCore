@@ -60,6 +60,9 @@
             //TestLogger();
             //Throw();
 
+            //var SOService = new AppDataService<SalesOrder>();
+            //var ResultList = await SOService.GetListAsync();
+
             // get the data
             ListResult<Product> ListResult = await Service.GetAllProducts();
 

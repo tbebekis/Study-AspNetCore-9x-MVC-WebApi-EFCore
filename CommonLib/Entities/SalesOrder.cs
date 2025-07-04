@@ -6,6 +6,7 @@ namespace CommonLib.Entities
     public class SalesOrder : BaseEntity
     {
         static int CodeNumber = 0;
+         
 
         string fCode;
 
@@ -40,6 +41,8 @@ namespace CommonLib.Entities
         public virtual Customer Customer { get; set; }        
 
         public virtual List<SalesOrderLine> Lines { get; set; }
+
+        public int rowid { get; set; }
     }
 
     public class SalesOrderEntityTypeConfiguration : IEntityTypeConfiguration<SalesOrder>
