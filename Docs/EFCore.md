@@ -34,71 +34,72 @@
   - [Configuration](#configuration)
   - [Configuration - built-in Conventions](#configuration---built-in-conventions)
   - [Configuration - Data Annotation Attributes](#configuration---data-annotation-attributes)
-    - [**TableAttribute**.](#tableattribute)
-    - [**PrimaryKeyAttribute**.](#primarykeyattribute)
-    - [**IndexAttribute**.](#indexattribute)
-    - [**KeyAttribute**.](#keyattribute)
-    - [**ForeignKeyAttribute**.](#foreignkeyattribute)
-    - [**KeylessAttibute**.](#keylessattibute)
-    - [**ColumnAttribute**.](#columnattribute)
-    - [**RequiredAttribute**.](#requiredattribute)
-    - [**MaxLengthAttribute**.](#maxlengthattribute)
-    - [**StringLengthAttribute**.](#stringlengthattribute)
-    - [**RangeAttribute**.](#rangeattribute)
-    - [**PrecisionAttribute**.](#precisionattribute)
-    - [**UnicodeAttribute**.](#unicodeattribute)
-    - [**CommentAttribute**.](#commentattribute)
-    - [**DefaultValueAttribute**.](#defaultvalueattribute)
-    - [**DatabaseGeneratedAttribute**.](#databasegeneratedattribute)
-    - [**TimestampAttribute**.](#timestampattribute)
-    - [**NotMappedAttribute**.](#notmappedattribute)
-    - [**InversePropertyAttribute**](#inversepropertyattribute)
-    - [**DeleteBehaviorAttribute**](#deletebehaviorattribute)
-    - [**ComplexTypeAttibute**.](#complextypeattibute)
-    - [**OwnedAttribute**](#ownedattribute)
+    - [TableAttribute](#tableattribute)
+    - [PrimaryKeyAttribute](#primarykeyattribute)
+    - [IndexAttribute](#indexattribute)
+    - [KeyAttribute](#keyattribute)
+    - [ForeignKeyAttribute](#foreignkeyattribute)
+    - [KeylessAttibute](#keylessattibute)
+    - [ColumnAttribute](#columnattribute)
+    - [RequiredAttribute](#requiredattribute)
+    - [MaxLengthAttribute](#maxlengthattribute)
+    - [StringLengthAttribute](#stringlengthattribute)
+    - [RangeAttribute](#rangeattribute)
+    - [PrecisionAttribute](#precisionattribute)
+    - [UnicodeAttribute](#unicodeattribute)
+    - [CommentAttribute](#commentattribute)
+    - [DefaultValueAttribute](#defaultvalueattribute)
+    - [DatabaseGeneratedAttribute](#databasegeneratedattribute)
+    - [TimestampAttribute](#timestampattribute)
+    - [NotMappedAttribute](#notmappedattribute)
+    - [InversePropertyAttribute](#inversepropertyattribute)
+    - [DeleteBehaviorAttribute](#deletebehaviorattribute)
+    - [ComplexTypeAttibute](#complextypeattibute)
+    - [OwnedAttribute](#ownedattribute)
   - [Configuration - Fluent API](#configuration---fluent-api)
   - [Configuration - Fluent API - Model Configuration](#configuration---fluent-api---model-configuration)
-    - [**Entity()**](#entity)
-    - [**Owned()**](#owned)
-    - [**HasDbFunction()**](#hasdbfunction)
-    - [**HasDefaultSchema()**](#hasdefaultschema)
-    - [**HasSequence()**](#hassequence)
-    - [**HasAnnotation()**](#hasannotation)
-    - [**HasChangeTrackingStrategy**](#haschangetrackingstrategy)
-    - [**Ignore()**](#ignore)
+    - [Entity()](#entity)
+    - [Owned()](#owned)
+    - [HasDbFunction()](#hasdbfunction)
+    - [HasDefaultSchema()](#hasdefaultschema)
+    - [HasSequence()](#hassequence)
+      - [Sqlite has no sequences](#sqlite-has-no-sequences)
+    - [HasAnnotation()](#hasannotation)
+    - [HasChangeTrackingStrategy()](#haschangetrackingstrategy)
+    - [Ignore()](#ignore)
   - [Configuration - Fluent API - Entity Configuration](#configuration---fluent-api---entity-configuration)
-    - [**ToTable()**](#totable)
-    - [**HasKey()**](#haskey)
-    - [**HasNoKey()**](#hasnokey)
-    - [**HasAlternateKey()**](#hasalternatekey)
-    - [**HasIndex()**](#hasindex)
-    - [**Ignore()**](#ignore-1)
-    - [**ComplexProperty()**](#complexproperty)
-    - [**HasData()**](#hasdata)
-    - [**ToView()**](#toview)
-    - [**ToSqlQuery()**](#tosqlquery)
-    - [**HasQueryFilter()**](#hasqueryfilter)
-    - [**Property()**.](#property)
+    - [ToTable()](#totable)
+    - [HasKey()](#haskey)
+    - [HasNoKey()](#hasnokey)
+    - [HasAlternateKey()](#hasalternatekey)
+    - [HasIndex()](#hasindex)
+    - [Ignore()](#ignore-1)
+    - [ComplexProperty()](#complexproperty)
+    - [HasData()](#hasdata)
+    - [ToView()](#toview)
+    - [ToSqlQuery()](#tosqlquery)
+    - [HasQueryFilter()](#hasqueryfilter)
+    - [Property()](#property)
   - [Configuration - Fluent API - Property Configuration](#configuration---fluent-api---property-configuration)
-    - [**HasConversion()**](#hasconversion)
-    - [**HasColumnType()**](#hascolumntype)
-    - [**HasComputedColumnSql()**](#hascomputedcolumnsql)
-    - [**HasDefaultValue()**](#hasdefaultvalue)
-    - [**HasDefaultValueSql()**](#hasdefaultvaluesql)
-    - [**HasField()**](#hasfield)
-    - [**HasMaxLength()**](#hasmaxlength)
-    - [**HasPrecision()**](#hasprecision)
-    - [**HasValueGenerator()**](#hasvaluegenerator)
-    - [**IsConcurrencyToken()**](#isconcurrencytoken)
-    - [**IsFixedLength()**](#isfixedlength)
-    - [**IsRowVersion()**](#isrowversion)
-    - [**IsRequired()**](#isrequired)
-    - [**IsUnicode()**](#isunicode)
-    - [**UseCollation()**](#usecollation)
-    - [**ValueGeneratedNever()**](#valuegeneratednever)
-    - [**ValueGeneratedOnAdd()**](#valuegeneratedonadd)
-    - [**ValueGeneratedOnUpdate()**](#valuegeneratedonupdate)
-    - [**ValueGeneratedOnAddOrUpdate()**](#valuegeneratedonaddorupdate)
+    - [HasConversion()](#hasconversion)
+    - [HasColumnType()](#hascolumntype)
+    - [HasComputedColumnSql()](#hascomputedcolumnsql)
+    - [HasDefaultValue()](#hasdefaultvalue)
+    - [HasDefaultValueSql()](#hasdefaultvaluesql)
+    - [HasField()](#hasfield)
+    - [HasMaxLength()](#hasmaxlength)
+    - [HasPrecision()](#hasprecision)
+    - [HasValueGenerator()](#hasvaluegenerator)
+    - [IsConcurrencyToken()](#isconcurrencytoken)
+    - [IsFixedLength()](#isfixedlength)
+    - [IsRowVersion()](#isrowversion)
+    - [IsRequired()](#isrequired)
+    - [IsUnicode()](#isunicode)
+    - [UseCollation()](#usecollation)
+    - [ValueGeneratedNever()](#valuegeneratednever)
+    - [ValueGeneratedOnAdd()](#valuegeneratedonadd)
+    - [ValueGeneratedOnUpdate()](#valuegeneratedonupdate)
+    - [ValueGeneratedOnAddOrUpdate()](#valuegeneratedonaddorupdate)
   - [Relationships](#relationships)
     - [Relationship Mapping](#relationship-mapping)
     - [Relationship Types](#relationship-types)
@@ -792,7 +793,7 @@ Next is a list of frequently used attributes.
 
 The presented list is not exhaustive.
 
-### [**TableAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.tableattribute). 
+### [TableAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.tableattribute) 
 Annotates an entity class specifying the database table the entity is mapped to.
 
 ```
@@ -803,7 +804,7 @@ public class Product : BaseEntity
 }
 ```
 
-### [**PrimaryKeyAttribute**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.primarykeyattribute). 
+### [PrimaryKeyAttribute](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.primarykeyattribute)
 Annotates an entity class specifying the primary key which can be comprised of a single property or multiple properties when compound keys are used.
 
 ```
@@ -827,7 +828,7 @@ public class AppRolePermission
 }
 ```
 
-### [**IndexAttribute**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.indexattribute). 
+### [IndexAttribute](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.indexattribute)
 
 Annotates an entity class specifying an index that should be generated in the database.
 
@@ -841,7 +842,7 @@ public class ProductMeasureUnit : BaseEntity
 }
 ```
 
-### [**KeyAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.keyattribute). 
+### [KeyAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.keyattribute)
 
 Annotates a property specifying the primary key.
 
@@ -853,7 +854,7 @@ public class BaseEntity
 }
 ```
 
-### [**ForeignKeyAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.foreignkeyattribute). 
+### [ForeignKeyAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.foreignkeyattribute)
 
 Annotates a property denoting that the property is used as a foreign key in a relationship between two entites.
 
@@ -920,7 +921,7 @@ public class Post
 }
 ```
 
-### [**KeylessAttibute**](https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types). 
+### [KeylessAttibute](https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types)
 
 Annotates an entity specifying that the entity has no primary key  at all. Can be used to execute database queries returning keyless entities.
 
@@ -937,7 +938,7 @@ public class ProductOrdersTotal
 }
 ```
 
-### [**ColumnAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.columnattribute). 
+### [ColumnAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.columnattribute)
 
 Annotates a property. Can be used to specify the column name in the database or the database provider specific data type of the column or both.
 
@@ -957,7 +958,7 @@ public class Product : BaseEntity
 }
 ```
 
-### [**RequiredAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.requiredattribute). 
+### [RequiredAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.requiredattribute)
 
 Annotates a property specifying that a value is required, i.e. it cannot be **null**.
 
@@ -970,7 +971,7 @@ public class MeasureUnit: BaseEntity
 }
 ```
 
-### [**MaxLengthAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.maxlengthattribute). 
+### [MaxLengthAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.maxlengthattribute)
 
 Annotates a property specifying the maximum allowed length of array or string data. There is `MinLengthAttribute` counterpart too.
 
@@ -983,7 +984,7 @@ public class BaseEntity
 }
 ```
 
-### [**StringLengthAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.stringlengthattribute). 
+### [StringLengthAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.stringlengthattribute)
 
 Annotates a string property specifying min and max length at once.
 
@@ -996,7 +997,7 @@ public class Product
 }
 ```
 
-### [**RangeAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.rangeattribute). 
+### [RangeAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.rangeattribute)
 
 Annotates a numeric property specifying a range of valid values.
 
@@ -1008,7 +1009,7 @@ public class Product : BaseEntity
 }
 ```
 
-### [**PrecisionAttribute**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.precisionattribute). 
+### [PrecisionAttribute](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.precisionattribute)
 
 Annotates a decimal or double property specifying the precision of data.
 
@@ -1021,7 +1022,7 @@ public class Product : BaseEntity
 }
 ```
 
-### [**UnicodeAttribute**](https://learn.microsoft.com/en-us/ef/core/modeling/entity-properties?tabs=data-annotations%2Cwith-nrt#unicode). 
+### [UnicodeAttribute](https://learn.microsoft.com/en-us/ef/core/modeling/entity-properties?tabs=data-annotations%2Cwith-nrt#unicode)
 
 Annotates a string property enabling or disabling the storing of data as unicode. Has no effect for database providers that do not support this feature.
 
@@ -1034,7 +1035,7 @@ public class Product : BaseEntity
 }
 ```
 
-### [**CommentAttribute**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.commentattribute). 
+### [CommentAttribute](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.commentattribute)
 
 Annotates a property specifying a comment about the column. For database providers that support this feature.
 
@@ -1047,7 +1048,7 @@ public class Product : BaseEntity
 }
 ```
 
-### [**DefaultValueAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.defaultvalueattribute). 
+### [DefaultValueAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.defaultvalueattribute)
 
 Annotates a property specifying a default value.
 
@@ -1059,7 +1060,7 @@ public class Category : BaseEntity
 }
 ```
 
-### [**DatabaseGeneratedAttribute**](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties?tabs=data-annotations#explicitly-configuring-value-generation). 
+### [DatabaseGeneratedAttribute](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties?tabs=data-annotations#explicitly-configuring-value-generation)
 
 Annotates a property that specifies whether and how the database provider generates values ​​for the property.
 
@@ -1072,7 +1073,7 @@ public class BaseEntity
 }
 ```
 
-### [**TimestampAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.timestampattribute). 
+### [TimestampAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.timestampattribute)
 
 Annotates a byte array , i.e. `byte[]`, property. Can only be applied once per entity. Used when the database provider is the MsSql server.
 
@@ -1084,7 +1085,7 @@ public class Product : BaseEntity
 }
 ```
 
-### [**NotMappedAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.notmappedattribute). 
+### [NotMappedAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.notmappedattribute)
 
 Annotates a property specifying that it should be not mapped to a database column.
 
@@ -1110,7 +1111,7 @@ public class AppUser: BaseEntity
 }
 ```
 
-### [**InversePropertyAttribute**](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/mapping-attributes#inversepropertyattribute)
+### [InversePropertyAttribute](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/mapping-attributes#inversepropertyattribute)
 
 When an entity has more than one relational properties to the same type then `EF Core` cannot automatically detect the right relationship. 
 
@@ -1139,7 +1140,7 @@ public class Post
 }
 ```
 
-### [**DeleteBehaviorAttribute**](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/mapping-attributes#deletebehaviorattribute)
+### [DeleteBehaviorAttribute](https://learn.microsoft.com/en-us/ef/core/modeling/relationships/mapping-attributes#deletebehaviorattribute)
 
 The [DeleteBehavior](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.deletebehavior) enumeration type indicates what happens to dependent entities when the [principal entity is deleted](https://learn.microsoft.com/en-us/ef/core/saving/cascade-delete).
 
@@ -1172,7 +1173,7 @@ public class Car
 
 ``` 
 
-### [**ComplexTypeAttibute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.complextypeattribute). 
+### [ComplexTypeAttibute](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.schema.complextypeattribute)
 
 Specifies that a type is a [complex type](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#value-objects-using-complex-types).
 
@@ -1209,7 +1210,7 @@ A complex type
 - must be defined as a **required** value in the `OnModelCreating()` method.
 
 
-### [**OwnedAttribute**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.ownedattribute)
+### [OwnedAttribute](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.ownedattribute)
 
 Specifies that an entity is an [owned](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities) one.
 
@@ -1286,7 +1287,7 @@ The following methods are members of the [ModelBuilder](https://learn.microsoft.
 
 The presented list is not exhaustive.
 
-### [**Entity()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.entity)
+### [Entity()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.entity)
 
 Performs configuration of a specified entity type.
 
@@ -1294,7 +1295,7 @@ Performs configuration of a specified entity type.
 modelBuilder.Entity<Product>().HasKey(p => p.Id);
 ```
 
-### [**Owned()**](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities)
+### [Owned()](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities)
 
 Specifies that an entity is an [owned](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities) one.
 
@@ -1325,7 +1326,7 @@ modelBuilder.Entity<SalesOrder>().OwnsOne(p => p.ShippingAddress);
 modelBuilder.Entity<SalesOrder>().OwnsOne(p => p.BillingAddress);
 ```
 
-### [**HasDbFunction()**](https://learn.microsoft.com/en-us/ef/core/querying/user-defined-function-mapping)
+### [HasDbFunction()](https://learn.microsoft.com/en-us/ef/core/querying/user-defined-function-mapping)
 
 Maps a CLR function to a database [UDF](https://learn.microsoft.com/en-us/sql/relational-databases/user-defined-functions/user-defined-functions) function.
 
@@ -1392,7 +1393,7 @@ public class DataContext: DbContext
 }
 ```
 
-### [**HasDefaultSchema()**](https://learn.microsoft.com/en-us/ef/core/modeling/entity-types#table-schema)
+### [HasDefaultSchema()](https://learn.microsoft.com/en-us/ef/core/modeling/entity-types#table-schema)
 
 Specifies the default database schema.
 
@@ -1400,7 +1401,7 @@ Specifies the default database schema.
 modelBuilder.HasDefaultSchema("dbo");
 ```
 
-### [**HasSequence()**](https://learn.microsoft.com/en-us/ef/core/modeling/sequences)
+### [HasSequence()](https://learn.microsoft.com/en-us/ef/core/modeling/sequences)
 
 Configures a database sequence. Valid with relational databases that support sequences.
 
@@ -1412,7 +1413,75 @@ modelBuilder.Entity<SalesOrder>()
     .HasDefaultValueSql("NEXT VALUE FOR SalesOrderCodeNo");
 ```
 
-### [**HasAnnotation()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.hasannotation)
+#### Sqlite has no sequences
+With `Sqlite` there is a problem though. 
+
+`Sqlite` does **not** support sequences. 
+
+It supports `auto-increment` fields but **only** in primary keys.
+
+A quick solution to this problem is to use the `HasComputedColumnSql()` to define the `CodeNo` property as computed and return the [rowid](https://www.sqlite.org/lang_createtable.html#rowid) as its value. Consider the following.
+
+```
+public class SalesOrder : BaseEntity
+{
+    static int CodeNumber = 0;
+
+    string fCode;
+
+    public SalesOrder()
+    { 
+    }
+    public SalesOrder(string CustomerId, DateTime EntryDate)
+    {
+        SetId();
+        this.CustomerId = CustomerId;
+        this.EntryDate = EntryDate;
+
+        CodeNumber++;
+        this.CodeNo = CodeNumber;
+    }
+
+    // not working with Sqlite
+    // In Sqlite only the primary key can be configured as auto-increment
+    //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]  
+    public int CodeNo { get; set; }
+    [MaxLength(40)]
+    public string Code  
+    {
+        get => !string.IsNullOrWhiteSpace(fCode) ? fCode : new string('0', 9 - CodeNo.ToString().Length) + CodeNo.ToString();
+        set => fCode = value;
+    }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity), Required]
+    public DateTime EntryDate { get; set; }
+    [MaxLength(40), Required]
+    public string CustomerId { get; set; }
+    [ForeignKey(nameof(CustomerId))]
+    public virtual Customer Customer { get; set; }        
+
+    public virtual List<SalesOrderLine> Lines { get; set; }
+}
+
+public class SalesOrderEntityTypeConfiguration : IEntityTypeConfiguration<SalesOrder>
+{
+    public void Configure(EntityTypeBuilder<SalesOrder> builder)
+    {
+        // The requirement is to have an auto-increment field, the CodeNo,
+        // which is used in constructing the Code property.
+        // Sqlite supports auto-increment fields but only in primary keys.
+        // Our primary key is a string.
+        // So we use a computed column to read the rowid Sqlite value.
+        // SEE: https://www.sqlite.org/lang_createtable.html#rowid
+        builder.Property(u => u.CodeNo)
+            .HasComputedColumnSql("rowid", false);
+    }
+}
+```
+
+ 
+
+
+### [HasAnnotation()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.hasannotation)
 
 Creates a `Key-Value` pair object that attaches arbitrary information to the `Model` which can later be read from the `Model` using its key. `EF Core` uses `HasAnnotation()` internally to configure things such as the constraint name of a foreign key. It has little value to a developer unless he implements something that uses it. Check [this discussion](https://github.com/dotnet/efcore/issues/13028).
 
@@ -1420,7 +1489,7 @@ Creates a `Key-Value` pair object that attaches arbitrary information to the `Mo
 modelBuilder.HasAnnotation("MyKey", "MyValue");
 ```
 
-### [**HasChangeTrackingStrategy**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.haschangetrackingstrategy)
+### [HasChangeTrackingStrategy()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.haschangetrackingstrategy)
 
 Specifies the [ChangeTrackingStrategy](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.changetrackingstrategy) to be used with this `EF Core Model`. A `ChangeTrackingStrategy` indicates how the `DbContext` detects changes happened in entity properties.
 
@@ -1428,7 +1497,7 @@ Specifies the [ChangeTrackingStrategy](https://learn.microsoft.com/en-us/dotnet/
 modelBuilder.HasChangeTrackingStrategy(ChangeTrackingStrategy.ChangingAndChangedNotifications);
 ```
 
-### [**Ignore()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.ignore)
+### [Ignore()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.ignore)
 
 When used with a [ModelBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder) specifies that an entity is not-mapped to a database table.
 
@@ -1446,7 +1515,7 @@ The following methods are members of the [EntityTypeBuilder](https://learn.micro
 
 The presented list is not exhaustive.
 
-### [**ToTable()**](https://learn.microsoft.com/en-us/dotnet/api/system.data.entity.modelconfiguration.entitytypeconfiguration-1.totable)
+### [ToTable()](https://learn.microsoft.com/en-us/dotnet/api/system.data.entity.modelconfiguration.entitytypeconfiguration-1.totable)
 
 Specifies the name of a database table that the entity maps to.
 
@@ -1454,7 +1523,7 @@ Specifies the name of a database table that the entity maps to.
 modelBuilder.Entity<SalesOrder>().ToTable("Sales_Order");
 ```
 
-### [**HasKey()**](https://learn.microsoft.com/en-us/ef/core/modeling/keys#configuring-a-primary-key)
+### [HasKey()](https://learn.microsoft.com/en-us/ef/core/modeling/keys#configuring-a-primary-key)
 
 Configures one or more properties as the primary key.
 
@@ -1463,7 +1532,7 @@ modelBuilder.Entity<Product>().HasKey(p => p.Id);
 modelBuilder.Entity<RolePermission>().HasKey(rp => new { rp.RoleId, rp.PermissionId });
 ```
 
-### [**HasNoKey()**](https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types)
+### [HasNoKey()](https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types)
   
   Annotates an entity specifying that the entity has no primary key. Can be used to execute database queries returning keyless entities.
 
@@ -1471,7 +1540,7 @@ modelBuilder.Entity<RolePermission>().HasKey(rp => new { rp.RoleId, rp.Permissio
 modelBuilder.Entity<ProductOrdersTotal>().HasNoKey();
 ```
 
-### [**HasAlternateKey()**](https://learn.microsoft.com/en-us/ef/core/modeling/keys#alternate-keys)
+### [HasAlternateKey()](https://learn.microsoft.com/en-us/ef/core/modeling/keys#alternate-keys)
 
 Configures an [alternate key](https://learn.microsoft.com/en-us/ef/core/modeling/keys#alternate-keys) for an entity. An alternate key, just like a primary key, uniquely identifies an entity. It can be a multi-column key and it is useful in establishing relationships between entities.
 
@@ -1480,7 +1549,7 @@ modelBuilder.Entity<Company>().HasAlternateKey(c => c.TaxPayerId);  // a TIN
 modelBuilder.Entity<Car>().HasAlternateKey(c => new { c.PlateNo, c.ChassisNo });
 ```
 
-### [**HasIndex()**](https://learn.microsoft.com/en-us/ef/core/modeling/indexes)
+### [HasIndex()](https://learn.microsoft.com/en-us/ef/core/modeling/indexes)
 
 Creates an index on one or more properties. The index can be a unique one.
 
@@ -1489,7 +1558,7 @@ modelBuilder.Entity<Product>().HasIndex(p => p.Name).IsUnique(true);
 modelBuilder.Entity<User>().HasIndex(u => new { u.FirstName, u.LastName });
 ```
 
-### [**Ignore()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.ignore)
+### [Ignore()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.ignore)
 
 When used with an [EntityTypeBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1) specifies one or more properties that are excluded from mapping.
 
@@ -1497,7 +1566,7 @@ When used with an [EntityTypeBuilder](https://learn.microsoft.com/en-us/dotnet/a
 modelBuilder.Entity<User>().Ignore(u => u.FullName);
 ```
 
-### [**ComplexProperty()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.complexproperty)
+### [ComplexProperty()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.complexproperty)
 
 Specifies that a property of a class or structure type is a [Complex Type](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#value-objects-using-complex-types). 
 
@@ -1510,7 +1579,7 @@ modelBuilder.Entity<SalesOrder>(so => {
 	});
 ```
 
-### [**HasData()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.hasdata)
+### [HasData()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.hasdata)
 
 Used in adding initial data to the database.
 
@@ -1522,7 +1591,7 @@ modelBuilder.Entity<Product>().HasData(new List<Product>()
 });
 ```
 
-### [**ToView()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalentitytypebuilderextensions.toview)
+### [ToView()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalentitytypebuilderextensions.toview)
 
 Specifies that an entity maps to a database view.
 
@@ -1530,7 +1599,7 @@ Specifies that an entity maps to a database view.
 modelBuilder.Entity<ProductOrdersTotal>().ToView("v_product_salesorders_total");
 ```
 
-### [**ToSqlQuery()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalentitytypebuilderextensions.tosqlquery)
+### [ToSqlQuery()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalentitytypebuilderextensions.tosqlquery)
 
 Maps an entity to a `SELECT` Sql statement.
 
@@ -1543,7 +1612,7 @@ modelBuilder.Entity<ProductOrdersTotal>(builder => { builder.ToSqlQuery("select 
 var Totals = MyDataContext.Set<ProductOrdersTotal>().ToList();
 ```
 
-### [**HasQueryFilter()**](https://learn.microsoft.com/en-us/ef/core/querying/filters)
+### [HasQueryFilter()](https://learn.microsoft.com/en-us/ef/core/querying/filters)
 
 Specifies that the entity has a [global query filter](https://learn.microsoft.com/en-us/ef/core/querying/filters) that should be automatically applied to queries of this entity type.
 
@@ -1551,7 +1620,7 @@ Specifies that the entity has a [global query filter](https://learn.microsoft.co
 modelBuilder.Entity<User>().HasQueryFilter(u => u.UserType == "ClientApplication");
 ```
 
-### [**Property()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.property). 
+### [Property()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.property)
 
 Returns a [PropertyBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1) which is use in configuring a property of the entity.
 
@@ -1565,7 +1634,7 @@ The following methods are members of the [PropertyBuilder](https://learn.microso
 
 The presented list is not exhaustive.
 
-### [**HasConversion()**](https://learn.microsoft.com/en-us/ef/core/modeling/value-conversions)
+### [HasConversion()](https://learn.microsoft.com/en-us/ef/core/modeling/value-conversions)
 
 Specifies a [ValueConverter](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.storage.valueconversion.valueconverter) to be used in converting the value when reading or writing to the database.
 
@@ -1576,7 +1645,7 @@ modelBuilder.Entity<User>().Property(u => u.UserType)
         v => (UserTypeEnum)Enum.Parse(typeof(UserTypeEnum), v));
 ```
 
-### [**HasColumnType()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.hascolumntype)	
+### [HasColumnType()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.hascolumntype)	
 
 Specifies a database provider specific data type of the column that maps the property.
 
@@ -1585,7 +1654,7 @@ modelBuilder.Entity<Product>().Property(p => p.Price)
     .HasColumnType("decimal(18, 4)");
 ```
 
-### [**HasComputedColumnSql()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.hascomputedcolumnsql)
+### [HasComputedColumnSql()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.hascomputedcolumnsql)
 
 Specifies that the property maps to [computed column](https://en.wikipedia.org/wiki/Virtual_column) in the database.
 
@@ -1599,7 +1668,7 @@ modelBuilder.Entity<User>().Property(u => u.FullName)
 ```
 
 
-### [**HasDefaultValue()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.hasdefaultvalue)
+### [HasDefaultValue()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.hasdefaultvalue)
 
 Specifies a default value for the database column the property maps to.
 
@@ -1609,7 +1678,7 @@ modelBuilder.Entity<User>().Propery(u => u.IsActive)
 ```
 
  
-### [**HasDefaultValueSql()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.hasdefaultvaluesql)
+### [HasDefaultValueSql()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.hasdefaultvaluesql)
 
 Specifies a Sql expression which generates a default value for the database column the property maps to.
 
@@ -1619,7 +1688,7 @@ modelBuilder.Entity<User>().Property(u => u.FullName)
 ```
  
 
-### [**HasField()**](https://learn.microsoft.com/en-us/ef/core/modeling/backing-field)
+### [HasField()](https://learn.microsoft.com/en-us/ef/core/modeling/backing-field)
 
 Specifies a [backing field](https://learn.microsoft.com/en-us/ef/core/modeling/backing-field) that should be used be `EF Core` when reading or writing, instead of the property.
 
@@ -1645,7 +1714,7 @@ public class User: BaseEntity
 modelBuilder.Entity<User>().Property(u => u.IsBlocked)
     .HasField("blocked");
 ```
-### [**HasMaxLength()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.hasmaxlength)
+### [HasMaxLength()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.hasmaxlength)
 
 Specifies the maximum length of data that can be stored in a string or array property.
  
@@ -1654,7 +1723,7 @@ modelBuilder.Entity<Product>().Property(p => p.Name)
     .HasMaxLength(96);
 ```
 
-### [**HasPrecision()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.hasprecision)
+### [HasPrecision()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.hasprecision)
 
 Specifies the precision and scale of a property. 
 
@@ -1663,7 +1732,7 @@ modelBuilder.Entity<Product>().Property(p => p.Price)
     .HasPrecision(14, 2);
 ```
 
-### [**HasValueGenerator()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.hasvaluegenerator)
+### [HasValueGenerator()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.hasvaluegenerator)
 
 Specifies a custom [ValueGenerator](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.valuegeneration.valuegenerator) class which provides values for a property.
 
@@ -1686,7 +1755,7 @@ modelBuilder.Entity<SalesOrder>().Property(so => so.OrderNo)
     .IsRequired();
 ```
 
-### [**IsConcurrencyToken()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.isconcurrencytoken)
+### [IsConcurrencyToken()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.isconcurrencytoken)
 
 Specifies that a property is a [concurrency token](https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api#application-managed-concurrency-tokens). 
 
@@ -1709,7 +1778,7 @@ modelBuilder.Entity<SalesOrder>().Property(so => so.RowVersion)
     .IsConcurrencyToken();
 ```
 
-### [**IsFixedLength()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.isfixedlength)
+### [IsFixedLength()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.isfixedlength)
 
 Specifies that the mapped column can store fixed-length data only, such as strings.
 
@@ -1719,7 +1788,7 @@ modelBuilder.Entity<Country>().Property(c => c.TwoDigitCode)
     .IsFixedLength();
 ```
  
-### [**IsRowVersion()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.isrowversion)
+### [IsRowVersion()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.isrowversion)
 
 Specifies that a property maps a column that is a [row version](https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api#native-database-generated-concurrency-tokens).
 
@@ -1738,7 +1807,7 @@ modelBuilder.Entity<SalesOrder>().Property(so => so.RowVersion)
     .IsRowVersion();
 ```
 
-### [**IsRequired()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.isrequired)	
+### [IsRequired()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.isrequired)	
 
 Specifies whether a property is required to have a value and not be null.
 
@@ -1750,7 +1819,7 @@ modelBuilder.Entity<User>().Property(u => u.FullName)
     .IsRequired(false);
 ```
 
-### [**IsUnicode()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.isunicode)
+### [IsUnicode()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.isunicode)
 
 Specifies whether a string property maps to a unicode column.
 
@@ -1759,7 +1828,7 @@ modelBuilder.Entity<User>().Property(u => u.UserName)
     .IsUnicode(true);
 ```
 
-### [**UseCollation()**](https://learn.microsoft.com/en-us/ef/core/miscellaneous/collations-and-case-sensitivity#column-collation)
+### [UseCollation()](https://learn.microsoft.com/en-us/ef/core/miscellaneous/collations-and-case-sensitivity#column-collation)
 
 Specifies a collation to be used with the column the property maps to.
 
@@ -1768,7 +1837,7 @@ modelBuilder.Entity<Customer>().Property(c => c.Name)
     .UseCollation("Greek_CI_AI");
 ```
  
-### [**ValueGeneratedNever()**](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties?tabs=fluent-api#no-value-generation)
+### [ValueGeneratedNever()](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties?tabs=fluent-api#no-value-generation)
 
 Specifies that no value should be generated by the database for the column the property maps to, when the entity is saved.
  
@@ -1777,7 +1846,7 @@ Specifies that no value should be generated by the database for the column the p
 modelBuilder.Entity<Product>().Property(p => p.Id)
     .ValueGeneratedNever();
 ``` 
-### [**ValueGeneratedOnAdd()**](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties?tabs=fluent-api#explicitly-configuring-value-generation)
+### [ValueGeneratedOnAdd()](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties?tabs=fluent-api#explicitly-configuring-value-generation)
 
 Specifies that a value is generated by the database for the column the property maps to, when the entity is inserted.
 
@@ -1786,7 +1855,7 @@ modelBuilder.Entity<SalesOrder>().Property(o => o.DateCreated)
     .ValueGeneratedOnAdd();
 ```
 
-### [**ValueGeneratedOnUpdate()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.valuegeneratedonupdate)
+### [ValueGeneratedOnUpdate()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.valuegeneratedonupdate)
 
 Specifies that a value is generated by the database for the column the property maps to, when the entity is updated.
 
@@ -1795,7 +1864,7 @@ modelBuilder.Entity<SalesOrder>().Property(o => o.DateUpdated)
     .ValueGeneratedOnUpdate();
 ```
 
-### [**ValueGeneratedOnAddOrUpdate()**](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties?tabs=fluent-api#explicitly-configuring-value-generation)
+### [ValueGeneratedOnAddOrUpdate()](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties?tabs=fluent-api#explicitly-configuring-value-generation)
 
 Specifies that a value is generated by the database for the column the property maps to, when the entity is inserted or updated.
 
