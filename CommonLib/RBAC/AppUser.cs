@@ -99,10 +99,6 @@ namespace CommonLib.Entities
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            //builder
-            //    .Property(e => e.ClientId)
-            //    .IsRequired();
-
             builder.Property(u => u.UserType)
                 .HasConversion(
                     v => v.ToString(),

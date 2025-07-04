@@ -13,6 +13,8 @@
             {
                 DemoData.AddData(modelBuilder);
             }
+
+            
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -25,6 +27,8 @@
                 string DatabasePath = Path.Combine(System.AppContext.BaseDirectory, "Sqlite.db3");
                 optionsBuilder.UseSqlite($"Data Source={DatabasePath}", SqliteOptionsBuilder => { });
             }
+
+            
         }
 
         // ● construction

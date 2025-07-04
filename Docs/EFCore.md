@@ -2,6 +2,138 @@
 
 > This text is part of a group of texts describing [Asp.Net Core](Index.md).
 
+## Table of Contents
+
+- [Entity Framework Core](#entity-framework-core)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [The EF Core Model](#the-ef-core-model)
+  - [DbContext](#dbcontext)
+    - [Configuring a DbContext Database Provider](#configuring-a-dbcontext-database-provider)
+    - [DbContext in Dependency Injection](#dbcontext-in-dependency-injection)
+    - [Creating a DbContext with `new()`](#creating-a-dbcontext-with-new)
+    - [Creating a DbContext with a DbContext factory](#creating-a-dbcontext-with-a-dbcontext-factory)
+    - [Entities and the DbContext](#entities-and-the-dbcontext)
+  - [Saving Data](#saving-data)
+    - [Insert.](#insert)
+    - [Update.](#update)
+    - [Delete.](#delete)
+  - [Quering Data](#quering-data)
+    - [Loading a single entity](#loading-a-single-entity)
+    - [Loading a list of entities](#loading-a-list-of-entities)
+    - [Filtering](#filtering)
+    - [Ordering](#ordering)
+    - [Paging](#paging)
+    - [Query result types](#query-result-types)
+    - [Query Projections](#query-projections)
+  - [DbSet\<T\>](#dbsett)
+  - [Change Tracking](#change-tracking)
+    - [The EntityEntry](#the-entityentry)
+    - [The ChangeTracker](#the-changetracker)
+    - [Disabling Change Tracking](#disabling-change-tracking)
+  - [Configuration](#configuration)
+  - [Configuration - built-in Conventions](#configuration---built-in-conventions)
+  - [Configuration - Data Annotation Attributes](#configuration---data-annotation-attributes)
+    - [**TableAttribute**.](#tableattribute)
+    - [**PrimaryKeyAttribute**.](#primarykeyattribute)
+    - [**IndexAttribute**.](#indexattribute)
+    - [**KeyAttribute**.](#keyattribute)
+    - [**ForeignKeyAttribute**.](#foreignkeyattribute)
+    - [**KeylessAttibute**.](#keylessattibute)
+    - [**ColumnAttribute**.](#columnattribute)
+    - [**RequiredAttribute**.](#requiredattribute)
+    - [**MaxLengthAttribute**.](#maxlengthattribute)
+    - [**StringLengthAttribute**.](#stringlengthattribute)
+    - [**RangeAttribute**.](#rangeattribute)
+    - [**PrecisionAttribute**.](#precisionattribute)
+    - [**UnicodeAttribute**.](#unicodeattribute)
+    - [**CommentAttribute**.](#commentattribute)
+    - [**DefaultValueAttribute**.](#defaultvalueattribute)
+    - [**DatabaseGeneratedAttribute**.](#databasegeneratedattribute)
+    - [**TimestampAttribute**.](#timestampattribute)
+    - [**NotMappedAttribute**.](#notmappedattribute)
+    - [**InversePropertyAttribute**](#inversepropertyattribute)
+    - [**DeleteBehaviorAttribute**](#deletebehaviorattribute)
+    - [**ComplexTypeAttibute**.](#complextypeattibute)
+    - [**OwnedAttribute**](#ownedattribute)
+  - [Configuration - Fluent API](#configuration---fluent-api)
+  - [Configuration - Fluent API - Model Configuration](#configuration---fluent-api---model-configuration)
+    - [**Entity()**](#entity)
+    - [**Owned()**](#owned)
+    - [**HasDbFunction()**](#hasdbfunction)
+    - [**HasDefaultSchema()**](#hasdefaultschema)
+    - [**HasSequence()**](#hassequence)
+    - [**HasAnnotation()**](#hasannotation)
+    - [**HasChangeTrackingStrategy**](#haschangetrackingstrategy)
+    - [**Ignore()**](#ignore)
+  - [Configuration - Fluent API - Entity Configuration](#configuration---fluent-api---entity-configuration)
+    - [**ToTable()**](#totable)
+    - [**HasKey()**](#haskey)
+    - [**HasNoKey()**](#hasnokey)
+    - [**HasAlternateKey()**](#hasalternatekey)
+    - [**HasIndex()**](#hasindex)
+    - [**Ignore()**](#ignore-1)
+    - [**ComplexProperty()**](#complexproperty)
+    - [**HasData()**](#hasdata)
+    - [**ToView()**](#toview)
+    - [**ToSqlQuery()**](#tosqlquery)
+    - [**HasQueryFilter()**](#hasqueryfilter)
+    - [**Property()**.](#property)
+  - [Configuration - Fluent API - Property Configuration](#configuration---fluent-api---property-configuration)
+    - [**HasConversion()**](#hasconversion)
+    - [**HasColumnType()**](#hascolumntype)
+    - [**HasComputedColumnSql()**](#hascomputedcolumnsql)
+    - [**HasDefaultValue()**](#hasdefaultvalue)
+    - [**HasDefaultValueSql()**](#hasdefaultvaluesql)
+    - [**HasField()**](#hasfield)
+    - [**HasMaxLength()**](#hasmaxlength)
+    - [**HasPrecision()**](#hasprecision)
+    - [**HasValueGenerator()**](#hasvaluegenerator)
+    - [**IsConcurrencyToken()**](#isconcurrencytoken)
+    - [**IsFixedLength()**](#isfixedlength)
+    - [**IsRowVersion()**](#isrowversion)
+    - [**IsRequired()**](#isrequired)
+    - [**IsUnicode()**](#isunicode)
+    - [**UseCollation()**](#usecollation)
+    - [**ValueGeneratedNever()**](#valuegeneratednever)
+    - [**ValueGeneratedOnAdd()**](#valuegeneratedonadd)
+    - [**ValueGeneratedOnUpdate()**](#valuegeneratedonupdate)
+    - [**ValueGeneratedOnAddOrUpdate()**](#valuegeneratedonaddorupdate)
+  - [Relationships](#relationships)
+    - [Relationship Mapping](#relationship-mapping)
+    - [Relationship Types](#relationship-types)
+  - [One-to-one Relationship](#one-to-one-relationship)
+    - [The common case: both entities contain reference to each other](#the-common-case-both-entities-contain-reference-to-each-other)
+    - [Principal without reference to dependent](#principal-without-reference-to-dependent)
+    - [No references at all](#no-references-at-all)
+    - [More one-to-one cases](#more-one-to-one-cases)
+  - [One-to-many Relationship](#one-to-many-relationship)
+    - [The common case: both entities contain reference to each other](#the-common-case-both-entities-contain-reference-to-each-other-1)
+    - [Principal without reference to dependent collection](#principal-without-reference-to-dependent-collection)
+    - [No references at all](#no-references-at-all-1)
+    - [Dependent without reference to principal](#dependent-without-reference-to-principal)
+    - [More one-to-many cases](#more-one-to-many-cases)
+  - [Many-to-many Relationship](#many-to-many-relationship)
+    - [The common case: without defining a join table](#the-common-case-without-defining-a-join-table)
+    - [Defining a join table](#defining-a-join-table)
+    - [More many-to-many cases](#more-many-to-many-cases)
+  - [Loading Related Data](#loading-related-data)
+    - [Eager Loading](#eager-loading)
+    - [Explicit Loading](#explicit-loading)
+    - [Lazy Loading](#lazy-loading)
+      - [Lazy Loading using proxies](#lazy-loading-using-proxies)
+      - [Lazy Loading without proxies](#lazy-loading-without-proxies)
+  - [Migrations](#migrations)
+    - [Visual Studio Migration Operations](#visual-studio-migration-operations)
+    - [NET Core CLI Migration Operations](#net-core-cli-migration-operations)
+    - [Migrations procedure](#migrations-procedure)
+    - [Migration considerations](#migration-considerations)
+    - [Easy way to explore Migrations with a Windows.Forms application](#easy-way-to-explore-migrations-with-a-windowsforms-application)
+  - [Further Reading](#further-reading)
+
+
+## Introduction
+
 [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) is an [Object Relational Mapping (ORM)](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) framework.
 
 `EF Core` is open-source, lightweight, extensible and supports [a great number of databases](https://learn.microsoft.com/en-us/ef/core/providers/).
@@ -11,15 +143,15 @@
 In order to access data in a database with `EF Core` two elements are required
 
 - a Data Context. A [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext) derived class which represents a connection and a session with the database.
-- Entites. Mostly [POCO](https://en.wikipedia.org/wiki/Plain_old_CLR_object) classes where each Entity maps to a database table.
+- Entities. Mostly [POCO](https://en.wikipedia.org/wiki/Plain_old_CLR_object) classes where each Entity maps to a database table.
 
-In `EF Core` terminology these two elements, the Data Context and the Entities, along with their configuration, are called [Model](https://learn.microsoft.com/en-us/ef/core/modeling/).
+In `EF Core` terminology these two elements, the Data Context and the Entities, along with their configuration, are known as [Model](https://learn.microsoft.com/en-us/ef/core/modeling/).
 
 The `EF Core Model` is mainly a configuration on how entity types are mapped to tables of the underlying database.
 
 The `DbContext` provides the [Model](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext.model) property of type [IModel](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.imodel) which provides properties and methods that return information about the `EF Core Model`.
 
-Also the [DbSet<T>](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1), explained later in this text, provides the [EntityType](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1.entitytype) property which provides `EF Core Model` information about the entity associated to the `DbSet<T>`.
+Also the [`DbSet<T>`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1), which represents a collection of entities of the same type and is explained later in this text, provides the [EntityType](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1.entitytype) property which provides `EF Core Model` information about the entity associated to the `DbSet<T>`.
 
 ## DbContext
 
@@ -27,7 +159,7 @@ Also the [DbSet<T>](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entit
 
 `DbContext` provides `CRUD` methods such as `Add()`, `Update()` and `Remove()`.
 
-All that `CRUD` methods are executed inside a transaction. The `SaveChanges()` method [commits](https://en.wikipedia.org/wiki/Commit_(data_management)) the changes to the database.
+All that `CRUD` methods are executed inside a transaction. The `DbContext.SaveChanges()` method [commits](https://en.wikipedia.org/wiki/Commit_(data_management)) the changes to the database.
 
 `DbContext` is [IDisposable](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose). Its lifetime should be as short as possible.
 
@@ -284,8 +416,8 @@ public class DataContext: DbContext
 - The `ApplyConfigurationsFromAssembly()` call in the `OnModelCreating()` method forces `EF Core` to search a specified Assembly for entity classes and include them in its `Model`. This is done because our entity classes are accompanied by a `IEntityTypeConfiguration` interface implementation. The `ApplyConfigurationsFromAssembly()` searches the Assembly for types implementing the `IEntityTypeConfiguration` interface.
 - The line `DemoData.AddData(modelBuilder)`, in the `OnModelCreating()` method, uses the static `DemoData` class to add initial data in the database.
 - [DbContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext) is used for `CRUD` operations and is a generic repository too.
-- [DbSet](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1), like the `DbContext`, is used for `CRUD` operations and is a generic repository too.
-- `DbContext` and `DbSet` provide `CRUD` methods such as `Add()`, `Remove()` and `Update()`.
+- [`DbSet<T>`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1), like the `DbContext`, is used for `CRUD` operations and is a generic repository too.
+- `DbContext` and `DbSet<T>` provide `CRUD` methods such as `Add()`, `Remove()` and `Update()`.
 - `DbContext` provides the `SaveChanges()` method which [commits](https://en.wikipedia.org/wiki/Commit_(data_management)) the changes to the database.
 - It is a good idea to review the documentation for both of these clasess and check the provided properties and methods.
 - `DbContext` is **not** thread safe.
@@ -294,7 +426,7 @@ public class DataContext: DbContext
 - In other words `DbContext` implements the [Unit of Work](https://en.wikipedia.org/wiki/Unit_of_work) pattern.
 - An `EF Core` application may call many times `Add()`, `Remove()` or `Update()` methods, against one or more entities, and then, in the end, call the `DbContext.SaveChanges()` method in order to [commit](https://en.wikipedia.org/wiki/Commit_(data_management)) the changes to the database.
 
-## Saving Data Basics
+## Saving Data
 
 > There are `Async()` versions of most of the methods used in the next examples.
 
@@ -345,7 +477,7 @@ using (var Context = new DataContext())
 - The `Products` property is actually a [IQueryable<Product>](https://learn.microsoft.com/en-us/dotnet/api/system.linq.iqueryable-1) instance.
 - A `DbSet<T>` is a `IQueryable<T>` instance.
 
-## Quering Data Basics
+## Quering Data
 
 In `EF Core` [Language-Integrated Query (LINQ)](https://learn.microsoft.com/en-us/dotnet/csharp/linq/) is used in querying data from the database.
 
@@ -403,6 +535,7 @@ using (var Context = new DataContext())
 ### Paging
 
 ```
+// a helper class for paging
 public class Paging<T> where T : class
 {
     public int TotalItems { get; set; }
@@ -475,7 +608,7 @@ using (var Context = new DataContext())
 Projection with a specific type.
 
 ```
-public class ProjectSimple
+public class ProductSimple
 {
     public string Id { get; set; }
     public string Name { get; set; }
@@ -485,7 +618,7 @@ public class ProjectSimple
 using (var Context = new DataContext())
 { 
     var List = Context.Products
-        .Select(p => new ProjectSimple() { p.Id, p.Name })
+        .Select(p => new ProductSimple() { p.Id, p.Name })
         .ToList();
 }
 ```
@@ -496,9 +629,9 @@ using (var Context = new DataContext())
 
 ## DbSet&lt;T&gt;
 
-[DbSet&lt;T&gt;](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1) represents a collection of entities. Provides `CRUD` methods such as `Add()`, `Update()` and `Remove()`. Also it can be used in issuing queries to the database using [LINQ](https://learn.microsoft.com/en-us/dotnet/csharp/linq/) queries.
+[DbSet&lt;T&gt;](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1) represents a collection of entities of the same type. Provides `CRUD` methods such as `Add()`, `Update()` and `Remove()`. Also it is used in issuing queries to the database using [LINQ](https://learn.microsoft.com/en-us/dotnet/csharp/linq/) queries.
 
-`DbSet<T>` is used in declaring properties in a `DbContext`.
+`DbSet<T>` is used in declaring properties in a `DbContext` representing collections of entities.
 
 ```
 public class DataContext: DbContext
@@ -570,7 +703,7 @@ The `DbContext.SaveChanges()` detects any changes made to an entity and updates 
 
 The `DbContext.Entry()` and the `DbSet.Entry()` methods return an [EntityEntry](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.changetracking.entityentry) instance which provides change tracking information regarding a specified entity.
 
-The `EntityEntry.State` read-write property is an [EntityState](https://learn.microsoft.com/en-us/ef/core/change-tracking/#entity-states) enum type indicating the `tracking` state of an entity.
+The `EntityEntry.State` **read-write** property is an [EntityState](https://learn.microsoft.com/en-us/ef/core/change-tracking/#entity-states) enum type indicating the `tracking` state of an entity.
 
 ### The ChangeTracker
 
@@ -582,7 +715,7 @@ In `EF Core`, by default, entities returned from queries are [tracked entities](
 
 Change tracking can be disabled
 
-- in the `DbContext.OnConfiguring()` method in order to affect any `DbContext` instance
+ ● in the `DbContext.OnConfiguring()` method in order to affect any `DbContext` instance
 
 ```
 protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -594,7 +727,7 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 }
 ```
 
-- using the `DbContext.ChangeTracker.QueryTrackingBehavior` or setting the `DbContext.ChangeTracker.AutoDetectChangesEnabled` to **false**, in order to affect every query in a certain `DbContext`
+ ● using the `DbContext.ChangeTracker.QueryTrackingBehavior` or setting the `DbContext.ChangeTracker.AutoDetectChangesEnabled` to **false**, in order to affect every query in a certain `DbContext`
 
 ```
 DataContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -602,19 +735,19 @@ DataContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracki
 DataContext.ChangeTracker.AutoDetectChangesEnabled = false;
 ```
 
-- using the `AsNoTracking()` method to affect a certain query
+ ● using the `AsNoTracking()` method in order to affect a certain query
 
 ```
 DataContext.Products.AsNoTracking(); 
 ```
 
-- using the `DbContext.ChangeTracker.Clear()` method to clear all change tracking information from a `DbContext`
+ ● using the `DbContext.ChangeTracker.Clear()` method to clear all change tracking information from a `DbContext`
 
 ```
 DataContext.ChangeTracker.Clear(); 
 ```
 
-- using the `EntityEntry.State` property to detach an entity
+ ● using the `EntityEntry.State` property to detach an entity
 
 ```
 var Entry = Context.Entry(product);
@@ -629,7 +762,7 @@ Configuration is done
 
 - with `EF Core` built-in configuration conventions
 - using Data Annotation attributes
-- using Fluent syntax in `DbContext.OnModelCreating()` or `IEntityTypeConfiguration<T>.Configure()`.
+- using Fluent API syntax in `DbContext.OnModelCreating()` or `IEntityTypeConfiguration<T>.Configure()`.
 
 ## Configuration - built-in Conventions
 
@@ -640,14 +773,14 @@ Most common are the following.
 - **Table Name**. The name of an entity class is used in mapping the entity to a table with the same name in the underlying database.
 - **Column Name**. The name of a property is used in mapping the property to a table column with the same name in the underlying database.
 - **Primary Key**. A property named `ID`, `Id`, `id` or `EntityNameId` (not case-sensitive), is configured as the primary key.
-- **Foreign Key**. If a property is named `ForeignEntityId` and there is an entity having `ForeignName` as name and a primary key of the same data type then that property is configured as a foreign key.
-- **Alternate Key**. When a property, which is not the primary key, is used as the target of a relationship then an alternate key is created.
+- **Foreign Key**. If a property is named `ForeignEntityId` and there is another entity having `ForeignName` as name and a primary key of the same data type then that property is configured as a foreign key.
+- **Alternate Key**. When a property, which is not the primary key, is used as the target of a relationship then an [alternate key](https://learn.microsoft.com/en-us/ef/core/modeling/keys#alternate-keys) is created.
 - **Data Types**. The Database Provider decides the appropriate mapping.
 - **Nullable Types**. Properties with nullable data types can be null, e.g. `string? Name { get; set; }`, otherwise a value is required, e.g. `string Name { get; set; }`.
 
 ## Configuration - Data Annotation Attributes
 
-Attributes can be placed on a class or property and specify metadata about that class or property.
+Attributes can be placed on a class or property to specify metadata about that class or property.
 
 Data annotation attributes modify or override configuration which is imposed by `EF Core` built-in conventions.
 
@@ -677,7 +810,7 @@ Annotates an entity class specifying the primary key which can be comprised of a
 [PrimaryKey(nameof(Id))]
 public class BaseEntity 
 {
-    ...
+    public string Id { get; set; }
 }
 
 ...
@@ -717,7 +850,6 @@ public class BaseEntity
 {
     [Key]
     public string Id { get; set; }
-    ...
 }
 ```
 
@@ -790,7 +922,7 @@ public class Post
 
 ### [**KeylessAttibute**](https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types). 
 
-Annotates an entity specifying that the entity has no primary key. Can be used to execute database queries returning keyless entities.
+Annotates an entity specifying that the entity has no primary key  at all. Can be used to execute database queries returning keyless entities.
 
 ```
 [Keyless]
@@ -929,7 +1061,7 @@ public class Category : BaseEntity
 
 ### [**DatabaseGeneratedAttribute**](https://learn.microsoft.com/en-us/ef/core/modeling/generated-properties?tabs=data-annotations#explicitly-configuring-value-generation). 
 
-Annotates a property specifying if and how the database provider generates values the property.
+Annotates a property that specifies whether and how the database provider generates values ​​for the property.
 
 ```
 public class BaseEntity
@@ -942,7 +1074,7 @@ public class BaseEntity
 
 ### [**TimestampAttribute**](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.timestampattribute). 
 
-Annotates a byte array , i.e. byte[], property. Can only be applied once per entity. Used when the database provider is the MsSql server.
+Annotates a byte array , i.e. `byte[]`, property. Can only be applied once per entity. Used when the database provider is the MsSql server.
 
 ```
 public class Product : BaseEntity
@@ -1068,10 +1200,10 @@ A discussion on complex types can be found in this [announcement](https://devblo
 A complex type
 
 - it is not an entity per se, i.e. no `DbSet<MyComplexType>`
-- it is not identified by a key value and is not tracked
+- it is not identified by a key value, i.e. is keyless, and it is not tracked
 - should be used as a property of an entity type
-- it is not autonomously saved by a `DbContext` or a `DbSet`, but instead is saved as a part of an entity
-- can be a reference or a value type, i.e. either class or record
+- it is not autonomously saved by a `DbContext` or a `DbSet`, but instead is saved as a part of its container entity
+- can be a reference or a value type, i.e. either class or struct
 - can be shared by multiple properties in the same entity.
 - can be used by multipte entities
 - must be defined as a **required** value in the `OnModelCreating()` method.
@@ -1079,7 +1211,7 @@ A complex type
 
 ### [**OwnedAttribute**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.ownedattribute)
 
-Specifies that an entity is an owned one.
+Specifies that an entity is an [owned](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities) one.
 
 An owned entity is not an autonomous entity and it is only used as a navigation property contained by another entity which is called the _owner_ entity.
 
@@ -1132,7 +1264,7 @@ public class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product>
 
 That way the application can use the `ApplyConfigurationsFromAssembly()`.
 
-The `ApplyConfigurationsFromAssembly()` instructs `EF Core` to search an Assembly for types implementing the `IEntityTypeConfiguration` interface and include entities and entity configurations in the `Model`.
+The `ApplyConfigurationsFromAssembly()` instructs `EF Core` to search an Assembly for types implementing the `IEntityTypeConfiguration` interface and include entities and entity configurations in the `EF Core Model`.
 
 It's a matter of preference but having an implementation of `IEntityTypeConfiguration` interface leads to less code in the `DbContext.OnModelCreating()` and easy management of entity configuration.
 
@@ -1145,7 +1277,6 @@ public class DataContext: DbContext
     {
         ...
     } 
-    ...
 }
 ```
 
@@ -1165,7 +1296,7 @@ modelBuilder.Entity<Product>().HasKey(p => p.Id);
 
 ### [**Owned()**](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities)
 
-Specifies that an entity is an owned one.
+Specifies that an entity is an [owned](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities) one.
 
 An owned entity is not an autonomous entity and it is only used as a navigation property contained by another entity which is called the _owner_ entity.
 
@@ -1283,7 +1414,7 @@ modelBuilder.Entity<SalesOrder>()
 
 ### [**HasAnnotation()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.modelbuilder.hasannotation)
 
-A `Key-Value` pair that attaches arbitrary information to the `Model` which can later be read from the `Model` using its key. `EF Core` uses `HasAnnotation()` internally to configure things such as the constraint name of a foreign key. It has little value to a developer unless he implements something that uses it. Check [this discussion](https://github.com/dotnet/efcore/issues/13028).
+Creates a `Key-Value` pair object that attaches arbitrary information to the `Model` which can later be read from the `Model` using its key. `EF Core` uses `HasAnnotation()` internally to configure things such as the constraint name of a foreign key. It has little value to a developer unless he implements something that uses it. Check [this discussion](https://github.com/dotnet/efcore/issues/13028).
 
 ```
 modelBuilder.HasAnnotation("MyKey", "MyValue");
@@ -1340,9 +1471,9 @@ modelBuilder.Entity<RolePermission>().HasKey(rp => new { rp.RoleId, rp.Permissio
 modelBuilder.Entity<ProductOrdersTotal>().HasNoKey();
 ```
 
-### [**HasAlternateKey()**](https://learn.microsoft.com/en-us/ef/core/modeling/keys?tabs=data-annotations#alternate-keys)
+### [**HasAlternateKey()**](https://learn.microsoft.com/en-us/ef/core/modeling/keys#alternate-keys)
 
-Configures an alternate key for an entity. An alternate key, just like a primary key, uniquely identifies an entity. It can be a multi-column key and it is useful in establishing relationships between entities.
+Configures an [alternate key](https://learn.microsoft.com/en-us/ef/core/modeling/keys#alternate-keys) for an entity. An alternate key, just like a primary key, uniquely identifies an entity. It can be a multi-column key and it is useful in establishing relationships between entities.
 
 ```
 modelBuilder.Entity<Company>().HasAlternateKey(c => c.TaxPayerId);  // a TIN
@@ -1354,7 +1485,7 @@ modelBuilder.Entity<Car>().HasAlternateKey(c => new { c.PlateNo, c.ChassisNo });
 Creates an index on one or more properties. The index can be a unique one.
 
 ```
-modelBuilder.Entity<Product>().HasIndex(p => p.Name });
+modelBuilder.Entity<Product>().HasIndex(p => p.Name).IsUnique(true);
 modelBuilder.Entity<User>().HasIndex(u => new { u.FirstName, u.LastName });
 ```
 
@@ -1368,7 +1499,9 @@ modelBuilder.Entity<User>().Ignore(u => u.FullName);
 
 ### [**ComplexProperty()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.complexproperty)
 
-Specifies that a property of a class or structure type is a `Complex Type`. Check the `ComplexTypeAttribute` presented earlier.
+Specifies that a property of a class or structure type is a [Complex Type](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#value-objects-using-complex-types). 
+
+Check the `ComplexTypeAttribute` presented earlier.
 
 ```
 modelBuilder.Entity<SalesOrder>(so => {
@@ -1412,10 +1545,10 @@ var Totals = MyDataContext.Set<ProductOrdersTotal>().ToList();
 
 ### [**HasQueryFilter()**](https://learn.microsoft.com/en-us/ef/core/querying/filters)
 
-Specifies that the entity has a global query filter that should be automatically applied to queries of this entity type.
+Specifies that the entity has a [global query filter](https://learn.microsoft.com/en-us/ef/core/querying/filters) that should be automatically applied to queries of this entity type.
 
 ```
-modelBuilder.Entity<User>().HasQueryFilter(p => p.UserType == "ClientApplication");
+modelBuilder.Entity<User>().HasQueryFilter(u => u.UserType == "ClientApplication");
 ```
 
 ### [**Property()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.entitytypebuilder-1.property). 
@@ -1445,7 +1578,7 @@ modelBuilder.Entity<User>().Property(u => u.UserType)
 
 ### [**HasColumnType()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.relationalpropertybuilderextensions.hascolumntype)	
 
-Specifies the database provider specific data type of the column that maps the property.
+Specifies a database provider specific data type of the column that maps the property.
 
 ```
 modelBuilder.Entity<Product>().Property(p => p.Price)
@@ -1509,7 +1642,7 @@ public class User: BaseEntity
 
 ...
 
-modelBuilder.Entity<User>().Property(u => u.UserType)
+modelBuilder.Entity<User>().Property(u => u.IsBlocked)
     .HasField("blocked");
 ```
 ### [**HasMaxLength()**](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.metadata.builders.propertybuilder-1.hasmaxlength)
@@ -1557,7 +1690,7 @@ modelBuilder.Entity<SalesOrder>().Property(so => so.OrderNo)
 
 Specifies that a property is a [concurrency token](https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api#application-managed-concurrency-tokens). 
 
-A property configured as a concurrency token is a kind of `record lock`. 
+A property configured as a concurrency token is a kind of [record lock](https://en.wikipedia.org/wiki/Record_locking). 
 
 The database column value, of the mapped property, is checked when the entity is updated or deleted, using the `DbContext.SaveChanges()` method. 
 
@@ -1590,7 +1723,7 @@ modelBuilder.Entity<Country>().Property(c => c.TwoDigitCode)
 
 Specifies that a property maps a column that is a [row version](https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=fluent-api#native-database-generated-concurrency-tokens).
 
-Not all database providers supports this feature.
+Not all database providers support this feature.
 
 ```
 public class SalesOrder
@@ -1658,7 +1791,7 @@ modelBuilder.Entity<SalesOrder>().Property(o => o.DateCreated)
 Specifies that a value is generated by the database for the column the property maps to, when the entity is updated.
 
 ```
-modelBuilder.Entity<SalesOrder>().Property(o => o.DateCreated)
+modelBuilder.Entity<SalesOrder>().Property(o => o.DateUpdated)
     .ValueGeneratedOnUpdate();
 ```
 
@@ -1705,6 +1838,8 @@ The `Product` **has** a `Category`.
 
 A relationship can be expressed in the opposite direction too.
 
+The `Category` **has** a collection of `Products`.
+
 ```
 public class Category  
 {
@@ -1730,7 +1865,7 @@ In the previous example both entities configure a primary key, using the `Key` a
 
 Also the `Product` entity configures a foreign key using the `ForeignKey` attribute. 
 
-The relationship can be expressed using Fluent API too and omitting the attributes.
+That relationship can be expressed using Fluent API too and omitting the attributes.
 
 ```
 modelBuilder.Entity<Category>()
@@ -1979,7 +2114,6 @@ public class CarEntityTypeConfiguration : IEntityTypeConfiguration<Car>
         // nothing here
     }
 }
-
 ```
 
 `EF Core` will discover this relationship using configuration convention.  
@@ -2105,6 +2239,8 @@ public class Car
 
 `EF Core` will discover this relationship using configuration convention.  
 
+Here is the `Fluent API` configuration for the above case.
+
 ```
 modelBuilder.Entity<Driver>()
     .HasMany(d => d.Cars)
@@ -2127,7 +2263,7 @@ A `many-to-many` relationship is a lot different from an `one-to-one` and an `on
 
 A `many-to-many` relationship between two entities requires a third entity, i.e. a third database table. That table or _entity-in-the-middle_ contains references, i.e. foreign keys, to both entities of the relationship.
 
-That _table_-in-the-middle_ is known with many names in the literature
+That _table-in-the-middle_ is known with many names in the literature
 
 - associative table
 - join table
@@ -2263,7 +2399,7 @@ public class DriverToCar
 }
 ```
 
-The relationship is required to be expressed using Fluent API.
+That relationship is required to be expressed using Fluent API.
 
 ```
 modelBuilder.Entity<Driver>()
@@ -2360,6 +2496,10 @@ using (var Context = new DataContext())
 }
 ```
 
+The [Query()](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.changetracking.collectionentry-2.query) method returns an `IQueryable<T>` that can be to further load entities referenced by its navigation property.
+
+
+
 ### Lazy Loading
 
 In [Lazy Loading](https://learn.microsoft.com/en-us/ef/core/querying/related-data/lazy) related data is loaded when the navigation property is accessed. 
@@ -2375,7 +2515,7 @@ There are two ways to use `Lazy Loading`.
 
 There are three requirements
 
-- the [Microsoft.EntityFrameworkCore.Proxies](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Proxies/) must be installed
+- the [Microsoft.EntityFrameworkCore.Proxies](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Proxies/) package must be installed
 - a configuration using the `UseLazyLoadingProxies()` method
 - navigation properties should be declared as **virtual**.
 
@@ -2471,7 +2611,7 @@ public class SalesOrder : BaseEntity
 
 ## Migrations
 
-`EF Core` provides the [Migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations) feature as a way to keep application entities and database schema synchronize.
+`EF Core` provides the [Migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations) feature as a way to keep application entities and database schema synchronized.
 
 `Migrations` alter the database schema according to changes in application entities while preserving existing data in the database.
 
@@ -2506,8 +2646,8 @@ The corresponding operations using NET Core CLI are the following.
 - the developer adds a `DbContext` and some entities in the application.
 - executes the `Add-Migration MIGRATION_NAME`, e.g. `Add-Migration Initial_Migration`
 - this creates a `Migrations` folder in the application root folder with two files: 
-- - `<TimeStamp>_<Migration Name>.cs`. Contains the migration operations in the `Up()` and `Down()` methods.
-- - `<ContextClassName>ModelSnapshot.cs`. Contains a snapshot of the current configuration of application entities.
+  - `<TimeStamp>_<Migration Name>.cs`. Contains the migration operations in the `Up()` and `Down()` methods.
+  - `<ContextClassName>ModelSnapshot.cs`. Contains a snapshot of the current configuration of application entities.
 - every next time the `Add-Migration MIGRATION_NAME` is executed a new pair of files is added to that `Migrations` folder.
 - the developer calls `Update-Database` to create the database and apply the last migration.
 - calling `Remove-Migration` removes the last applied migration. 
@@ -2527,7 +2667,7 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 }
 ```
 
-Instead a static class can be used that checks if a table is empty and if it is it pumps the data.
+Instead a static class can be used that checks if a table is empty and if it is empty, then it pumps the data.
 
 ```
 static public void AddData()
@@ -2555,7 +2695,7 @@ static public void AddData()
 ```
 ### Easy way to explore Migrations with a Windows.Forms application
 
-Here is the `.proj` file.
+Here is the `.csproj` file.
 
 ```
 <Project Sdk="Microsoft.NET.Sdk">
@@ -2581,7 +2721,7 @@ Here is the `.proj` file.
 </Project>
 ```
 
-And here is the `Program.cs` file.
+And here is the `Program` class in the `Program.cs` file.
 
 ```
 internal static class Program
@@ -2608,7 +2748,7 @@ internal static class Program
 
 Migrations require a Dependency Injection container in order to function properly.
 
-Consult the docs about how to [setup a host](https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host?tabs=hostbuilder#set-up-a-host).
+Consult the docs on how to [setup a host](https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host?tabs=hostbuilder#set-up-a-host).
 
 The `ServiceProvider` can be later used as
 

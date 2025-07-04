@@ -1,4 +1,6 @@
-﻿namespace MvcApp.Library
+﻿using System.Reflection.Metadata;
+
+namespace MvcApp.Library
 {
     public class ProductService : AppDataService<Product>
     {
@@ -66,7 +68,7 @@
             ListResult<Product> ResultList = new();
             try
             {                
-                ResultList = await GetListAsync(q => q.OrderBy(p => p.Name));                
+                ResultList = await GetListAsync(q => q.OrderBy(p => p.Name));
             }
             catch (Exception Ex)
             {
