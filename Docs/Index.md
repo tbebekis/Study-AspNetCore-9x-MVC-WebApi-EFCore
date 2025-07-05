@@ -42,7 +42,7 @@ Texts are organized in three groups
 - [Localization](Localization.md)
 - [Error Handling](ErrorHandling.md)
 - [HttpContext](HttpContext.md)
-- [Object Mapper](ObjectMapper.md)
+- [Object Mapping](ObjectMapping.md)
 - [Entity Framework Core](EFCore.md)
 
 #### TODO
