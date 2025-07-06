@@ -43,10 +43,11 @@ Texts are organized in three groups
 - [Error Handling](ErrorHandling.md)
 - [HttpContext](HttpContext.md)
 - [Object Mapping](ObjectMapping.md)
+- [Data Caching](DataCaching.md)
 - [Entity Framework Core](EFCore.md)
 
 #### TODO
-- [Caching](Caching.md)
+
 - [RBAC, Role Based Access Control](RBAC.md)
 - [Request Features](RequestFeatures.md)
 - [Routing](Routing.md)

@@ -67,8 +67,8 @@
             if (TimeoutMinutes > 0)
             {
                 var o = new MemoryCacheEntryOptions();
-                o.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(TimeoutMinutes); // An absolute expiration means a cached item will be removed an an explicit date and time
-                o.SlidingExpiration = TimeSpan.FromMinutes(TimeoutMinutes);     // Sliding expiration means a cached item will be removed it is remains idle (not accessed) for a certain amount of time.
+                o.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(TimeoutMinutes); // An absolute expiration means a cached item will be removed at an explicit date and time
+                o.SlidingExpiration = TimeSpan.FromMinutes(TimeoutMinutes);     // Sliding expiration means a cached item will be removed if is remains idle (not accessed) for a certain amount of time.
 
                 Cache.Set(Key, Value, o);
             }
