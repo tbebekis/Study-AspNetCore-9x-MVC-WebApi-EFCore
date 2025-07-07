@@ -1,6 +1,8 @@
 # Data Caching
 
-[Data Caching](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/overview) is a term that describes a process in which, when data is requested that is not present in a temporary storage location known as `cache`, e.g. in memory, it retrieves it from persistent storage locations, e.g. a relational database, and stores it in the cache, under a unique string key and for a limited period of time. 
+[Data Caching](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/overview) is a term that describes a process in which requested data is returned by retrieving it from a temporary storage location known as `cache`, e.g. in memory, where it is stored under a unique string key. 
+
+If that key is not present in the cache then data is retrieved from a persistent storage location, e.g. a relational database, stored in the cache, under that unique string key, for a limited period of time, and returned to the caller. 
 
 ## Terminology
 

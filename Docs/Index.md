@@ -42,15 +42,16 @@ Texts are organized in three groups
 - [Localization](Localization.md)
 - [Error Handling](ErrorHandling.md)
 - [HttpContext](HttpContext.md)
+- [Routing](Routing.md)
+- [Entity Framework Core](EFCore.md)
 - [Object Mapping](ObjectMapping.md)
 - [Data Caching](DataCaching.md)
-- [Entity Framework Core](EFCore.md)
 
 #### TODO
 
 - [RBAC, Role Based Access Control](RBAC.md)
 - [Request Features](RequestFeatures.md)
-- [Routing](Routing.md)
+
 - [Model Binding](ModelBinding.md)
 - [Model Validation](ModelValidation.md)
 - [Filters](Filters.md)

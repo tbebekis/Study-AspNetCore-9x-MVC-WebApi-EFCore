@@ -47,7 +47,7 @@
                 ListModel.Products = ModelList;
 
                 return View(ListModel);
-            }
+            }            
 
             return RedirectToErrorPage(ListResult.ErrorText);
         }
