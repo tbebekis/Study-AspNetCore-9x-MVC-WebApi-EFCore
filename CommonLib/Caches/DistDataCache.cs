@@ -1,18 +1,27 @@
 ﻿namespace CommonLib
 {
+
     /// <summary>
-    /// An <see cref="IMemoryCache"/> wrapper 
+    /// An <see cref="IDistributedCache"/> wrapper 
     /// </summary>
-    public class AppMemCache : IAppCache
+    public class DistDataCache: IDataCache
     {
-        /* private */
-        IMemoryCache Cache;
+        // ● private 
+        IDistributedCache Cache;
+
+        static JsonSerializerOptions JsonOptions = new JsonSerializerOptions()
+        {
+            PropertyNamingPolicy = null,
+            WriteIndented = true,
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        };
 
         // ● construction 
         /// <summary>
         /// Constructor
         /// </summary>
-        public AppMemCache(IMemoryCache Cache)
+        public DistDataCache(IDistributedCache Cache)
         {
             this.Cache = Cache;
         }
@@ -24,7 +33,8 @@
         /// </summary>
         public T Get<T>(string Key)
         {
-            return Cache.Get<T>(Key);
+            T Value;
+            return TryGetValue<T>(Key, out Value) ? Value : default(T);
         }
         /// <summary>
         /// Returns true if an entry exists under a specified key. Returns the value too as out parameter.
@@ -32,7 +42,14 @@
         /// </summary>
         public bool TryGetValue<T>(string Key, out T Value)
         {
-            return Cache.TryGetValue(Key, out Value);
+            byte[] Buffer = Cache.Get(Key);
+            Value = default;
+
+            if (Buffer == null)
+                return false;
+
+            Value = JsonSerializer.Deserialize<T>(Buffer, JsonOptions);
+            return true;
         }
         /// <summary>
         /// Removes and returns a value found under a specified key, if any, else returns the default value of the specified type argument.
@@ -61,23 +78,23 @@
         /// </summary>
         public void Set<T>(string Key, T Value, int TimeoutMinutes)
         {
-
             Remove(Key);
+
+            byte[] Buffer = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(Value, JsonOptions));
 
             if (TimeoutMinutes > 0)
             {
-                var o = new MemoryCacheEntryOptions();
+                var o = new DistributedCacheEntryOptions();
                 o.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(TimeoutMinutes); // An absolute expiration means a cached item will be removed at an explicit date and time
                 o.SlidingExpiration = TimeSpan.FromMinutes(TimeoutMinutes);     // Sliding expiration means a cached item will be removed if is remains idle (not accessed) for a certain amount of time.
 
-                Cache.Set(Key, Value, o);
+                Cache.Set(Key, Buffer, o);
             }
             else
             {
-                Cache.Set(Key, Value);
+                Cache.Set(Key, Buffer);
             }
         }
-
 
         /// <summary>
         /// Returns true if the key exists.
@@ -85,7 +102,7 @@
         /// </summary>
         public bool ContainsKey(string Key)
         {
-            return Cache.TryGetValue(Key, out var Item);
+            return Cache.Get(Key) != null;
         }
         /// <summary>
         /// Removes an entry by a specified key, if is in the cache.
@@ -96,6 +113,7 @@
             if (ContainsKey(Key))
                 Cache.Remove(Key);
         }
+
 
         /// <summary>
         /// Returns a value found under a specified key.
@@ -114,7 +132,6 @@
             Set(Key, Result.Value, Result.TimeoutMinutes);
             return Result.Value;
         }
-
-
+ 
     }
 }

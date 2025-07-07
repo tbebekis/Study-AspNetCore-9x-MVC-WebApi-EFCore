@@ -126,6 +126,10 @@ The requirements in order to use `Hybrid Cache` are
 - L1: Memory cache, which offers fast reads
 - L2: Distributed cache (Redis, NCache, MsSql Server, etc.), which offers scalability
 
+`IDistributedCache` is **not** required. If it is not present then `Hybrid Cache`  behaves just like the `Memory Cache`.
+
+ 
+
 The `Hybrid Cache` working procedure is as following
 
 - when data is required the cache looks-up for the entry key in L1 and then in the L2 cache
@@ -133,7 +137,7 @@ The `Hybrid Cache` working procedure is as following
 - if the key is not present then a method is executed which returns the data from a persistent medium, e.g. a database
 - when data is retrieved from the persistent medium, it is stored in both L1 and L2 caches, under the key and an expiration policy
  
-The above logic is encapsulated in the [HybridCache](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.hybrid.hybridcache) abstract class.
+The above logic is encapsulated in the [HybridCache](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.hybrid.hybridcache) abstract class. There is no `IHybridCache` interface.
 
 Consider the signature of the `HybridCache.GetOrCreateAsync<T>()` method.
 
@@ -218,11 +222,284 @@ cache.GetOrCreateAsync(
     Key, 
     async token =>
     {
-        var Result = await GetDataFromDatabaseAsyn();            
+        var Result = await DbService.GetDataAsync();            
         return Result;
     },
     options: Options,
     tags: Tags,
     cancellationToken: cancellationToken
 ); 
-``` 
+```
+
+## Unified access to different caches
+
+`Hybrid Cache` offers unified access to both `Memory Cache` and `Distributed Cache`.
+
+Another way of unified access is the following.
+
+`IDataCache` interface unifies access to caches.
+
+```
+public interface IDataCache
+{
+    T Get<T>(string Key);
+    bool TryGetValue<T>(string Key, out T Value);
+    T Pop<T>(string Key);
+
+    void Set<T>(string Key, T Value);
+    void Set<T>(string Key, T Value, int TimeoutMinutes);
+
+    bool ContainsKey(string Key);
+    void Remove(string Key);
+
+    Task<T> Get<T>(string Key, Func<Task<CacheLoaderResult<T>>> LoaderFunc);
+}
+```
+
+The result value of the `LoaderFunc` callback function is a `CacheLoaderResult<T>` instance. 
+
+The `LoaderFunc` callback function is called in order to retrieve fresh data from the database only when the specified key is not found in the cache.
+ 
+
+```
+public class CacheLoaderResult<T>
+{
+    public CacheLoaderResult(T Value)
+        : this(Value, Caches.DefaultEvictionTimeoutMinutes)
+    {
+    }
+    public CacheLoaderResult(T Value, int TimeoutMinutes = 0)
+    {
+        this.Value = Value;
+        this.TimeoutMinutes = Caches.GetTimeoutMinutes(TimeoutMinutes);
+    }
+
+    public T Value { get; set; }
+    public int TimeoutMinutes { get; set; }
+}
+```
+
+A class that implements `IDataCache` using `IMemoryCache`.
+
+```
+public class MemDataCache : IDataCache
+{
+    IMemoryCache Cache;
+
+    public MemDataCache(IMemoryCache Cache)
+    {
+        this.Cache = Cache;
+    }
+
+    public T Get<T>(string Key)
+    {
+        return Cache.Get<T>(Key);
+    }
+    public bool TryGetValue<T>(string Key, out T Value)
+    {
+        return Cache.TryGetValue(Key, out Value);
+    }
+    public T Pop<T>(string Key)
+    {
+        T Result = Get<T>(Key);
+        Remove(Key);
+        return Result;
+    }
+
+    public void Set<T>(string Key, T Value)
+    {
+        Set(Key, Value, Caches.DefaultEvictionTimeoutMinutes);
+    }
+    public void Set<T>(string Key, T Value, int TimeoutMinutes)
+    {
+        Remove(Key);
+
+        if (TimeoutMinutes > 0)
+        {
+            var o = new MemoryCacheEntryOptions();
+            o.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(TimeoutMinutes); 
+            o.SlidingExpiration = TimeSpan.FromMinutes(TimeoutMinutes);
+
+            Cache.Set(Key, Value, o);
+        }
+        else
+        {
+            Cache.Set(Key, Value);
+        }
+    }
+
+    public bool ContainsKey(string Key)
+    {
+        return Cache.TryGetValue(Key, out var Item);
+    }
+    public void Remove(string Key)
+    {
+        if (ContainsKey(Key))
+            Cache.Remove(Key);
+    }
+
+    /// <summary>
+    /// Returns a value found under a specified key.
+    /// <para>If the key does not exist, it calls the specified loader call-back function </para>
+    /// </summary>
+    public async Task<T> Get<T>(string Key, Func<Task<CacheLoaderResult<T>>> LoaderFunc)
+    {
+        T Value;
+        if (TryGetValue(Key, out Value))
+            return Value;
+
+        CacheLoaderResult<T> Result = await LoaderFunc();
+        Set(Key, Result.Value, Result.TimeoutMinutes);
+        return Result.Value;
+    }
+}
+```
+
+A class that implements `IDataCache` using `IDistributedCache`.
+
+```
+public class DistDataCache: IDataCache
+{
+    IDistributedCache Cache;
+
+    static JsonSerializerOptions JsonOptions = new JsonSerializerOptions()
+    {
+        PropertyNamingPolicy = null,
+        WriteIndented = true,
+        AllowTrailingCommas = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    };
+
+    public DistDataCache(IDistributedCache Cache)
+    {
+        this.Cache = Cache;
+    }
+
+    public T Get<T>(string Key)
+    {
+        T Value;
+        return TryGetValue<T>(Key, out Value) ? Value : default(T);
+    }
+    public bool TryGetValue<T>(string Key, out T Value)
+    {
+        byte[] Buffer = Cache.Get(Key);
+        Value = default;
+
+        if (Buffer == null)
+            return false;
+
+        Value = JsonSerializer.Deserialize<T>(Buffer, JsonOptions);
+        return true;
+    }
+    public T Pop<T>(string Key)
+    {
+        T Result = Get<T>(Key);
+        Remove(Key);
+        return Result;
+    }
+
+    public void Set<T>(string Key, T Value)
+    {
+        Set(Key, Value, Caches.DefaultEvictionTimeoutMinutes);
+    }
+    public void Set<T>(string Key, T Value, int TimeoutMinutes)
+    {
+        Remove(Key);
+
+        byte[] Buffer = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(Value, JsonOptions));
+
+        if (TimeoutMinutes > 0)
+        {
+            var o = new DistributedCacheEntryOptions();
+            o.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(TimeoutMinutes);
+            o.SlidingExpiration = TimeSpan.FromMinutes(TimeoutMinutes);
+
+            Cache.Set(Key, Buffer, o);
+        }
+        else
+        {
+            Cache.Set(Key, Buffer);
+        }
+    }
+
+    public bool ContainsKey(string Key)
+    {
+        return Cache.Get(Key) != null;
+    }
+    public void Remove(string Key)
+    {
+        if (ContainsKey(Key))
+            Cache.Remove(Key);
+    }
+
+    /// <summary>
+    /// Returns a value found under a specified key.
+    /// <para>If the key does not exist, it calls the specified loader call-back function </para>
+    /// </summary>
+    public async Task<T> Get<T>(string Key, Func<Task<CacheLoaderResult<T>>> LoaderFunc)
+    {
+        T Value;
+        if (TryGetValue(Key, out Value))
+            return Value;
+
+        CacheLoaderResult<T> Result = await LoaderFunc();
+        Set(Key, Result.Value, Result.TimeoutMinutes);
+        return Result.Value;
+    }
+}
+```
+
+And here is an example of use.
+
+```
+public class AppDataService<T>:  EFDataService<T> where T : BaseEntity
+{
+    public AppDataService()
+        : base(typeof(DataContext))
+    {
+    }
+
+    public override async Task<List<SelectListItem>> GetSelectList(string SelectedId = "", bool AddDefaultItem = false)
+    {
+        string CultureCode = Lib.Culture.Name;
+        string CacheKey = $"{typeof(T).Name}-{nameof(GetSelectList)}-{CultureCode}";
+
+        /// get from cache
+        /// This code is here just for demonstration purposes.
+        /// NOTE: in a real-world application information such as products, most probably, is NOT cached. 
+        /// Other types (tables) such as Countries, Currencies, Measure Units, etc. used in look-ups, may be a better fit.
+        List<SelectListItem> ResultList = await Lib.Cache.Get(CacheKey, async () => {
+            List<SelectListItem> InnerResultList = await base.GetSelectList(SelectedId, AddDefaultItem);
+            CacheLoaderResult<List<SelectListItem>> CacheResult = new(InnerResultList, Lib.Settings.Defaults.CacheTimeoutMinutes);
+            return CacheResult;
+        });
+
+        return ResultList;
+    }
+}
+```
+
+The `AppDataService.GetSelectList()` of the above example returns a `List<SelectListItem>` instance. 
+
+[SelectListItem](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.rendering.selectlistitem) is used in preparing drop-down lists in Asp.Net Core MVC views.
+
+The code of the `AppDataService.GetSelectList()` method uses the `Lib.Cache` which is a `IDataCache` instance. 
+
+The `IDataCache.Get()` call will return the `List<SelectListItem>` instance if the entry key exists in cache.
+
+If not then the lambda `async => () { ... }`, which is the `LoaderFunc` callback function, is called and it returns fresh data from the database as a `CacheLoaderResult<List<SelectListItem>>` instance.
+
+The `IDataCache.Get()` implementation sets the returned `List<SelectListItem>` to the cache, setting the expiration timeouts too.
+
+```
+public async Task<T> Get<T>(string Key, Func<Task<CacheLoaderResult<T>>> LoaderFunc)
+{
+    T Value;
+    if (TryGetValue(Key, out Value))
+        return Value;
+
+    CacheLoaderResult<T> Result = await LoaderFunc();
+    Set(Key, Result.Value, Result.TimeoutMinutes);
+    return Result.Value;
+}
+```

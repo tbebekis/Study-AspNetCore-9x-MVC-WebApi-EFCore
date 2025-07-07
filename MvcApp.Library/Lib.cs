@@ -9,7 +9,7 @@ namespace MvcApp.Library
     {
         public const string SDefaultId = "00000000-0000-0000-0000-000000000000";
 
-        static IAppCache fCache;
+        static IDataCache fCache;
 
         // ● public
         /// <summary>
@@ -194,7 +194,7 @@ namespace MvcApp.Library
         /// <summary>
         /// Returns the application cache
         /// </summary>
-        static public IAppCache Cache
+        static public IDataCache Cache
         {
             get
             {
@@ -203,7 +203,7 @@ namespace MvcApp.Library
                     var MemCache = Lib.GetService<IMemoryCache>();
                     if (MemCache != null)
                     {
-                        fCache = new AppMemCache(MemCache);                       
+                        fCache = new MemDataCache(MemCache);                       
                     }
                 }
 
@@ -212,7 +212,7 @@ namespace MvcApp.Library
                     var DistCache = Lib.GetService<IDistributedCache>();
                     if (DistCache != null)
                     {
-                        fCache = new AppDistCache(DistCache);
+                        fCache = new DistDataCache(DistCache);
                     }
                 }
 
