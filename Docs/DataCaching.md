@@ -1,6 +1,6 @@
 # Data Caching
 
-[Data Caching](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/overview) is a term that describes a process in which, when data is requested that is not present in a temporary storage location known as `cache`, e.g. in memory, it retrieves it from permanent storage locations, e.g. a relational database, and stores it in the cache, under a unique string key and for a limited period of time. 
+[Data Caching](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/overview) is a term that describes a process in which, when data is requested that is not present in a temporary storage location known as `cache`, e.g. in memory, it retrieves it from persistent storage locations, e.g. a relational database, and stores it in the cache, under a unique string key and for a limited period of time. 
 
 ## Terminology
 
@@ -15,7 +15,7 @@
 - a layer of an application requests data
 - the data layer constructs a unique key for a cache entry
 - checks if the cache contains data under that key
-- if there is no data in cache under that key, it retrieves data from the permanent data store, i.e. a database, adds the data in cache under that key, and returns the data
+- if there is no data in cache under that key, it retrieves data from the persistent data store, i.e. a database, adds the data in cache under that key, and returns the data
 - if there is data in cache under that key it gets and returns the data to the caller.
 
 ## Asp.Net Core Data Caching Options
@@ -72,9 +72,9 @@ Data = Cache.Get<string>(Key);
 
 [Distributed Cache](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed) uses an external shared service as the `Cache Store`. 
 
-That shared service could be a [Redis](https://www.nuget.org/packages/Microsoft.Extensions.Caching.StackExchangeRedis) cache service, a [NCache](https://www.nuget.org/packages/Alachisoft.NCache.OpenSource.SDK/) cache service, or just [MsSql server](https://www.nuget.org/packages/Microsoft.Extensions.Caching.SqlServer) cache service.
+That shared service could be a [Redis](https://www.nuget.org/packages/Microsoft.Extensions.Caching.StackExchangeRedis) cache service, a [NCache](https://www.nuget.org/packages/Alachisoft.NCache.OpenSource.SDK/) cache service, or [MsSql server](https://www.nuget.org/packages/Microsoft.Extensions.Caching.SqlServer) cache service.
 
-Multiple servers running a copy of the same application access the same external cache service running in some other server.
+Multiple servers, or containers, running a copy of the same application access the same external cache service running in some other server.
 
 A distributed cache is an implementation of the [IDistributedCache](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache) interface.
 
@@ -85,6 +85,10 @@ The configuration of that default `IDistributedCache` is very easy.
 ```
 builder.Services.AddDistributedMemoryCache();  
 ```
+
+The above adds the `IDistributedCache` interface as a **singleton** service.
+
+After that the application may use that cache service either injecting it or just using the [service locator pattern](https://en.wikipedia.org/wiki/Service_locator_pattern).
 
 For configurations regarding [Redis](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed#distributed-redis-cache), [NCache](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed#distributed-ncache-cache) and [MsSql](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-9.0#distributed-sql-server-cache) please consult the [docs](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed).
 
@@ -128,14 +132,12 @@ The requirements in order to use `Hybrid Cache` are
 
 `IDistributedCache` is **not** required. If it is not present then `Hybrid Cache`  behaves just like the `Memory Cache`.
 
- 
-
 The `Hybrid Cache` working procedure is as following
 
 - when data is required the cache looks-up for the entry key in L1 and then in the L2 cache
-- if the key exists then data is returned to the caller
-- if the key is not present then a method is executed which returns the data from a persistent medium, e.g. a database
-- when data is retrieved from the persistent medium, it is stored in both L1 and L2 caches, under the key and an expiration policy
+- if the key exists then its data is returned to the caller
+- if the key is not present then a callback function is executed which returns the data from a persistent medium, e.g. a database
+- when data is retrieved from the persistent medium, it is stored in both L1 and L2 caches, under the key and an expiration policy.
  
 The above logic is encapsulated in the [HybridCache](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.hybrid.hybridcache) abstract class. There is no `IHybridCache` interface.
 
@@ -151,7 +153,7 @@ public ValueTask<T> GetOrCreateAsync<T>(
 ```
 
 - `key` is the entry key
-- `factory` is the method to be executed if the data is not available in the cache
+- `factory` is the callback function to be executed if the data is not available in the cache
 - `options` is options for the cache entry about expiration, etc
 - `tags` is a collection of string tags to associate with this cache entry.
 
@@ -169,26 +171,29 @@ builder.Services.AddHybridCache(options =>
     options.MaximumPayloadBytes = 1024 * 10 * 10; 
     options.MaximumKeyLength = 256;
 
+    options.ReportTagMetrics = true;
+    options.DisableCompression = true;
+
     options.DefaultEntryOptions = new HybridCacheEntryOptions
     {
         LocalCacheExpiration = TimeSpan.FromMinutes(15),
         Expiration = TimeSpan.FromMinutes(15)      
     };
-
-    options.ReportTagMetrics = true;
-    options.DisableCompression = true;
 });
 ```
 
 - `MaximumPayloadBytes`. The maximum size in bytes of a cache entry.
 - `MaximumKeyLength`. The maximum length of a cache key.
-- `DefaultEntryOptions.Expiration`. Default value for L1 cache entries expiration.
-- `DefaultEntryOptions.LocalCacheExpiration`. Default value for L2 cache entries expiration.
 - `ReportTagMetrics`. When true then tags are used in metric reports.
 - `DisableCompression`. When true then compression is disabled.
+- `DefaultEntryOptions.Expiration`. Default value for L1 cache entries expiration.
+- `DefaultEntryOptions.LocalCacheExpiration`. Default value for L2 cache entries expiration.
 
+The `AddHybridCache()` adds the `HybridCache` class as a **singleton** service.
+
+After that the application may use that cache service either injecting it or just using the [service locator pattern](https://en.wikipedia.org/wiki/Service_locator_pattern).
  
-The `AddHybridCache()` call adds the first level cache, L1, which is the `IMemoryCache`.
+The `AddHybridCache()` call adds automatically the first level cache, L1, which is the `IMemoryCache`.
 
 The L2 cache should be registered explicitly. Also any other requirements specific to L2 cache must be fulfilled.
 
@@ -485,9 +490,9 @@ The `AppDataService.GetSelectList()` of the above example returns a `List<Select
 
 The code of the `AppDataService.GetSelectList()` method uses the `Lib.Cache` which is a `IDataCache` instance. 
 
-The `IDataCache.Get()` call will return the `List<SelectListItem>` instance if the entry key exists in cache.
+The `IDataCache.Get()` call will return the `List<SelectListItem>` instance immediately if the entry key exists in cache.
 
-If not then the lambda `async => () { ... }`, which is the `LoaderFunc` callback function, is called and it returns fresh data from the database as a `CacheLoaderResult<List<SelectListItem>>` instance.
+If the key is not in the cache then the lambda `async => () { ... }`, which is the `LoaderFunc` callback function, is called and it returns fresh data from the database as a `CacheLoaderResult<List<SelectListItem>>` instance.
 
 The `IDataCache.Get()` implementation sets the returned `List<SelectListItem>` to the cache, setting the expiration timeouts too.
 
