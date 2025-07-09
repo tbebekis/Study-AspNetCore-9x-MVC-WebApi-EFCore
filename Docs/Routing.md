@@ -1,6 +1,32 @@
 # Routing
 
-In Asp.Net Core [Routing](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing) is a procedure that matches an incoming HTTP request to a request handler known as [EndPoint](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.routeendpoint).
+- [Routing](#routing)
+  - [Components in Asp.Net Core Routing](#components-in-aspnet-core-routing)
+  - [Controller Routing](#controller-routing)
+  - [Mixing Conventional and Attribute Routing](#mixing-conventional-and-attribute-routing)
+  - [Conventional Routing](#conventional-routing)
+  - [Attribute Routing](#attribute-routing)
+  - [Route Attributes](#route-attributes)
+  - [Attribute Routing with Http Verb Attributes](#attribute-routing-with-http-verb-attributes)
+  - [Route Names](#route-names)
+  - [Route Templates](#route-templates)
+  - [Route Template Tokens](#route-template-tokens)
+  - [Route Constraints](#route-constraints)
+  - [Generating URLs](#generating-urls)
+      - [IUrlHelper](#iurlhelper)
+      - [IHtmlHelper](#ihtmlhelper)
+      - [The LinkGenerator class](#the-linkgenerator-class)
+  - [Model Binding Attributes](#model-binding-attributes)
+  - [Display Controller Endpoint List](#display-controller-endpoint-list)
+  - [Display a List of all Endpoints](#display-a-list-of-all-endpoints)
+  - [Dynamic Endpoints - Using a custom EndpointDataSource](#dynamic-endpoints---using-a-custom-endpointdatasource)
+    - [Dynamic Endpoints - Return an MVC View](#dynamic-endpoints---return-an-mvc-view)
+    - [Dynamic Endpoints - A POST Endpoint](#dynamic-endpoints---a-post-endpoint)
+  - [Dynamic Endpoints - Using a Multi Endpoint Middleware](#dynamic-endpoints---using-a-multi-endpoint-middleware)
+  - [Routes for a REST Api](#routes-for-a-rest-api)
+
+
+In Asp.Net Core [Routing](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing) is a procedure that matches an incoming HTTP request to a request handler known as [Endpoint](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.routeendpoint).
 
 Incoming HTTP request handling can be configured to be delegated to
 
@@ -13,13 +39,13 @@ Incoming HTTP request handling can be configured to be delegated to
 - Built-in middlewares such as [Static Files](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/static-files)
 - [Custom Middlewares and Request Delegates](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware)
 
-This text covers routing in general and routing regarding MVC and WebApi controllers.
+> This text covers routing in general and routing regarding MVC and WebApi controllers.
 
 ## Components in Asp.Net Core Routing
 
 - [Route Template](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#route-templates). Defines the structure of a URL and it may contain placeholders for route values, e.g. `/customer/{id}` where `{id}` is a placeholder.
 - [Route Values](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.routevaluedictionary). A dictionary of `Key-Value` pairs constructed from placeholders contained in the route template where `Key` is the placeholder, e.g. `id` and `Value` the actual placeholder value, e.g. `1234` in the request URL.
-- [Route Constraints](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#route-constraints).
+- [Route Constraints](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#route-constraints). A route constraint is a constraint applied to a route placeholder value, e.g. `{id:int}`.
 
 
 ## Controller Routing
@@ -525,37 +551,752 @@ public async Task<ActionResult> Paging([FromQuery]PageIndex, [FromQuery]PageSize
 }
 ```
  
-## Display EndPoint List
+## Display Controller Endpoint List
 
-The [EndpointDataSource](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.endpointdatasource) provides the enumerable `EndPoints` property.
+The [IActionDescriptorCollectionProvider](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.infrastructure.iactiondescriptorcollectionprovider) is registered automatically as a service by Asp.Net Core.
 
-The `EndpointDataSource` is automatically registered with Dependency Injection.
+The `IActionDescriptorCollectionProvider` provides access to the currently cached collection of [ActionDescriptor](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.abstractions.actiondescriptor) instances by its `ActionDescriptors.Items` property.
 
-It is easy to display end point information using the `EndpointDataSource` service by writing a method like the following.
+The `ActionDescriptor` class describes an action.
+
+Most probably the items of the `ActionDescriptors.Items` collection are [ControllerActionDescriptor](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllers.controlleractiondescriptor) instances.
+
+The `ControllerActionDescriptor` is a subclass of the `ActionDescriptor` class and describes a controller action.
+
+Both `ActionDescriptor`  and  `ControllerActionDescriptor` classes provide a lot of information about controller actions.
+
+Consider the next example.
 
 ```
-static public List<string> GetEndPointList(EndpointDataSource endpointDataSource)
+...
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
+RootServiceProvider = (app as IApplicationBuilder).ApplicationServices;
+IActionDescriptorCollectionProvider Provider = RootServiceProvider.GetService<IActionDescriptorCollectionProvider>();
+foreach (ActionDescriptor Item in Provider.ActionDescriptors.Items)
 {
-    List<string> EndPointList = new();
-
-    RouteEndpoint REP;
-    string DisplayName;
-    string Pattern;
-    string S;
-
-    foreach (var EP in endpointDataSource.Endpoints)
+    if (Item is ControllerActionDescriptor)
     {
-        REP = EP as RouteEndpoint;
-        if (REP != null)
+        ControllerActionDescriptor Descriptor = Item as ControllerActionDescriptor;
+        string ControllerName = Descriptor.ControllerName;
+        string ActionName = Descriptor.ActionName;                    
+    }
+}
+
+app.Run();
+
+```
+
+## Display a List of all Endpoints
+
+Asp.Net Core template projects use the `app` variable in application startup code.
+
+That `app` variable is of type [WebApplication](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.webapplication).
+
+The `WebApplication` class implements the [IEndpointRouteBuilder](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.iendpointroutebuilder) interface.
+
+The `IEndpointRouteBuilder` provides access to a collection  of [EndpointDataSource](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.endpointdatasource) instances by its `DataSources` property.
+
+In an Asp.Net Core application there maybe more than one `EndpointDataSource`, thus the need for a collection.
+
+The developer may add custom `EndpointDataSource` subclasses to that `IEndpointRouteBuilder.DataSources` collection. Perhaps for adding **dynamic** `Endpoint` instances.
+
+The `EndpointDataSource` provides a collection of `Endpoint` instances by its `Endpoints` property.
+
+Most probably the items of the `EndpointDataSource.Endpoints` collection are [RouteEndpoint](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.routeendpoint) instances.
+
+Both `Endpoint`  and  `RouteEndpoint` classes provide a lot of information about application end-points.
+
+The [Endpoint.Metadata](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.endpoint.metadata) is a [EndpointMetadataCollection](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.endpointmetadatacollection) instance.
+
+`EndpointMetadataCollection` is a `IReadOnlyList<object>` implementor, that is it is a read only list of `object` instances.
+
+Each `object` in the `EndpointMetadataCollection` is an instance of some class with a specific meaning for Asp.Net Core.
+
+There may be `metadata` classes, such as [RouteNameMetadata](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.routenamemetadata), [HttpMethodMetadata](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.httpmethodmetadata).
+
+Other classes that can be found in that `metadata` collection are
+
+- AuthorizeAttribute
+- ControllerAttribute
+- RouteAttribute
+- HttpGetAttribute or HttpPostAttribute
+- TypeFilterAttribute
+- SaveTempDataAttribute
+- Custom Authorize Attributes
+- EndpointNameMetadata
+- ControllerActionDescriptor
+- HttpMethodActionConstraint
+- etc.
+
+Consider the next example.
+
+```
+...
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
+EndPointDataSources = (app as IEndpointRouteBuilder).DataSources;
+foreach (EndpointDataSource DS in EndPointDataSources)
+{
+    foreach (Endpoint Item in  DS.Endpoints)
+    {
+        if (Item is RouteEndpoint)
         {
-            DisplayName = !string.IsNullOrWhiteSpace(REP.DisplayName) ? REP.DisplayName : "no name";
-            Pattern = !string.IsNullOrWhiteSpace(REP.RoutePattern.RawText) ? REP.RoutePattern.RawText : "no pattern";
-            S = $"DisplayName = {DisplayName}, Pattern = {Pattern}";
-            EndPointList.Add(S);
+            RouteEndpoint routeEndpoint = Item as RouteEndpoint;
+            string Pattern = routeEndpoint.RoutePattern.RawText;
+            string Description = routeEndpoint.DisplayName;
+
+            RouteNameMetadata routeNameMetadata = routeEndpoint.Metadata.FirstOrDefault(x => x.GetType() == typeof(RouteNameMetadata)) as RouteNameMetadata;
+            HttpMethodMetadata httpMethodMetadata = routeEndpoint.Metadata.FirstOrDefault(x => x.GetType() == typeof(HttpMethodMetadata)) as HttpMethodMetadata;
+
+            string RouteName = routeNameMetadata != null ? routeNameMetadata.RouteName : string.Empty;
+            string HttpMethods = httpMethodMetadata != null ? string.Join(", ", httpMethodMetadata.HttpMethods) : string.Empty;
         }
     }
+}
 
-    return EndPointList;
+app.Run();
+```
+
+## Dynamic Endpoints - Using a custom EndpointDataSource
+
+A subclass of the [EndpointDataSource](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.endpointdatasource) is required.
+
+That custom `EndpointDataSource` should be registered as singleton service and should be added to the `IEndpointRouteBuilder.DataSources` collection. `IEndpointRouteBuilder` is discussed ealier in this text.
+
+The `EndpointDataSource` class has two abstract members
+
+- `public abstract IChangeToken GetChangeToken();`
+- `public abstract IReadOnlyList<Endpoint> Endpoints { get; }`
+ 
+Whenever a new `Endpoint` is added to `Endpoints` a new `IChangeToken` should be generated. 
+
+That `IChangeToken` is the mechanism through which Asp.Net Core gets informed that new `Endpoints` are added to the list and as a result it re-reads that list.
+
+Next is a custom `EndpointDataSource` along with some utility classes.
+
+The `EndPointInfo` is used in adding dynamically new `Endpoint` instances.
+
+```
+public class EndPointInfo
+{
+    RequestDelegate requestDelegate;
+    string httpMethod;
+
+    public EndPointInfo(string Pattern) 
+    { 
+        Pattern = Pattern ?? throw new ArgumentNullException(nameof(Pattern));             
+        this.Pattern = Pattern; 
+    }
+
+    protected virtual Task Handler(HttpContext context)
+    {
+        context.Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
+        return context.Response.WriteAsync("Not Found");
+    }
+
+    public string Pattern { get; }
+    public RequestDelegate RequestDelegate
+    {
+        get => requestDelegate != null ? requestDelegate : Handler;
+        set => requestDelegate = value;
+    } 
+    public string HttpMethod
+    {
+        get => !string.IsNullOrWhiteSpace(httpMethod) ? httpMethod : "GET";
+        set => httpMethod = value;
+    }
+    public string RouteName { get; set; }        
+    public int Order { get; set; }
+    public string Description { get; set; }
+    public List<object> Metadata { get; } = new List<object>();
 }
 ```
+
+Consider the `DynamicEndpointDataSource` class.
+
+```
+public class DynamicEndpointDataSource : EndpointDataSource
+{
+    static readonly System.Threading.Lock syncLock = new();
+    static internal ICollection<EndpointDataSource> EndPointDataSources;
+    static List<EndPointInfo> InfoList = new List<EndPointInfo>();
+
+    List<Endpoint> EndPointList = new List<Endpoint>();
+    CancellationTokenSource CancellationTokenSource;
+    IChangeToken ChangeToken;
+
+    static bool IsOrInheritsFrom(object Instance, Type T)
+    {
+        return Instance.GetType() == T || Instance.GetType().IsSubclassOf(T);
+    }
+
+    Endpoint CreateEndPoint(EndPointInfo Info)
+    {
+
+        if (!string.IsNullOrWhiteSpace(Info.RouteName)
+            && Info.Metadata.FirstOrDefault(x => IsOrInheritsFrom(x, typeof(RouteNameMetadata))) == null)
+        {
+            Info.Metadata.Add(new RouteNameMetadata(Info.RouteName));
+        }
+
+        if (!string.IsNullOrWhiteSpace(Info.RouteName)
+            && Info.Metadata.FirstOrDefault(x => IsOrInheritsFrom(x, typeof(EndpointNameMetadata))) == null)
+        {
+            Info.Metadata.Add(new EndpointNameMetadata(Info.RouteName));
+        }
+
+        if (!string.IsNullOrWhiteSpace(Info.HttpMethod)
+            && Info.Metadata.FirstOrDefault(x => IsOrInheritsFrom(x, typeof(HttpMethodMetadata))) == null)
+        {
+            Info.Metadata.Add(new HttpMethodMetadata(new string[] { Info.HttpMethod }));
+        }
+
+        string DisplayName = !string.IsNullOrWhiteSpace(Info.Description) ? Info.Description : null;
+
+
+        EndpointMetadataCollection MetadataCollection = new EndpointMetadataCollection(Info.Metadata);
+        RoutePattern Pattern = RoutePatternFactory.Parse(Info.Pattern);
+
+        RouteEndpoint Result = new RouteEndpoint(
+            Info.RequestDelegate,
+            Pattern,
+            Info.Order,
+            MetadataCollection,
+            DisplayName
+            );
+
+        return Result;
+    }
+
+
+    public DynamicEndpointDataSource() 
+    {
+        CancellationTokenSource = new CancellationTokenSource();
+        ChangeToken = new CancellationChangeToken(CancellationTokenSource.Token);
+    }
+
+
+    public override IChangeToken GetChangeToken() => ChangeToken;
+
+    public void Add(string Pattern, RequestDelegate RequestDelegate, string HttpMethod = "GET", string RouteName = "")
+    {
+        EndPointInfo Info = new EndPointInfo(Pattern);
+        Info.RequestDelegate = RequestDelegate;
+        Info.RouteName = RouteName;
+        Info.HttpMethod = HttpMethod; 
+        Add(Info);
+    }
+
+    public void Add(EndPointInfo Info)
+    {
+        EndPointInfo[] Infos = { Info };
+        Add(Infos);
+    }
+
+    public void Add(IEnumerable<EndPointInfo> Infos)
+    {
+        lock(syncLock)
+        {
+            int Count = 0;
+            foreach (var Info in Infos)
+            {
+                if (InfoList.FirstOrDefault(x => string.Compare(x.Pattern, Info.Pattern, StringComparison.InvariantCultureIgnoreCase) == 0) == null)
+                {
+                    InfoList.Add(Info);
+                    Endpoint EndPoint = CreateEndPoint(Info);
+                    EndPointList.Add(EndPoint);
+                    Count++;
+                }
+            }
+
+            if (Count > 0)
+            {
+                var OldCancellationTokenSource = CancellationTokenSource;
+                CancellationTokenSource = new CancellationTokenSource();
+                ChangeToken = new CancellationChangeToken(CancellationTokenSource.Token);
+                OldCancellationTokenSource?.Cancel();
+            }
+        }
+
+    }
+
+    static public Endpoint[] GetAllEndpoints()
+    {
+        List<Endpoint> List = new();
+
+        if (EndPointDataSources != null)
+        {
+            foreach (EndpointDataSource DS in EndPointDataSources)
+            {
+                List.AddRange(DS.Endpoints.ToArray());
+            }
+        }
+
+        return List.ToArray();
+    }
+
+    public override IReadOnlyList<Endpoint> Endpoints => EndPointList;
+}
+
+```
+
+Extension methods for wiring-up the `DynamicEndpointDataSource` class to Asp.Net Core machinery and binding an `IFormCollection` to a model.
+
+```
+static public class DynamicEndpointDataSourceExtensions
+{
+    static public void AddDynamicEndpoints(this IServiceCollection Services)
+    {
+        Services.AddSingleton<DynamicEndpointDataSource>();
+    }
+
+    static public void UseDynamicEndPoints(this WebApplication app)
+    {
+        IEndpointRouteBuilder RouteBuilder = app as IEndpointRouteBuilder;
+        DynamicEndpointDataSource.EndPointDataSources = RouteBuilder.DataSources;
+
+        var dataSource = RouteBuilder.ServiceProvider.GetService<DynamicEndpointDataSource>();
+
+        if (dataSource is null)
+            throw new Exception("Did you forget to add the DynamicEndpointDataSource service?");
+
+        RouteBuilder.DataSources.Add(dataSource);
+    }
+
+    static public async Task<T> BindFromRequestForm<T>(this HttpContext httpContext) where T : class
+    {
+        IServiceProvider ServiceProvider = httpContext.RequestServices;
+
+        IModelMetadataProvider MetadataProvider = ServiceProvider.GetRequiredService<IModelMetadataProvider>();
+        ModelMetadata Metadata = MetadataProvider.GetMetadataForType(typeof(T));
+
+        IModelBinderFactory ModelBinderFactory = ServiceProvider.GetRequiredService<IModelBinderFactory>();
+        IModelBinder ModelBinder = ModelBinderFactory.CreateBinder(new ModelBinderFactoryContext() { Metadata = Metadata });
+
+        var BindingContext = new DefaultModelBindingContext
+        {
+            ModelMetadata = Metadata,
+            ModelName = string.Empty,
+            ModelState = new ModelStateDictionary(),
+
+            ValueProvider = new FormValueProvider(
+                BindingSource.Form,
+                httpContext.Request.Form,
+                CultureInfo.InvariantCulture
+            ),
+
+            ActionContext = new ActionContext(
+                httpContext,
+                new RouteData(),
+                new ActionDescriptor()
+            )                
+        };
+
+        await ModelBinder.BindModelAsync(BindingContext);
+        return BindingContext.Result.Model as T;
+    }    
+}
+```
+
+Next is an Asp.Net Core `Main()` startup method containing calls to registration extension methods `AddDynamicEndpoints()` and `UseDynamicEndPoints()`.
+
+```
+public static void Main(string[] args)
+{
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Add services to the container.
+    builder.Services.AddControllersWithViews();
+    builder.Services.AddDynamicEndpoints();
+
+    var app = builder.Build();
+
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapStaticAssets();
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}")
+        .WithStaticAssets();
+
+    app.UseDynamicEndPoints();
+
+    app.Run();
+}
+```
+
+Next two examples of dynamically adding new `Endpoint` instances to an Asp.Net Core application using the `DynamicEndpointDataSource` class.
+
+
+```
+var DynamicEndpoints = RootServiceProvider.GetService<DynamicEndpointDataSource>();
+
+// using a lambda as request delegate
+DynamicEndpoints.Add("dyn", context =>
+{
+    var List = GetEndPointList();
+    return context.Response.WriteAsync("This is a result from a dynamic end point.");
+});
+
+// using an EndPointInfo instance
+EndPointInfo Info = new EndPointInfo("dyn2");
+DynamicEndpoints.Add(Info);
+```
+
+The developer may subclass the `EndPointInfo` class and override the 
+
+``` protected virtual Task Handler(HttpContext context) ```
+
+method or just provide a value to the `EndPointInfo.RequestDelegate` property.
+
+The static `DynamicEndpointDataSource.GetAllEndpoints()` returns an empty `Endpoint` list if the `UseDynamicEndPoints()` extension method is not called. 
+
+The `UseDynamicEndPoints()` method, among other things, aquire a reference to the `IEndpointRouteBuilder.DataSources` which is used by the `GetAllEndpoints()` to return the end-point list.
+
+### Dynamic Endpoints - Return an MVC View
+ 
+
+Consider the next example.
+
+```
+using System.Net;
+using System.Globalization;
+using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing.Patterns;
+
+public class TestModel
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
+public class TestGetEndPoint : EndPointInfo
+{
+    public TestGetEndPoint()  
+        : base("test-endpoint/{Id?}")
+    {
+        RouteName = "Test.Endpoint.Get";
+        HttpMethod = HttpMethods.Get;  
+    }
+
+    protected override async Task Handler(HttpContext context)
+    {
+        // read request route data values
+        RouteData ReqRouteData = context.GetRouteData();
+        var Id = ReqRouteData.Values["Id"];
+
+        // prepare response
+        var ActionResultExecutor = context.RequestServices.GetRequiredService<IActionResultExecutor<ViewResult>>();
+        var RouteData = context.GetRouteData() ?? new RouteData();
+        var ActionContext = new ActionContext(context, RouteData, new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+
+        TestModel Model = new TestModel() { Id = 123, Name = "John Doe" };
+
+        var ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary());
+        ViewData.Model = Model;
+        ViewData["Title"] = "Test Endpoint XXX";
+
+        ITempDataProvider TempDataProvider = context.RequestServices.GetRequiredService<ITempDataProvider>();
+        var TempData = new TempDataDictionary(context, TempDataProvider);
+
+        var ViewResult = new ViewResult();
+        ViewResult.ViewName = "TestEndpoint"; // or full path @"~/Views/Shared/TestEndpoint.cshtml";
+        ViewResult.ViewData = ViewData;
+        ViewResult.TempData = TempData;
+
+        await ActionResultExecutor.ExecuteAsync(ActionContext, ViewResult);
+    }
+}
+```
+
+There is tiny `TestModel` just for test purposes.
+
+The `TestGetEndPoint` class derives from `EndPointInfo` and overrides the virtual `Handler()` which is the request delegate.
+
+The `Handler()` prepares everything that is required in order to display a MVC view along with its model and finally executes the [ViewResult](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewresult).
+
+The `Handler()` even prepares the `ViewData` and `TempData` dictionaries which can be used in passing data to the view.
+
+The `TestGetEndPoint` should be added to the `DynamicEndpointDataSource`.
+
+```
+var DynamicEndpoints = RootServiceProvider.GetService<DynamicEndpointDataSource>();
+
+EndPointInfo Info = new TestGetEndPoint();  
+DynamicEndpoints.Add(Info);
+```
+### Dynamic Endpoints - A POST Endpoint
+
+Consider the next MVC view containing a form tag.
+
+```
+@model TestModel
+
+<h1>@ViewData["Title"]</h1>
+ 
+<form asp-route="Test.Endpoint.Post" method="post">
+    <label>Id: <input asp-for="Id" /></label> <br />
+    <label>Name: <input asp-for="Name" /></label> <br />
+    <input type="submit" value="Submit">
+</form>
+```
+
+The `asp-route` adds an [action](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#action) attribute of the [HTML Form Element](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form) using a route name registered by the dynamic endpoint of the next example.
+
+Next is the dynamic endpoint for the view form.
+
+The `Handler()` method gets a reference to the `HttpRequest.Form` which is an `IFormCollection` instance. That `IFormCollection` instance can be further processed by application code.
+
+```
+public class TestPostEndPoint : EndPointInfo
+{
+    public TestPostEndPoint()
+        : base("test-endpoint-post")
+    {
+        RouteName = "Test.Endpoint.Post";
+        HttpMethod = HttpMethods.Post;
+    }
+
+    protected override async Task Handler(HttpContext context)
+    {
+        // read form collection
+        IFormCollection Form = await context.Request.ReadFormAsync(); 
+
+        await context.Response.WriteAsync("This is a result from a post.");
+    }
+}
+```
+
+Another way is to bind the `HttpRequest.Form` to an actual model using the `BindFromRequestForm()` extension method presented earlier.
+
+```
+public class TestPostEndPoint : EndPointInfo
+{
+    public TestPostEndPoint()
+        : base("test-endpoint-post")
+    {
+        RouteName = "Test.Endpoint.Post";
+        HttpMethod = HttpMethods.Post;
+    }
+
+    protected override async Task Handler(HttpContext context)
+    {
+        // read form collection
+        // IFormCollection Form = await context.Request.ReadFormAsync(); 
+
+        TestModel Model = await context.BindFromRequestForm<TestModel>();
+
+        await context.Response.WriteAsync("This is a result from a post.");
+    }
+}
+```
+## Dynamic Endpoints - Using a Multi Endpoint Middleware
+
+Consider the next example.
+
+```
+using Microsoft.AspNetCore.Routing.Template;
+
+public class EndPointInfo
+{
+    RequestDelegate requestDelegate;
+    string httpMethod;
+
+    public EndPointInfo(string Pattern)
+    {
+        Pattern = Pattern ?? throw new ArgumentNullException(nameof(Pattern));
+        this.Pattern = Pattern;
+    }
+
+    protected virtual Task Handler(HttpContext context)
+    {
+        context.Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
+        return context.Response.WriteAsync("Not Found");
+    }
+
+    public string Pattern { get; }
+    public RequestDelegate RequestDelegate
+    {
+        get => requestDelegate != null ? requestDelegate : Handler;
+        set => requestDelegate = value;
+    }
+    public string HttpMethod
+    {
+        get => !string.IsNullOrWhiteSpace(httpMethod) ? httpMethod : "GET";
+        set => httpMethod = value;
+    }
+    public string Key => $"{HttpMethod}:{Pattern}";
+}
+
+static public class EndPoints
+{
+    static readonly System.Threading.Lock syncLock = new();
+    static Dictionary<string, EndPointInfo> Handlers = new Dictionary<string, EndPointInfo>();
+
+    static public void Add(EndPointInfo Info)
+    {
+        if (!Handlers.ContainsKey(Info.Key))
+            Handlers[Info.Key] = Info;
+    }
+    static public void Remove(EndPointInfo Info)
+    {
+        if (Handlers.ContainsKey(Info.Key))
+            Handlers.Remove(Info.Key);
+    }
+
+    static public void Add(string HttpMethod, string Pattern, RequestDelegate Handler)
+    {
+        HttpMethod = HttpMethod ?? throw new ArgumentNullException(nameof(HttpMethod));
+        Pattern = Pattern ?? throw new ArgumentNullException(nameof(Pattern));
+        Handler = Handler ?? throw new ArgumentNullException(nameof(Handler));
+
+        EndPointInfo Info = new EndPointInfo(Pattern);
+        Info.HttpMethod = HttpMethod;
+        Info.RequestDelegate = Handler;
+
+        Add(Info);
+    }
+    static public void Remove(string HttpMethod, string Pattern)
+    {
+        string Key = $"{HttpMethod}:{Pattern}";
+        if (Handlers.ContainsKey(Key))
+            Handlers.Remove(Key);
+    }
+
+    static public RequestDelegate FindHandler(HttpRequest Request)
+    {
+        foreach (EndPointInfo Info in Handlers.Values)
+        {
+            var templateParser = TemplateParser.Parse(Info.Pattern);
+            var matcher = new TemplateMatcher(templateParser, null);
+            if (matcher.TryMatch(Request.Path, Request.RouteValues))
+            {
+                return Info.RequestDelegate;
+            }
+        }
+
+        return null;
+    }
+    static public bool HandlerExists(HttpRequest Request)
+    {
+        return FindHandler(Request) != null;
+    }
+}
+
+
+public class MultiEndPointMiddleware : IMiddleware
+{
+    public MultiEndPointMiddleware()
+    { 
+    }
+
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        RequestDelegate Handler = EndPoints.FindHandler(context.Request);
+        if (Handler != null)
+        {
+            await Handler(context);
+        }
+        else
+        {
+            await next(context);
+        }
+    }
+}
+```
+
+The `EndPointInfo` of this example is very similar with the one presented earlier.
+
+The static `EndPoints` class is actually a registry of `EndPointInfo` instances. 
+
+The `MultiEndPointMiddleware` should be configured to run just before the middleware registered by calls such as the `MapControllerRoute()`.
+
+The `MultiEndPointMiddleware` checks if there is an `EndPointInfo` instance registered with the  static `EndPoints` class which can handle the current request. 
+
+If there is one it calls its `RequestDelegate` in order to process the request and then terminates the pipeline. The request pipeline concludes.
+
+If no `EndPointInfo` handler is found it passes the request to the next delegate for further processing.
+
+The next example demonstrates how to register the `MultiEndPointMiddleware` middleware.
+
+```
+public static void Main(string[] args)
+{
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddControllersWithViews();
+    builder.Services.AddTransient<MultiEndPointMiddleware>();
+
+    var app = builder.Build();
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    MultiMiddlewareTest.AddTests();
+
+    app.UseMiddleware<MultiEndPointMiddleware>();
+
+    app.MapStaticAssets();
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}")
+        .WithStaticAssets();
+
+    app.Run();
+}
+```
+
+Here is how to add a test `EndPointInfo`.
+
+
+```
+EndPoints.Add("GET", "multi/{Id?}", context => {
+    return context.Response.WriteAsync("This is a result from a handler of MultiEndPointMiddleware.");
+});
+```
+
+## Routes for a REST Api
+
+| HTTP Method | Path            | Controller.Action   | Notes                                  |
+| ----------- | --------------- | ------------------- | -------------------------------------- |
+| GET         | /product        | Product.Index()     | Display a View with the list of Items  |
+| GET         | /product/insert | Product.Insert()    | Display a View for creating a new Item |
+| GET         | /product/{id}   | Product.Edit(Id)    | Display a View for editing an Item     |
+| POST        | /product        | Product.Save(Model) | Saves a newly created or edited Item   |
+| DELETE      | /product/{id}   | Product.Delete(Id)  | Deletes an Item                        |
+ 
+ 
 
