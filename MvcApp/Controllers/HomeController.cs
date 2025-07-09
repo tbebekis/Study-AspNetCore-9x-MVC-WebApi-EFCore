@@ -137,5 +137,14 @@
         {
             return View();
         }
+
+
+        [HttpGet("/end-points", Name = "EndPointList")]
+        public IActionResult EndPointList()
+        {
+            List<string> List = Lib.GetEndPointList();
+
+            return View(List);
+        }
     }
 }

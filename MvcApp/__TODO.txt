@@ -34,6 +34,7 @@ HttpContext                 https://learn.microsoft.com/en-us/aspnet/core/fundam
 IHttpClientFactory          https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests   
 Cache                       https://learn.microsoft.com/en-us/aspnet/core/performance/caching/overview?view=aspnetcore-9.0
 Health Checks               https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks
+Action Results              https://www.tutorialspoint.com/asp.net_core/asp.net_core_action_results.htm
 ----------------------------------------------------------------------
 Enforce HTTPS and HSTS      https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl                      
 Environments                https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments
@@ -48,6 +49,7 @@ Background Services
 Routing                     https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing
 Filters                     https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters
 Model Binding               https://learn.microsoft.com/en-us/aspnet/core/mvc/models/model-binding
+                            Model Binding Constraints https://www.stevenbenitez.com/aspnet-core-routing/
 Model Validation            https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation
                             https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/routing
 Claims Transformation

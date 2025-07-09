@@ -1,4 +1,6 @@
-﻿namespace MvcApp.Library
+﻿using Microsoft.AspNetCore.Routing;
+
+namespace MvcApp.Library
 {
     static public partial class Lib
     {
@@ -115,6 +117,43 @@
             return Res.GetString(Key, Default, Lib.Culture);
         }
 
+        /// <summary>
+        /// Returns a list with the end points defined in this application
+        /// </summary>
+        static public List<string> GetEndPointList()
+        {
+            EndpointDataSource endpointDataSource = Lib.GetService<EndpointDataSource>();
+
+            List<string> EndPointList = new();
+
+            RouteEndpoint REP;
+            string DisplayName;
+            string Pattern;
+            string S;
+
+            foreach (var EP in endpointDataSource.Endpoints)
+            {
+                REP = EP as RouteEndpoint;
+                if (REP != null)
+                {
+                    DisplayName = !string.IsNullOrWhiteSpace(REP.DisplayName) ? REP.DisplayName : "no name";
+                    Pattern = !string.IsNullOrWhiteSpace(REP.RoutePattern.RawText) ? REP.RoutePattern.RawText : "no pattern";
+                    S = $"DisplayName = {DisplayName}, Pattern = {Pattern}";
+                    EndPointList.Add(S);
+
+                    if (Pattern == "product/paging")
+                    {
+                        //var xxx = 123;
+                        foreach (var Metadata in REP.Metadata)
+                        {
+                            EndPointList.Add(Metadata.GetType().FullName);
+                        }
+                    }
+                }
+            }
+
+            return EndPointList;
+        }
 
         // ● properties
         static public bool IsWindows => Environment.OSVersion.Platform == PlatformID.Win32NT || Environment.OSVersion.Platform == PlatformID.Win32Windows || Environment.OSVersion.Platform == PlatformID.WinCE;

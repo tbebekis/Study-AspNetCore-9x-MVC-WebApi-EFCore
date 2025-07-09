@@ -1,0 +1,9 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "End Points";
+}
+
+<div class="page">
+    <h2>End Points</h2>
+    <pre>@string.Join(Environment.NewLine, Model)</pre>
+</div>
