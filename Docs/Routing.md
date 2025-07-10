@@ -3,11 +3,12 @@
 - [Routing](#routing)
   - [Components in Asp.Net Core Routing](#components-in-aspnet-core-routing)
   - [Controller Routing](#controller-routing)
-  - [Mixing Conventional and Attribute Routing](#mixing-conventional-and-attribute-routing)
+    - [Mixing Conventional and Attribute Routing](#mixing-conventional-and-attribute-routing)
   - [Conventional Routing](#conventional-routing)
+    - [Multiple conventional routes](#multiple-conventional-routes)
   - [Attribute Routing](#attribute-routing)
-  - [Route Attributes](#route-attributes)
-  - [Attribute Routing with Http Verb Attributes](#attribute-routing-with-http-verb-attributes)
+    - [Route Attributes](#route-attributes)
+    - [Attribute Routing with Http Verb Attributes](#attribute-routing-with-http-verb-attributes)
   - [Route Names](#route-names)
   - [Route Templates](#route-templates)
   - [Route Template Tokens](#route-template-tokens)
@@ -45,7 +46,7 @@ Incoming HTTP request handling can be configured to be delegated to
 
 - [Route Template](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#route-templates). Defines the structure of a URL and it may contain placeholders for route values, e.g. `/customer/{id}` where `{id}` is a placeholder.
 - [Route Values](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.routevaluedictionary). A dictionary of `Key-Value` pairs constructed from placeholders contained in the route template where `Key` is the placeholder, e.g. `id` and `Value` the actual placeholder value, e.g. `1234` in the request URL.
-- [Route Constraints](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#route-constraints). A route constraint is a constraint applied to a route placeholder value, e.g. `{id:int}`.
+- [Route Constraints](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#route-constraints). A constraint applied to a route placeholder value, e.g. `{id:int}`.
 
 
 ## Controller Routing
@@ -54,18 +55,18 @@ The built-in `Routing Middleware` is used by Asp.Net Core in matching incoming r
 
 `Route Templates` can be defined
 
-- in application startup code (`Conventional Routing`)
-- using attributes in controllers and actions (`Attribute Routing`)
+- in application startup code and is known as `Conventional Routing`
+- using attributes in controllers and actions and is known as `Attribute Routing`
 
-## Mixing Conventional and Attribute Routing
+### Mixing Conventional and Attribute Routing
 
 An application can mix the use of conventional routing and attribute routing.
-
-Actions are either conventionally routed or attribute routed.
 
 Placing a route attribute on a controller class makes all of its actions attribute routed.
 
 Placing a route attribute on a controller action makes only that action attribute routed.
+
+Controller actions are either conventionally routed or attribute routed.
 
 If an action is marked with a route attribute, then no conventional routing is used in mapping that action.
 
@@ -102,6 +103,22 @@ The conventional route matching
 
 > The use of `MapControllerRoute()` does not prohibit the use of attribute routing in an MVC application.
 
+### Multiple conventional routes
+
+It is perfectly valid to add more than one call to `MapControllerRoute()` and `MapAreaControllerRoute()`, provided that the pattern is different.
+
+Multiple conventional routes added that way cover more specific cases, such as when explicitly define the controller and the action in the pattern. These configurations should be placed before the `default` generic route.
+
+The next example is from the official [docs](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/routing#multiple-conventional-routes).
+
+```
+app.MapControllerRoute(name: "blog",
+                pattern: "blog/{*article}",
+                defaults: new { controller = "Blog", action = "Article" });
+app.MapControllerRoute(name: "default",
+               pattern: "{controller=Home}/{action=Index}/{id?}");
+```
+
 
 ## Attribute Routing
 
@@ -120,7 +137,7 @@ app.MapControllers();
 app.Run();
 ```
 
-## Route Attributes
+### Route Attributes
 
 Using `Route Attributes` makes controller name and action name irrelevant.
 
@@ -182,7 +199,7 @@ public class HomeController: Controller
 }
 ```
 
-## Attribute Routing with Http Verb Attributes
+### Attribute Routing with Http Verb Attributes
  
 [Verb Attributes](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/routing?view=aspnetcore-9.0#attribute-routing-with-http-verb-attributes) impose a `HTTP` method.
 
@@ -483,7 +500,7 @@ Url.RouteUrl("Product.Delete", new { id = 123 })
 
 #### [IHtmlHelper](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.rendering.ihtmlhelper)
 
-A MVC views provide the `Html` property of type [IHtmlHelper](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.rendering.ihtmlhelper).
+MVC views provide the `Html` property of type [IHtmlHelper](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.rendering.ihtmlhelper).
 
 `IHtmlHelper` provides [extension methods](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.rendering.htmlhelperlinkextensions) for generating [anchor tags](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a) in MVC views.
 
@@ -1240,7 +1257,7 @@ The `MultiEndPointMiddleware` checks if there is an `EndPointInfo` instance regi
 
 If there is one it calls its `RequestDelegate` in order to process the request and then terminates the pipeline. The request pipeline concludes.
 
-If no `EndPointInfo` handler is found it passes the request to the next delegate for further processing.
+If no `EndPointInfo` handler is found it passes the request to the next delegate and the pipeline continues.
 
 The next example demonstrates how to register the `MultiEndPointMiddleware` middleware.
 

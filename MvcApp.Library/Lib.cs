@@ -7,7 +7,7 @@ namespace MvcApp.Library
     /// </summary>
     static public partial class Lib
     {
-        public const string SDefaultId = "00000000-0000-0000-0000-000000000000";
+        
 
         static IDataCache fCache;
 

@@ -18,6 +18,8 @@
     [PrimaryKey(nameof(Id))]
     public class BaseEntity 
     {
+        public const string SDefaultId = "00000000-0000-0000-0000-000000000000";
+
         public BaseEntity()
         {            
         }
@@ -48,7 +50,13 @@
         {
             this.Id = GenId();
         }
-
+        /// <summary>
+        /// Returns true when this is a new instance.
+        /// </summary>
+        public virtual bool IsNew()
+        {
+            return string.IsNullOrWhiteSpace(this.Id) || this.Id == SDefaultId;
+        }
 
         // ● properties
         [Key, MaxLength(40), DefaultValue(null), JsonPropertyOrder(-1)]
