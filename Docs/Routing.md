@@ -207,61 +207,69 @@ public class HomeController: Controller
 [Route("product")]
 public class ProductController : Controller
 { 
-    [HttpGet("search", Name = "Product.Search")]        // GET product/search
-    public async Task<ActionResult> Search(string Term, string CategoryId = "")
-    {
-        // returns a view with a list of products that match the search criteria specified by the passed-in parameters
-    }
-
-    [HttpGet("list", Name = "Product.List")]            // GET product/list
-    public async Task<ActionResult> Index()
+    // ● List
+    [Permission("Product.View")]
+    [HttpGet("list", Name = "Product.List")]
+    public async Task<ActionResult> Index()                     // GET product/list
     {
         // returns a view with all products
     }
 
-    [HttpGet("paging", Name = "Product.Paging")]        // GET product/paging
-    public async Task<ActionResult> Paging()
-    {
-        // returns a view with a list of products where the list is a part of the total products
-        // the query string must contain a pageindex and a pagesize parameter
-    }
-
-    [HttpGet("insert")]                                 // GET product/insert
-    public async Task<ActionResult> Insert()
+    // ● Insert
+    [Permission("Product.Insert")]
+    [HttpGet("insert", Name = "Product.Insert")]
+    public async Task<ActionResult> Insert()                    // GET product/insert
     {
         // returns a view for creating a new product
     }
 
+    // ● Edit
+    [Permission("Product.Edit")]
+    [HttpGet("edit/{Id}", Name = "Product.Edit")]
+    public async Task<ActionResult> Edit(string Id)             // GET product/edit/123
+    {
+        // returns a view for editing an existing product
+    }
+
+    // ● Delete
+    [Permission("Product.Delete")]
+    [HttpGet("delete/{Id}", Name = "Product.Delete")]           // GET product/delete/123
+    public async Task<ActionResult> Delete(string Id)           
+    {
+        // deletes a product and returns the Index view
+    }
+
+    // ● Save
     [ValidateAntiForgeryToken]
-    [HttpPost("insert", Name = "Product.Insert")]       // POST product/insert     
-    public async Task<ActionResult> Insert(ProductModel Model)
+    [Permission("Product.Edit")]
+    [HttpPost(Name = "Product.Save")]                           // POST product
+    public async Task<ActionResult> Save(ProductModel Model)    
     {
-        // creates a new product and returns the Index or Edit view
+        // either creates a new product
+        // or udpates an existing product
+        // and returns the Edit view
     }
 
-    [HttpGet("edit/{Id}")]                              // GET product/edit/123
-    public async Task<ActionResult> Edit(string Id)
+    // ● Search (with paging)
+    [Permission("Product.View")]
+    [HttpGet("search", Name = "Product.Search")]                // GET product/search
+    public async Task<ActionResult> Search(string Term = "", string CategoryId = "")
     {
-        // returns a view for editing a product
+        // returns a view with a list of products 
+        // that match the search criteria specified by the passed-in parameters
     }
 
-    [ValidateAntiForgeryToken]
-    [HttpPost("edit", Name = "Product.Edit")]           // POST product/edit     
-    public async Task<ActionResult> Edit(ProductModel Model)
+    // ● Paging
+    [Permission("Product.View")]
+    [HttpGet("paging", Name = "Product.Paging")]                // GET product/paging
+    public async Task<ActionResult> Paging()                    
     {
-        // updates a product and returns the Index or Edit view
+        // returns a view with a list of products 
+        // where the list is a part, known as page, of the total products
+        // NOTE: the query string must contain a pageindex and a pagesize parameter
     }
-
-    [HttpGet("delete/{Id}", Name = "Product.Delete")]   // GET product/delete/123
-    public async Task<ActionResult> Delete(string Id)
-    {
-       // deletes a product and returns the Index view
-    }
-
 }
 ```
-
-The `GET product/insert` and `POST product/insert` are two different routes.
 
 ## Route Names
 

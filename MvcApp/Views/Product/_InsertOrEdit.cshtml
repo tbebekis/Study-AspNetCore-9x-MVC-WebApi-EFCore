@@ -1,16 +1,19 @@
-﻿@model ProductModel 
+﻿@model ProductModel
 
-<input asp-for="Id" type="hidden" />
+<form asp-route="Product.Save" method="post">
+    <input asp-for="Id" type="hidden" />
 
-<div class="tp-Row xs-100 sm-100 md-50 lg-50 xl-33 xxl-33">
-    <div class="tp-Col field-group">
-        <tp-input asp-for="Name" />
-        <tp-input asp-for="Price" />
-        <tp-input asp-for="MeasureUnitId" asp-items="Model.AvailableMeasureUnits" />
-        <tp-input asp-for="CategoryId" asp-items="Model.AvailableCategories" />
+    <div class="tp-Row xs-100 sm-100 md-50 lg-50 xl-33 xxl-33">
+        <div class="tp-Col field-group">
+            <tp-input asp-for="Name" />
+            <tp-input asp-for="Price" />
+            <tp-input asp-for="MeasureUnitId" asp-items="Model.AvailableMeasureUnits" />
+            <tp-input asp-for="CategoryId" asp-items="Model.AvailableCategories" />
+        </div>
+        <div class="button-zone">
+            <button class="btn-submit" type="submit">@L("OK")</button>
+            <a asp-route="Product.List">@L("Cancel")</a>
+        </div>
     </div>
-    <div class="button-zone">
-        <button class="btn-submit" type="submit">@L("OK")</button>
-        <a asp-route="Product.List">@L("Cancel")</a>
-    </div>
-</div>
+</form>
+

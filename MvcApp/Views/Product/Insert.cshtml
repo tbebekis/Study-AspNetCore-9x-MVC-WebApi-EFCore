@@ -6,7 +6,7 @@
         <div class="page-title">@L("Product.Insert")</div>
     </div>
 
-    <form asp-route="Product.Insert" method="post">
+    <form asp-route="Product.Save" method="post">
         @await Html.PartialAsync("_InsertOrEdit", Model)
     </form>
 

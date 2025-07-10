@@ -142,7 +142,7 @@ namespace MvcApp.Library
             else
                 Result.Add(Settings.Defaults.CultureCode);
 
-            return Result;
+            return Result.Distinct().ToList();
         }
         /// <summary>
         /// Returns the list of supported cultures.

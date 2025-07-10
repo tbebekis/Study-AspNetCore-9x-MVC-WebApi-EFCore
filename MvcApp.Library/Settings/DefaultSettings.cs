@@ -68,6 +68,6 @@
         /// <summary>
         /// List of supported cultures
         /// </summary>
-        public List<string> SupportedCultures { get; set; } = new List<string>() { "en-US" };
+        public List<string> SupportedCultures { get; set; } = new List<string>(); 
     }
 }
