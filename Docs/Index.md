@@ -48,21 +48,20 @@ Texts are organized in three groups
 - [Data Caching](DataCaching.md)
 
 #### TODO
-
-- [RBAC, Role Based Access Control](RBAC.md)
 - [Request Features](RequestFeatures.md)
-
 - [Model Binding](ModelBinding.md)
 - [Model Validation](ModelValidation.md)
 - [Filters](Filters.md)
 - [Environments](Environments.md)
+- [Enforce HTTPS and HSTS](EnforceHTTPSandHSTS.md)
 - [Health Checks](HealthChecks.md)
 - [Background Services](BackgroundServices.md)
+- [RBAC, Role Based Access Control](RBAC.md)
 - [Image handling](ImageHandling.md)
 - [IP Geolocation](IpGeolocation.md)
 - [Sending Email](SendingEmail.md)
 - [XML Export](XmlExport.md)
-- [Enforce HTTPS and HSTS](EnforceHTTPSandHSTS.md)
+
 
 
 # Asp.Net Core MVC

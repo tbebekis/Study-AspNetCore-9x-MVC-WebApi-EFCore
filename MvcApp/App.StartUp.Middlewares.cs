@@ -44,6 +44,8 @@
 
             // ● error handling
             // we handle errors in the same page for all environments
+            // i.e. no developer excecption page
+            // SEE: Developer Exception Page at https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling#developer-exception-page
             app.UseExceptionHandler("/Home/Error");
 
             app.MapHealthChecks("/health-check", new HealthCheckOptions() {

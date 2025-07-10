@@ -107,7 +107,7 @@ The conventional route matching
 
 It is perfectly valid to add more than one call to `MapControllerRoute()` and `MapAreaControllerRoute()`, provided that the pattern is different.
 
-Multiple conventional routes added that way cover more specific cases, such as when explicitly define the controller and the action in the pattern. These configurations should be placed before the `default` generic route.
+Multiple conventional routes added that way cover more specific cases, such as when they explicitly define the controller and the action in the pattern. These more specific configurations should be placed before the `default` general route.
 
 The next example is from the official [docs](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/routing#multiple-conventional-routes).
 
@@ -294,7 +294,7 @@ A [Route Template](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/ro
 
 ```product/list```
 
- ● Segments could be **literal** segments and **placeHolder** segments
+ ● Segments could be **literal** segments and **placeholder** segments
  
 In the following route template the `product` is a literal segment where the `{id}` is a placeholder segment.
 
@@ -403,6 +403,8 @@ Special characters in the route parameter value are escaped. That includes the p
 becomes
 
 ``` library/docs/getting%2Fstarted%2Fguide```
+
+> [From MDN](https://developer.mozilla.org/en-US/docs/Glossary/Slug): _A Slug is the unique identifying part of a web address, typically at the end of the URL_. 
 
  ● The `?` suffix makes a route parameter optional
 
@@ -636,13 +638,13 @@ Most probably the items of the `EndpointDataSource.Endpoints` collection are [Ro
 
 Both `Endpoint`  and  `RouteEndpoint` classes provide a lot of information about application end-points.
 
-The [Endpoint.Metadata](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.endpoint.metadata) is a [EndpointMetadataCollection](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.endpointmetadatacollection) instance.
+The [Endpoint.Metadata](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.endpoint.metadata) property is a [EndpointMetadataCollection](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.endpointmetadatacollection) instance.
 
 `EndpointMetadataCollection` is a `IReadOnlyList<object>` implementor, that is it is a read only list of `object` instances.
 
-Each `object` in the `EndpointMetadataCollection` is an instance of some class with a specific meaning for Asp.Net Core.
+Each `object` in the `EndpointMetadataCollection` is an instance of some class with a specific meaning to Asp.Net Core.
 
-There may be `metadata` classes, such as [RouteNameMetadata](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.routenamemetadata), [HttpMethodMetadata](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.httpmethodmetadata).
+In that collection there may be `metadata` classes, such as [RouteNameMetadata](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.routenamemetadata), [HttpMethodMetadata](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.httpmethodmetadata).
 
 Other classes that can be found in that `metadata` collection are
 
@@ -671,7 +673,7 @@ app.MapControllerRoute(
 EndPointDataSources = (app as IEndpointRouteBuilder).DataSources;
 foreach (EndpointDataSource DS in EndPointDataSources)
 {
-    foreach (Endpoint Item in  DS.Endpoints)
+    foreach (Endpoint Item in DS.Endpoints)
     {
         if (Item is RouteEndpoint)
         {
@@ -695,16 +697,16 @@ app.Run();
 
 A subclass of the [EndpointDataSource](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.endpointdatasource) is required.
 
-That custom `EndpointDataSource` should be registered as singleton service and should be added to the `IEndpointRouteBuilder.DataSources` collection. `IEndpointRouteBuilder` is discussed ealier in this text.
+That custom `EndpointDataSource` should be registered as singleton service and should be added to the `IEndpointRouteBuilder.DataSources` collection. `IEndpointRouteBuilder` is discussed earlier in this text.
 
 The `EndpointDataSource` class has two abstract members
 
 - `public abstract IChangeToken GetChangeToken();`
 - `public abstract IReadOnlyList<Endpoint> Endpoints { get; }`
  
-Whenever a new `Endpoint` is added to `Endpoints` a new `IChangeToken` should be generated. 
+Whenever a new `Endpoint` is added to `EndpointDataSource.Endpoints` a new `IChangeToken` should be generated. 
 
-That `IChangeToken` is the mechanism through which Asp.Net Core gets informed that new `Endpoints` are added to the list and as a result it re-reads that list.
+That `IChangeToken` is the mechanism through which Asp.Net Core gets informed that new `Endpoints` are added to that `Endpoints` list and as a result it re-reads that list.
 
 Next is a custom `EndpointDataSource` along with some utility classes.
 
@@ -766,7 +768,6 @@ public class DynamicEndpointDataSource : EndpointDataSource
 
     Endpoint CreateEndPoint(EndPointInfo Info)
     {
-
         if (!string.IsNullOrWhiteSpace(Info.RouteName)
             && Info.Metadata.FirstOrDefault(x => IsOrInheritsFrom(x, typeof(RouteNameMetadata))) == null)
         {
@@ -899,14 +900,50 @@ static public class DynamicEndpointDataSourceExtensions
 
     static public async Task<T> BindFromRequestForm<T>(this HttpContext httpContext) where T : class
     {
+        // Some guidance from docs on custom model binding
+        // SEE: https://learn.microsoft.com/en-us/aspnet/core/mvc/advanced/custom-model-bindingpolymorphic-model-binding
+        //
+        // also check the following on how internal Asp.Net Core performs model and parameter binding
+        // ● ControllerBinderDelegateProvider, used in Controller binding
+        // SEE: https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/Controllers/ControllerBinderDelegateProvider.cs,0336994e1dd319ff
+        // ● PageBinderFactory, used in Pages binding
+        // SEE: https://source.dot.net/#Microsoft.AspNetCore.Mvc.RazorPages/Infrastructure/PageBinderFactory.cs,ce30817932de7a8c
+
+        // ● ServiceProvider, we use a service provider below
         IServiceProvider ServiceProvider = httpContext.RequestServices;
 
+        // ● DefaultModelMetadataProvider is the actual instance
+        // a metadata provider provides instances of ModelMetadata
+        // SEE: https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/ModelBinding/Metadata/DefaultModelMetadataProvider.cs,be000e7f2e9425ff
+        // SEE: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.modelbinding.metadata.defaultmodelmetadataprovider
         IModelMetadataProvider MetadataProvider = ServiceProvider.GetRequiredService<IModelMetadataProvider>();
+
+        // ● ModelMetadata, inherits DefaultModelMetadata 
+        // a metadata representation of a model type, property or parameter.
+        // SEE: https://source.dot.net/#Microsoft.AspNetCore.Mvc.Abstractions/ModelBinding/ModelMetadata.cs,3ca33b8f1a31957c
+        // SEE: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.modelbinding.modelmetadata
         ModelMetadata Metadata = MetadataProvider.GetMetadataForType(typeof(T));
 
+        // ● ModelBinderFactory is the actual instance
+        // a factory abstraction for creating IModelBinder instances.
+        // SEE: https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/ModelBinding/ModelBinderFactory.cs,0f77e84648e06fa9
+        // SEE: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.modelbinding.imodelbinderfactory
         IModelBinderFactory ModelBinderFactory = ServiceProvider.GetRequiredService<IModelBinderFactory>();
+
+        // ● ComplexObjectModelBinder is the actual instance
+        // a IModelBinder implementation for binding complex types
+        // SEE: https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/ModelBinding/Binders/ComplexObjectModelBinder.cs,35ac9f0653157305
+        // SEE: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.modelbinding.binders.complexobjectmodelbinder
         IModelBinder ModelBinder = ModelBinderFactory.CreateBinder(new ModelBinderFactoryContext() { Metadata = Metadata });
 
+        // ● DefaultModelBindingContext, inherits ModelBindingContext
+        // a context that contains operating information for model binding and validation
+        // SEE: https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/ModelBinding/DefaultModelBindingContext.cs,265cda16e15d7110
+        // SEE: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.modelbinding.defaultmodelbindingcontext
+        // ● FormValueProvider, inherits BindingSourceValueProvider
+        // a IValueProvider adapter for data stored in an IFormCollection
+        // SEE: https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/ModelBinding/FormValueProvider.cs,490aec4c70c4b022
+        // SEE: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.modelbinding.formvalueprovider
         var BindingContext = new DefaultModelBindingContext
         {
             ModelMetadata = Metadata,
@@ -923,12 +960,15 @@ static public class DynamicEndpointDataSourceExtensions
                 httpContext,
                 new RouteData(),
                 new ActionDescriptor()
-            )                
+                )                
         };
 
+        // attempts to bind a model
         await ModelBinder.BindModelAsync(BindingContext);
+
+        // return the model
         return BindingContext.Result.Model as T;
-    }    
+    }   
 }
 ```
 
@@ -1255,7 +1295,7 @@ public class MultiEndPointMiddleware : IMiddleware
 }
 ```
 
-The `EndPointInfo` of this example is very similar with the one presented earlier.
+The `EndPointInfo` of this example is very similar to the one presented earlier.
 
 The static `EndPoints` class is actually a registry of `EndPointInfo` instances. 
 
@@ -1306,11 +1346,16 @@ public static void Main(string[] args)
 
 Here is how to add a test `EndPointInfo`.
 
-
 ```
-EndPoints.Add("GET", "multi/{Id?}", context => {
-    return context.Response.WriteAsync("This is a result from a handler of MultiEndPointMiddleware.");
-});
+static public class MultiMiddlewareTest
+{
+    static public void AddTests()
+    {
+        EndPoints.Add("GET", "multi/{Id?}", context => {
+            return context.Response.WriteAsync("This is a result from a handler of MultiEndPointMiddleware.");
+        });
+    }
+}
 ```
 
 ## Routes for a REST Api
@@ -1320,8 +1365,6 @@ EndPoints.Add("GET", "multi/{Id?}", context => {
 | GET         | /product        | Product.Index()     | Display a View with the list of Items  |
 | GET         | /product/insert | Product.Insert()    | Display a View for creating a new Item |
 | GET         | /product/{id}   | Product.Edit(Id)    | Display a View for editing an Item     |
-| POST        | /product        | Product.Save(Model) | Saves a newly created or edited Item   |
 | DELETE      | /product/{id}   | Product.Delete(Id)  | Deletes an Item                        |
- 
- 
+| POST        | /product        | Product.Save(Model) | Saves a newly created or edited Item   |
 
