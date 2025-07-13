@@ -1,4 +1,5 @@
 # Authentication Schemes
+
 > This text is part of a group of texts describing [Asp.Net Core](Index.md).
 
 An `Authentication Scheme` is a specific way of authenticating users and client applications. 

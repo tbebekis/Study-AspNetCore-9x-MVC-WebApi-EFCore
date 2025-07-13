@@ -49,7 +49,6 @@ Background Services
 Routing                     https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing
 Filters                     https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters
 Model Binding               https://learn.microsoft.com/en-us/aspnet/core/mvc/models/model-binding
-                            Model Binding Constraints https://www.stevenbenitez.com/aspnet-core-routing/
 Model Validation            https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation
                             https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/routing
 Claims Transformation

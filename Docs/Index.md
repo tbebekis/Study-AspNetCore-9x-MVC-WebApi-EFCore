@@ -43,14 +43,14 @@ Texts are organized in three groups
 - [Error Handling](ErrorHandling.md)
 - [HttpContext](HttpContext.md)
 - [Routing](Routing.md)
+- [Model Binding](ModelBinding.md)
+- [Model Validation](ModelValidation.md)
 - [Entity Framework Core](EFCore.md)
 - [Object Mapping](ObjectMapping.md)
 - [Data Caching](DataCaching.md)
 
 #### TODO
 - [Request Features](RequestFeatures.md)
-- [Model Binding](ModelBinding.md)
-- [Model Validation](ModelValidation.md)
 - [Filters](Filters.md)
 - [Environments](Environments.md)
 - [Enforce HTTPS and HSTS](EnforceHTTPSandHSTS.md)

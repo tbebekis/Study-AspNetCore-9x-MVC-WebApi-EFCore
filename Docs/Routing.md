@@ -1,5 +1,8 @@
 # Routing
 
+> This text is part of a group of texts describing [Asp.Net Core](Index.md).
+
+
 - [Routing](#routing)
   - [Components in Asp.Net Core Routing](#components-in-aspnet-core-routing)
   - [Controller Routing](#controller-routing)

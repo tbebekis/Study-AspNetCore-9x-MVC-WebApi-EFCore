@@ -282,5 +282,26 @@
             return (T != null) && (T == typeof(double)) || (T == typeof(Nullable<double>));
         }
 
+
+        static HashSet<Type> IntegerTypeSet = new HashSet<Type>
+        {
+            typeof(Byte),
+            typeof(SByte),
+            typeof(Int16),
+            typeof(Int32),
+            typeof(Int64),
+            typeof(UInt16),
+            typeof(UInt32),
+            typeof(UInt64)
+        };
+
+
+        /// <summary>
+        /// Returns true if a specified type is an integer type, i.e. Byte, SByte, Int16, Int32, Int64, UInt16, UInt32, UInt64
+        /// </summary>
+        static public bool IsIntegerType(this Type T)
+        {
+            return IntegerTypeSet.Contains(T) || IntegerTypeSet.Contains(Nullable.GetUnderlyingType(T));
+        }
     }
 }

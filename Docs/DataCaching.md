@@ -1,5 +1,7 @@
 # Data Caching
 
+> This text is part of a group of texts describing [Asp.Net Core](Index.md).
+
 [Data Caching](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/overview) is a term that describes a process in which requested data is returned by retrieving it from a temporary storage location known as `cache`, e.g. in memory, where it is stored under a unique string key. 
 
 If that key is not present in the cache then data is retrieved from a persistent storage location, e.g. a relational database, stored in the cache, under that unique string key, for a limited period of time, and returned to the caller. 

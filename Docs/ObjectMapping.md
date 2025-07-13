@@ -1,5 +1,8 @@
 # Object Mapping
 
+> This text is part of a group of texts describing [Asp.Net Core](Index.md).
+
+
 Different parts of applications use different data objects. 
 
 - **Entity**. The term [entity](https://en.wikipedia.org/wiki/Entity) is used in conjuction with [Object Relation Mapping (ORM)](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) frameworks. In `ORMs` an entity class is a mapping to a table in a relational database and each entity instance is a data row in that table. An entity usually has an `Id` property.

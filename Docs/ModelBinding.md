@@ -1,5 +1,7 @@
 # Model Binding
 
+> This text is part of a group of texts describing [Asp.Net Core](Index.md).
+
 In Asp.Net Core [Model Binding](https://learn.microsoft.com/en-us/aspnet/core/mvc/models/model-binding) is a built-in procedure which 
 - converts incoming [HTTP](https://en.wikipedia.org/wiki/HTTP) Request data into .Net types
 - and binds that data 
@@ -186,6 +188,15 @@ public async Task<IActionResult> GetProducts([FromHeader(Name = "Accept-Language
 {    
 }
 ```
+
+## Binding Attributes
+
+### [ModelBinderAttribute]()
+### [BindPropertyAttribute]()
+### [BindAttribute]()
+### [BindRequiredAttribute]()
+### [BindNeverAttribute]()
+
 
 ## Deep Diving to Model Binding
 

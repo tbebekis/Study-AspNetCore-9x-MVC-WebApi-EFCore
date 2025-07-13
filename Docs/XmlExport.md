@@ -1,3 +1,3 @@
 # XML Export
 
-TODO: XML Export
+> This text is part of a group of texts describing [Asp.Net Core](Index.md).

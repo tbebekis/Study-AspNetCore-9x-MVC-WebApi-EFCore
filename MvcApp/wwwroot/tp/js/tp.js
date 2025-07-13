@@ -4822,7 +4822,7 @@ Serializes a form, or any other container, into a javascript object, by adding a
 The new property is named after child element's name or id (in this order). 
 
 That is for an element such as
-    &lt;input type='text' id='UserName' value='John' /&gt;
+    <input type='text' id='UserName' value='John' />
 a property/value is added as
     { UserName: 'John' }
 
@@ -4855,7 +4855,7 @@ Serializes a form, or any other container, into a javascript object, by adding a
 The new property is named after child element's name or id (in this order).
 
 That is for an element such as
-    &lt;input type='text' id='UserName' value='John' /&gt;
+    <input type='text' id='UserName' value='John' />
 a property/value is added as
     { UserName: 'John' }
 
