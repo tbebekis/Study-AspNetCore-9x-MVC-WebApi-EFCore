@@ -9,10 +9,12 @@
             DataResult Result = new();
             Result.ExceptionResult(Context.ExceptionContext.Exception);
 
-            // NO, we do NOT want an invalid HTTP StatusCode. It is a valid HTTP Response.
-            // We just have an action result with errors, so any error should be recorded by our HttpActionResult and delivered to the client.
+            // We do NOT want an invalid HTTP StatusCode.
+            // We want to return a valid HTTP Response.
+            // We want to have a DataResult delivered to the client, even in a case of an error.
             // context.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError; 
             Context.ExceptionContext.HttpContext.Response.ContentType = "application/json";
+
             Context.ExceptionContext.Result = new JsonResult(Result);
             Context.ExceptionContext.ExceptionHandled = true;
         }
