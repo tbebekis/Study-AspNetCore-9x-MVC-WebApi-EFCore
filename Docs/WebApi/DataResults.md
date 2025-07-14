@@ -572,7 +572,7 @@ A registration of the `GlobalExceptionHandlerWebApi`  class with the Dependency 
 ```
 builder.Services.AddExceptionHandler<GlobalExceptionHandlerWebApi>();
 ```
-### An Error StatusCode Handler
+### A StatusCode Error Handler
 
 Lastly and because of the Asp.Net Core WebApi framework automatic handling of model validation failures responding with `HTTP 400`, i.e. `BadRequest`, even before the request reaches the controller action, an error status code handler is required.
 

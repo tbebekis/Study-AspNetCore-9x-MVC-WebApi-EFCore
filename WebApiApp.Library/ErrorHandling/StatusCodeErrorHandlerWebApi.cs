@@ -1,6 +1,6 @@
 ﻿namespace WebApiApp.Library
 {
-    static public class ErrorStatusCodeHandlerWebApi
+    static public class StatusCodeErrorHandlerWebApi
     {
         static public Task Handle(StatusCodeContext Context)
         {

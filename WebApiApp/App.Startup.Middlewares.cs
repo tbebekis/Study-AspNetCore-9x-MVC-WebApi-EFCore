@@ -26,7 +26,7 @@
             // Middlewares
             //----------------------------------------------------------------------------------------
 
-            app.UseStatusCodePages(Context => ErrorStatusCodeHandlerWebApi.Handle(Context)); 
+            app.UseStatusCodePages(Context => StatusCodeErrorHandlerWebApi.Handle(Context)); 
 
 
             // ● global exception handler
