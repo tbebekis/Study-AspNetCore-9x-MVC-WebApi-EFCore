@@ -376,6 +376,10 @@ Three code components are required.
 
 We code a class that implements the [IExceptionFilter](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.filters.iexceptionfilter) interface.
 
+An action exception filter 
+- catches exceptions thrown in a Razor Page or controller creation, model binding, action filters, or action methods.
+- **does not catch** exceptions thrown in resource filters, result filters, MVC result execution or **a razor view**.
+
 The following `ActionExceptionFilter` class is a global exception filter for controller actions. Instead of using `try-catch` blocks inside action methods this exception filter catches all exceptions thrown inside a controller action.  
 
 ```

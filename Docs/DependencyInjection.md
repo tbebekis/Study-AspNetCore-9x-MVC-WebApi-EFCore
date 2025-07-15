@@ -113,7 +113,15 @@ public class Program
         builder.Services.AddSingleton<IDataService, DataService>();
 
         // using just a class type
-        services.AddSingleton<DataService>();
+        builder.Services.AddSingleton<DataService>();
+
+        // using an instance
+        // Developer is responsible for disposing this service
+        builder.Services.AddSingleton(new DataService());
+
+        ...
+
+        var app = builder.Build();
 
         ...
 

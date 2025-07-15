@@ -176,6 +176,8 @@ public static void Main(string[] args)
 
 ## Implementing the `IExceptionHandler` interface
 
+An `IExceptionHandler` handler is a global exception handler which catches any exception thrown by an application except of exceptions thrown by the application startup code.
+
 This approach is similar to passing a global exception handler callback to the `UseExceptionHandler()` extension method. 
 
 An implementation of the [IExceptionHandler](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling#iexceptionhandler) is involved.
@@ -377,7 +379,7 @@ So here is such an `Error` view.
  
     <h1>Error</h1>
 
-    <p><strong>Oïps! something went wrong.</strong></p>
+    <p><strong>Oï¿½ps! something went wrong.</strong></p>
     <p><strong>An error occurred while processing your request.</strong></p>
     <p>We apologize for the error. </p>
     <p>Our staff will be immediately informed regarding the problem and we will try to resolved it as soon as possible. </p>
