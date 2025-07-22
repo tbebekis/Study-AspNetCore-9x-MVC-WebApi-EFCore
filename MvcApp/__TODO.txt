@@ -4,6 +4,10 @@ IP Geolocation              https://github.com/maxmind/GeoIP2-dotnet
 PDF                         https://github.com/QuestPDF/QuestPDF
 Image                       https://github.com/mono/SkiaSharp
                             https://learn.microsoft.com/en-us/dotnet/api/skiasharp
+                            https://github.com/SixLabors/ImageSharp
+                            https://github.com/dlemstra/Magick.NET
+                            https://github.com/kleisauke/net-vips
+                            https://anthonysimmon.com/benchmarking-dotnet-libraries-for-image-resizing/
 DB                          https://github.com/linq2db/linq2db
 ----------------------------------------------------------------------
 Application Start up        https://learn.microsoft.com/en-us/aspnet/core/fundamentals/startup

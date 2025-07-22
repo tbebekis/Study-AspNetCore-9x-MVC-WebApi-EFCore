@@ -12,7 +12,7 @@ The execution order of the various filters is based on filter types and is the f
 
 - [Authorization filters](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#authorization-filters). They determine if the user is authorized to access the requested resource. If the authorization fails then the request is short-circuited. 
 - [Resource filters](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#resource-filters). They used in performing any necessary action on the requested resource. They wrap the entire filter pipeline. The `OnResourceExecuting()` runs before model binding while the `OnResourceExecuted()` runs after the filter pipeline has completed.
-- [Action filters](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#action-filters) and [Endpoint filters](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/min-api-filters). They used in performing any necessary action on the controller action being selected for execution. They run before and after the controller action method.
+- [Action filters](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#action-filters) and [Endpoint filters](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/min-api-filters). They used in performing any necessary action on the controller action or on the endpoint being selected for execution. They run before and after the controller action method or endpoint.
 - [Exception filters](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#exception-filters). They used in handling any exception that may thrown during controller action execution or during the result execution. 
 - [Result filters](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#result-filters). They used in performing any necessary action on the result of the just executed controller action. They run before and after the result is executed.
 
@@ -113,7 +113,7 @@ Filter methods, such are the methods in the examples of this text, accept a `con
 
 All these `contexts` are subclasses of the [FilterContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.filters.filtercontext) which is a subclass of the [ActionContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.actioncontext).
 
-As a result these `contexts` provide properties and access to useful properties and methods such as the following.
+As a result these `contexts` provide access to useful properties and methods such as the following.
 
 - [ActionContext.HttpContext](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.actioncontext.httpcontext) property.
 - [ActionContext.ActionDescriptor](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.actioncontext.actiondescriptor) property.
@@ -183,7 +183,7 @@ public class CustomResourceFilter : IResourceFilter
 
 
 ## Action filters
-[Action filters](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#action-filters) and [Endpoint filters](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/min-api-filters). They used in performing any necessary action on the controller action being selected for execution.
+[Action filters](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters#action-filters). They used in performing any necessary action on the controller action being selected for execution.
 
 `Action filters` run before and after the execution of a controller action method. The model binding is already completed when an action filter is executed.
 
@@ -226,7 +226,7 @@ public class CustomActionFilter : IActionFilter
 
 ### Controller class methods related to action execution
 
-A controller class that inherites from [Controller](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controller) provides some methods related to action execution.
+A controller class that inherits from [Controller](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controller) provides some methods related to action execution.
 
 - `OnActionExecuting()`. Runs before any action filter.
 - `OnActionExecuted()`. Runs after all action filters are executed.
@@ -368,7 +368,7 @@ builder.Services.AddControllers(options =>
 });
 ```
 
-A filter added by type in DI container it is `type-activated` meaning
+A filter added by type in DI container it is a `type-activated` one, meaning
 
 - an instance of the filter class is created for each request
 - any constructor dependency is populated by the DI container.
@@ -384,7 +384,7 @@ builder.Services.AddControllers(options =>
 
 When a filter is added by instance, then that instance is used for every request.
 
-### Local filters
+### Filters as Attributes are Local filters
 
 A filter can be implemented as attribute too.
 
@@ -416,7 +416,7 @@ public class HomeController : ControllerBase
 
 A filter attribute cannot have constructor dependencies provided by the DI container because constructors in attributes are used in providing parameters to the attribute.
 
-There are other attibutes though that can be used, in place of filter attributes, that can apply filters to controller classes or action methods and that they support constructor dependencies provided from the DI container.
+There are other attributes though that can be used, in place of filter attributes, that can apply filters to controller classes or action methods and that they support constructor dependencies provided from the DI container.
 
 - [ServiceFilterAttribute](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.servicefilterattribute)
 - [TypeFilterAttribute](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.typefilterattribute)
