@@ -13,6 +13,7 @@
         string fAsLine;
         string fAsList;
         string fAsJson;
+        JsonObject fJsonObject;
 
         string Pad(string Text, int MaxLength)
         {
@@ -310,24 +311,37 @@
             {
                 if (fAsJson == null)
                 {
-                    JsonObject Result = new();
-
-                    Result.Add("Id", JsonValue.Create(this.Id));
-                    Result.Add("TimeStamp", JsonValue.Create(this.TimeStampText));
-                    Result.Add("Level", JsonValue.Create(this.Level.ToString()));
-                    Result.Add("Category", JsonValue.Create(this.Source));
-                    Result.Add("Scope", JsonValue.Create(this.GetScopeText()));
-                    Result.Add("EventId", JsonValue.Create(this.EventId.Id.ToString()));
-                    Result.Add("Host", JsonValue.Create(this.HostName));
-                    Result.Add("User", JsonValue.Create(this.UserName));
-                    Result.Add("Text", JsonValue.Create(this.Text));
-                    Result.Add("Stack", JsonValue.Create(this.ExceptionData));
-                    Result.Add("Properties", JsonValue.Create(this.GetPropertiesAsTextList()));
-
-                    fAsJson = Result.ToJsonString();
+                    fAsJson = AsJsonObject.ToJsonString();
                 }
 
                 return fAsJson;
+            }
+        }
+        /// <summary>
+        /// Returns a <see cref="JsonObject"/> representation of this entry.
+        /// </summary>
+        public JsonObject AsJsonObject
+        {
+            get
+            {
+                if (fJsonObject == null)
+                {
+                    fJsonObject = new();
+
+                    fJsonObject.Add("Id", JsonValue.Create(this.Id));
+                    fJsonObject.Add("TimeStamp", JsonValue.Create(this.TimeStampText));
+                    fJsonObject.Add("Level", JsonValue.Create(this.Level.ToString()));
+                    fJsonObject.Add("Category", JsonValue.Create(this.Source));
+                    fJsonObject.Add("Scope", JsonValue.Create(this.GetScopeText()));
+                    fJsonObject.Add("EventId", JsonValue.Create(this.EventId.Id.ToString()));
+                    fJsonObject.Add("Host", JsonValue.Create(this.HostName));
+                    fJsonObject.Add("User", JsonValue.Create(this.UserName));
+                    fJsonObject.Add("Text", JsonValue.Create(this.Text));
+                    fJsonObject.Add("Stack", JsonValue.Create(this.ExceptionData));
+                    fJsonObject.Add("Properties", JsonValue.Create(this.GetPropertiesAsTextList()));
+                }
+
+                return fJsonObject;
             }
         }
 

@@ -7,8 +7,16 @@
     /// </summary>
     public class MvcUserContext
     {
- 
-        List<Claim> UserClaimList => this.HttpContext.User.Claims.ToList();
+        // ● private
+        Visitor fVisitor;
+        VisitorService fVisitorService;
+        List<Claim> fUserClaimList;
+
+        List<Claim> UserClaimList => fUserClaimList ?? (fUserClaimList = this.HttpContext.User.Claims.ToList());
+        VisitorService VisitorService => fVisitorService ?? (fVisitorService = new VisitorService());
+
+
+
 
         // ● construction
         /// <summary>
@@ -17,6 +25,8 @@
         public MvcUserContext(IHttpContextAccessor HttpContextAccessor)
         {
             this.HttpContext = HttpContextAccessor.HttpContext;
+
+            GetVisitor();
         }
 
         // ● public 
@@ -52,6 +62,56 @@
             await HttpContext.SignOutAsync(Scheme);
         }
 
+        /// <summary>
+        /// Returns the current visitor
+        /// </summary>
+        public Visitor GetVisitor()
+        {
+            // ● Registered Visitor
+            // check if we have a registered and authenticated Visitor
+            // Authenticated AppUser.Id is stored in the authentication cookie (Lib.SAuthCookieName)
+            // Visitor.UserId is an AppUser.Id, if not null or empty.
+            if (fVisitor == null)
+            {
+                string UserId = UserClaims.GetUserId(UserClaimList); // it is the AppUser.Id and the Visitor.UserId
+                if (!string.IsNullOrWhiteSpace(UserId))
+                    fVisitor = VisitorService.GetVisitorByAppUser(UserId);
+            }
+
+            // ● Un-registered Visitor
+            // check if we have an un-registered Visitor
+            // Non-authenticated Visitor.Code is stored in the authentication cookie (Lib.SNoAuthCookieName)
+            if (fVisitor == null)
+            {
+                string Code = Request.Cookies[Lib.SNoAuthCookieName];
+                if (!string.IsNullOrWhiteSpace(Code))
+                    fVisitor = VisitorService.GetVisitor(Code);
+            }
+
+            // ● still no Visitor, 
+            // create a new one with the default Visitor properties
+            // save it to the DataStore
+            // and save it to the not authenticated cookie (Lib.SNoAuthCookieName) too
+            if (fVisitor == null)
+            {
+                fVisitor = VisitorService.CreateNewVisitor();
+
+                this.HttpContext.Response.Cookies.Append(
+                    Lib.SNoAuthCookieName,
+                    fVisitor.Code,
+                    new CookieOptions
+                    {
+                        Secure = true,
+                        SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+                        HttpOnly = true,
+                        IsEssential = true,
+                        Expires = DateTimeOffset.UtcNow.AddYears(1)
+                    }
+                );
+            }
+
+            return fVisitor;
+        }
 
         // ● properties
         /// <summary>
@@ -100,5 +160,15 @@
             get { return UserClaims.GetIsUserImpersonation(UserClaimList); }
             private set { Session.Set<bool>("IsImpersonation", value); }
         }
+
+
+
+        /// <summary>
+        /// Returns the <see cref="Baufox.Visitor"/> which is the actual user.
+        /// <para><see cref="Baufox.Visitor"/> implements the <see cref="IAppUser"/> interface. </para>
+        /// </summary>
+        public Visitor Visitor => GetVisitor();
+
+
     }
 }

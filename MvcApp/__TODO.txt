@@ -39,6 +39,7 @@ IHttpClientFactory          https://learn.microsoft.com/en-us/aspnet/core/fundam
 Cache                       https://learn.microsoft.com/en-us/aspnet/core/performance/caching/overview?view=aspnetcore-9.0
 Health Checks               https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks
 Action Results              https://www.tutorialspoint.com/asp.net_core/asp.net_core_action_results.htm
+File Results                https://geeksarray.com/blog/aspnet-core-mvc-returning-file-using-fileresult
 ----------------------------------------------------------------------
 Enforce HTTPS and HSTS      https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl                      
 Environments                https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments

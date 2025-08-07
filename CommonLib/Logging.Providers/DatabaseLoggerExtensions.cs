@@ -32,7 +32,7 @@
                 throw new ArgumentNullException(nameof(options));
             }
 
-            builder.AddFileLogger();
+            builder.AddDatabaseLogger();
             builder.Services.Configure(options);
 
             return builder;

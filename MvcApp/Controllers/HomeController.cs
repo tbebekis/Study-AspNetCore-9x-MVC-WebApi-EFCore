@@ -35,6 +35,9 @@
         [HttpPost("/login", Name = "Login")]
         public async Task<IActionResult> Login(CredentialsModel Model, string ReturnUrl = "")
         {
+            // Admin    secret
+            // user0    secret 
+
             if (UserContext.IsAuthenticated)
                 return RedirectToRoute("Home");
 
@@ -93,6 +96,9 @@
                     Expires = DateTimeOffset.UtcNow.AddYears(1) 
                 }
             );
+
+            UserContext.Visitor.CultureCode = CultureCode;
+            // TODO: save visitor
 
             if (!string.IsNullOrWhiteSpace(ReturnUrl))
                 return HandleReturnUrl(ReturnUrl);

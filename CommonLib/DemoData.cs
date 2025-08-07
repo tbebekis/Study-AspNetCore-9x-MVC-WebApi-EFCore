@@ -10,6 +10,8 @@
         static List<AppUserRole> UserRoleList;
         static List<AppRolePermission> RolePermissionList;
 
+        static List<Visitor> VisitorList;
+
         static List<Category> CategoryList;
         static List<MeasureUnit> MeasureUnitList;
         static List<Warehouse> WarehouseList;
@@ -121,6 +123,30 @@
                     RoleList.FirstOrDefault(r => r.Name == "Manager").Id,
                     PermissionList.FirstOrDefault(r => r.Name == "Product.Edit").Id
                     ),
+            };
+
+            return List;
+        }
+
+        static public List<Visitor> GetVisitorList()
+        {
+            List<Visitor> List = new List<Visitor>()
+            {
+                new Visitor()
+                {
+                    Id = Visitor.GenId(),
+                    UserId = UserList.FirstOrDefault(u => u.UserName == "Admin").Id,
+                },
+                new Visitor()
+                {
+                    Id = Visitor.GenId(),
+                    UserId = UserList.FirstOrDefault(u => u.UserName == "user0").Id,
+                },
+                new Visitor()
+                {
+                    Id = Visitor.GenId(),
+                    UserId = UserList.FirstOrDefault(u => u.UserName == "user1").Id
+                }
             };
 
             return List;
@@ -365,6 +391,7 @@
             PermissionList = GetPermissionList();
             UserRoleList = GetUserRoleList();
             RolePermissionList = GetRolePermissionList();
+            VisitorList = GetVisitorList();
 
             CategoryList = GetCategoryList();
             MeasureUnitList = GetMeasureUnitList();
@@ -384,7 +411,6 @@
         {
             using (var DataContext = GetDataContextFunc())
             {
-
                 // ● RBAC
                 DbSet<AppUser> UserSet = DataContext.Set<AppUser>();
                 UserSet.AddRange(UserList);
@@ -400,6 +426,10 @@
 
                 DbSet<AppRolePermission> RolePermissionSet = DataContext.Set<AppRolePermission>();
                 RolePermissionSet.AddRange(RolePermissionList);
+
+                DbSet<Visitor> VisitorSet = DataContext.Set<Visitor>();
+                VisitorSet.AddRange(VisitorList);
+ 
 
                 // ● Data
                 DbSet<Category> Categories = DataContext.Set<Category>();
@@ -442,6 +472,7 @@
             modelBuilder.Entity<AppPermission>().HasData(PermissionList);
             modelBuilder.Entity<AppUserRole>().HasData(UserRoleList);
             modelBuilder.Entity<AppRolePermission>().HasData(RolePermissionList);
+            modelBuilder.Entity<Visitor>().HasData(VisitorList);
 
             // ● Data
             modelBuilder.Entity<Category>().HasData(CategoryList);

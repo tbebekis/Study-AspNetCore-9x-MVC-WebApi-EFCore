@@ -23,6 +23,11 @@
                 Lib.Configuration = Configuration;
                 Lib.WebHostEnvironment = WebHostEnvironment;
 
+                WebLib.Initialize(RootServiceProvider,
+                        HttpContextAccessor,
+                        WebHostEnvironment,
+                        Configuration);
+
                 Caches.DefaultEvictionTimeoutMinutes = Settings.Defaults.CacheTimeoutMinutes;
 
                 // ● events

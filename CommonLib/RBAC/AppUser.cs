@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace CommonLib.Entities
+﻿namespace CommonLib.Entities
 {
 
     /// <summary>

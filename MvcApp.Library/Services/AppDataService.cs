@@ -1,10 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace MvcApp.Library
+﻿namespace MvcApp.Library
 {
+    using System.Runtime.CompilerServices;
+
     public class AppDataService<T>:  EFDataService<T> where T : BaseEntity
     {
-        protected override void HandleException(Exception Ex, DataResult DataResult, [CallerMemberName] string CallerName = "")
+        protected override void HandleException(Exception Ex, DataResult DataResult = null, [CallerMemberName] string CallerName = "")
         {
             if (DataResult != null)
                 DataResult.ExceptionResult(Ex);
@@ -39,7 +39,7 @@ namespace MvcApp.Library
             /// This code is here just for demonstration purposes.
             /// NOTE: in a real-world application information such as products, most probably, is NOT cached. 
             /// Other types (tables) such as Countries, Currencies, Measure Units, etc. used in look-ups, may be a better fit.
-            List<SelectListItem> ResultList = await Lib.Cache.Get(CacheKey, async () => {
+            List<SelectListItem> ResultList = await Lib.Cache.GetAsync(CacheKey, async () => {
                 List<SelectListItem> InnerResultList = await base.GetSelectList(SelectedId, AddDefaultItem);
                 CacheLoaderResult<List<SelectListItem>> CacheResult = new(InnerResultList, Lib.Settings.Defaults.CacheTimeoutMinutes);
                 return CacheResult;
@@ -49,3 +49,5 @@ namespace MvcApp.Library
         }
     }
 }
+
+ 

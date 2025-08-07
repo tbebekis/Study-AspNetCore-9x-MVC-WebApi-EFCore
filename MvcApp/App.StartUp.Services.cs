@@ -102,7 +102,7 @@
                     options.ExpireTimeSpan = Expiration;
                     //options.SlidingExpiration = true;
 
-                    options.Cookie.Name = App.SAuthCookieName;       // cookie name
+                    options.Cookie.Name = Lib.SAuthCookieName;       // cookie name
                     options.Cookie.IsEssential = Lib.Settings.UserCookie.IsEssential;
                     options.Cookie.HttpOnly = Lib.Settings.UserCookie.HttpOnly;
                     options.Cookie.SameSite = Lib.Settings.UserCookie.SameSite;
@@ -112,13 +112,13 @@
                 //● authorization
                 builder.Services.AddAuthorization(options =>
                 {
-                    options.AddPolicy(App.PolicyAuthenticated, policy => { policy.RequireAuthenticatedUser(); });
+                    options.AddPolicy(Lib.PolicyAuthenticated, policy => { policy.RequireAuthenticatedUser(); });
                 });
             }
  
             // ● Session
             builder.Services.AddSession(options => {
-                options.Cookie.Name = App.SSessionCookieName;       // cookie name
+                options.Cookie.Name = Lib.SSessionCookieName;       // cookie name
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;                  // Make the session cookie essential
                 options.IdleTimeout = TimeSpan.FromMinutes(Lib.Settings.SessionTimeoutMinutes);
